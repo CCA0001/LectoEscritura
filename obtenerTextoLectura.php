@@ -2,27 +2,48 @@
 
 include("conexion.php");
 
-$sqlTexto = "SELECT * FROM textolectura ORDER BY RAND() LIMIT 1";
-$resultTexto = $conexion->query($sqlTexto);
-$texto = $resultTexto->fetch_assoc();
+$stmtTextoLectura = $conexion->prepare("SELECT * FROM textolectura ORDER BY RAND() LIMIT 1");
+$stmtTextoLectura->execute();
 
-$idTexto = $texto['ID'];
+$resultadoTextoLectura = $stmtTextoLectura->get_result();
+$textoLectura = $resultadoTextoLectura->fetch_assoc();
 
-$sqlPreguntas = "SELECT * FROM preguntalectura WHERE ID_textoLectura = $idTexto";
-$resultPreguntas = $conexion->query($sqlPreguntas);
+if(!$textoLectura){
+    echo json_encode(["error" => "No hay textos"]);
+    exit();
+}
+
+$idTexto = $textoLectura['ID'];
+
+$stmtPreguntas = $conexion->prepare("SELECT * FROM preguntalectura WHERE ID_textoLectura = ?");
+$stmtPreguntas->bind_param("i", $idTexto);
+
+if($stmtPreguntas->execute()){
+    $resultadoPreguntas = $stmtPreguntas->get_result();
+} else {
+    echo json_encode(["error" => "No hay preguntas"]);
+    exit();
+}
 
 $preguntas = [];
 
-while ($pregunta = $resultPreguntas->fetch_assoc()) {
+while ($pregunta = $resultadoPreguntas->fetch_assoc()) {
 
     $idPregunta = $pregunta['ID'];
 
-    $sqlOpciones = "SELECT * FROM opcionpregunta WHERE ID_pregunta = $idPregunta";
-    $resultOpciones = $conexion->query($sqlOpciones);
+    $stmtOpciones = $conexion->prepare("SELECT * FROM opcionpregunta WHERE ID_pregunta = ?");
+    $stmtOpciones->bind_param("i", $idPregunta);
+
+    if($stmtOpciones->execute()){
+        $resultadoOpciones = $stmtOpciones->get_result();
+    } else {
+        echo json_encode(["error" => "No hay opciones de pregunta"]);
+        exit();
+    }
 
     $opciones = [];
 
-    while ($opcion = $resultOpciones->fetch_assoc()) {
+    while ($opcion = $resultadoOpciones->fetch_assoc()) {
         $opciones[] = $opcion;
     }
 
@@ -32,7 +53,7 @@ while ($pregunta = $resultPreguntas->fetch_assoc()) {
 }
 
 $data = [
-    "texto" => $texto,
+    "texto" => $textoLectura,
     "preguntas" => $preguntas
 ];
 
