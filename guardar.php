@@ -34,13 +34,13 @@ foreach($respuestas as $idPregunta => $idOpcion){
     $resultadoVerificacion = $stmtVerificarSiEsCorrecta->get_result()->fetch_assoc();
 
     switch($resultadoVerificacion['ID_nivelComprension']){
-        case 0:
+        case 1:
             $nivel = 'literal';
             break;
-        case 1:
+        case 2:
             $nivel = 'inferencial';
             break;
-        case 2:
+        case 3:
             $nivel = 'critico';
             break;
 
