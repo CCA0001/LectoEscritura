@@ -1,0 +1,193 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background-color: #f5f7f5;
+}
+
+.navbar {
+    background-color: #4a8d6e;
+    color: white;
+    padding: 15px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: bold;
+}
+
+
+.btn-logout {
+    background-color: #3a7358; 
+    color: white;
+    text-decoration: none;
+    padding: 8px 18px;
+    border-radius: 10px;
+    font-size: 0.75rem;
+    font-weight: bold;
+    display: inline-block;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    text-transform: uppercase;
+}
+
+.btn-logout:hover {
+    background-color: white;
+    color: #4a8d6e;
+    border-color: white;
+    transform: translateY(-2px);
+}
+
+.breadcrumb {
+    padding: 10px 40px;
+    color: #888;
+    font-size: 0.9rem;
+}
+
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+    text-align: center;
+}
+
+.welcome {
+    position: relative;
+    margin-bottom: 40px;
+}
+
+.welcome h1 {
+    font-size: 2.5rem;
+    font-weight: bold;
+    background: linear-gradient(to right, #4a8d6e, #8bc34a);
+    -webkit-background-clip: text; 
+    background-clip: text;       
+    -webkit-text-fill-color: transparent;
+    display: inline-block;
+    margin-bottom: 5px;
+}
+
+.welcome p {
+    color: #555;
+    font-weight: 500;
+}
+
+.streak-badge {
+    position: absolute;
+    top: 0;
+    right: 0;
+    border: 2px solid #c8e6c9;
+    border-radius: 10px;
+    padding: 10px;
+    background: white;
+    display: flex;
+    flex-direction: column;
+    font-size: 0.8rem;
+}
+
+.streak-badge strong {
+    font-size: 1.5rem;
+    color: #4a8d6e;
+}
+
+.cards-grid {
+    display: flex;
+    gap: 30px;
+    justify-content: center;
+    margin-bottom: 40px;
+}
+
+.card {
+    background: white;
+    border-radius: 20px;
+    padding: 30px;
+    width: 350px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+}
+
+.card h2 {
+    color: #2e5a44;
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+}
+
+.card p {
+    font-size: 0.9rem;
+    color: #777;
+    margin-bottom: 20px;
+}
+
+.emoji-container {
+    font-size: 80px;
+    margin: 20px 0;
+}
+
+.btn {
+    background-color: #4a8d6e;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 15px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: transform 0.2s;
+}
+
+.btn:hover {
+    transform: scale(1.05);
+}
+
+.bottom-panel {
+    background: white;
+    border-radius: 20px;
+    padding: 30px;
+    display: flex;
+    justify-content: space-between;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+}
+
+.progress-section {
+    width: 60%;
+    text-align: left;
+}
+
+.progress-item {
+    margin-top: 15px;
+    position: relative;
+}
+
+.progress-item .percent {
+    float: right;
+    font-weight: bold;
+    color: #4a8d6e;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 15px;
+    background: #e0e0e0;
+    border-radius: 10px;
+    margin-top: 5px;
+    overflow: hidden;
+}
+
+.fill {
+    height: 100%;
+    background: #4a8d6e;
+}
+
+.medals-section {
+    width: 30%;
+}
+
+.emoji-medal {
+    font-size: 50px;
+    margin: 10px 0;
+}
+
+.btn.small {
+    padding: 8px 30px;
+}
