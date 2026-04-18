@@ -23,7 +23,7 @@ include("contador_racha_inicioUsuario.php");
     <main class="container">
         <section class="welcome">
             <h1 class="welcome-title">Bienvenido, <?php echo $nombre_real; ?></h1>
-            <p>¿Listo para empezar a cultivar tu conocimiento?</p>
+            <p>¿List@ para empezar a cultivar tu conocimiento?</p>
             <div class="streak-badge">
                 <span>Racha de</span>
                 <strong><?php echo $racha_usuario; ?></strong>
