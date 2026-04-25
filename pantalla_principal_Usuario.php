@@ -45,14 +45,14 @@ $racha_usuario = $_SESSION['racha_usuario'] ?? 0;
         <span class="logo">LectoEscritura</span>
         
         <div class="user-rank">
-            🏆 <?php echo $_SESSION['rango_actual'] ?? 'Principiante'; ?>
+            🏅 <?php echo $_SESSION['rango_actual'] ?? 'Principiante'; ?>
         </div>
 
         <a href="Acciones/cerrar_sesion.php" class="btn-logout">CERRAR SESIÓN</a>
     </header>
 
     <nav class="breadcrumb">
-        &lt; Inicio / Panel Usuario
+        &lt; 📍 Inicio / Panel Usuario
     </nav>
 
     <main class="container">

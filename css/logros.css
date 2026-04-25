@@ -1,90 +1,222 @@
-body {
-    background-color: #f8f9fa;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+* {
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
 }
 
+body {
+    background: linear-gradient(135deg, #f0f4f0 0%, #e2ece2 100%);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    min-height: 100vh;
+}
+
+/* ========== NAVBAR ========== */
 .navbar {
-    background-color: #4a8d6e;
-    color: white;
-    padding: 15px 5%;
+    background: linear-gradient(135deg, #2e5a44 0%, #4a8d6e 100%);
+    padding: 15px 40px;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    flex-wrap: wrap;
+    gap: 15px;
 }
 
 .logo {
-    font-weight: bold;
     font-size: 1.5rem;
+    font-weight: bold;
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
-.btn-logout {
+.logo span {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 5px 12px;
+    border-radius: 30px;
+    font-size: 0.7rem;
+    font-weight: normal;
+}
+
+/* Panel de estadísticas */
+.stats-panel {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    background: rgba(255, 255, 255, 0.12);
+    padding: 8px 25px;
+    border-radius: 60px;
+    backdrop-filter: blur(10px);
+    flex-wrap: wrap;
+}
+
+.stat-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: white;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.stat-item .badge {
+    background: rgba(255, 255, 255, 0.25);
+    padding: 4px 12px;
+    border-radius: 30px;
+    font-weight: bold;
+}
+
+.stat-item .xp-badge {
+    background: linear-gradient(135deg, #ffd700, #ffaa00);
+    color: #2e5a44;
+    padding: 4px 14px;
+    border-radius: 30px;
+    font-weight: bold;
+    font-size: 0.95rem;
+}
+
+.divider {
+    width: 1px;
+    height: 30px;
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.btn-volver {
+    background: rgba(255, 255, 255, 0.2);
     color: white;
     text-decoration: none;
-    border: 1px solid white;
-    padding: 8px 15px;
-    border-radius: 8px;
-    font-size: 0.9rem;
-    transition: 0.3s;
+    padding: 10px 20px;
+    border-radius: 30px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
-.btn-logout:hover {
+.btn-volver:hover {
     background: white;
     color: #4a8d6e;
+    transform: translateY(-2px);
 }
 
+/* ========== BREADCRUMB ========== */
 .breadcrumb {
-    padding: 15px 5%;
-    background: #eeeeee;
-    color: #666;
-    font-size: 0.9rem;
+    padding: 15px 40px;
+    color: #6b8c7a;
+    font-size: 0.85rem;
+    background: transparent;
 }
 
+/* ========== CONTENEDOR PRINCIPAL ========== */
 .container {
-    width: 90%;
     max-width: 1200px;
-    margin: 40px auto;
+    margin: 0 auto;
+    padding: 20px 40px 60px;
 }
 
-.welcome-title {
-    color: #333;
-    margin-bottom: 5px;
+/* Header de la página */
+.page-header {
+    text-align: center;
+    margin-bottom: 40px;
 }
 
+.page-header h1 {
+    font-size: 2.5rem;
+    background: linear-gradient(135deg, #2e5a44, #4a8d6e);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 10px;
+}
+
+.page-header p {
+    color: #6b8c7a;
+    font-size: 1rem;
+}
+
+/* Barra de progreso de logros */
+.progress-stats {
+    display: flex;
+    justify-content: center;
+    margin-top: 25px;
+}
+
+.stats-card {
+    background: white;
+    padding: 15px 30px;
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    text-align: center;
+    min-width: 250px;
+}
+
+.stats-number {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #4a8d6e;
+    display: block;
+}
+
+.stats-label {
+    color: #6b8c7a;
+    font-size: 0.85rem;
+    display: block;
+    margin-bottom: 10px;
+}
+
+.progress-bar-mini {
+    width: 100%;
+    height: 8px;
+    background: #e0e8e0;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-top: 8px;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #4a8d6e, #8bc34a);
+    border-radius: 10px;
+    transition: width 0.5s ease;
+}
+
+/* ========== GRID DE LOGROS ========== */
 .achievements-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 25px;
-    margin-top: 30px;
 }
 
+/* Tarjeta de logro */
 .achievement-card {
     background: white;
     border-radius: 20px;
-    padding: 30px;
+    padding: 25px 20px;
     text-align: center;
-    box-shadow: 0 10px 20px rgba(0,0,0,0.05);
     position: relative;
-    border: 2px solid transparent;
-    transition: transform 0.3s ease;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(74, 141, 110, 0.1);
 }
 
 .achievement-card:hover {
     transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.12);
 }
 
-.achievement-icon {
-    font-size: 3.5rem;
-    margin-bottom: 15px;
-    display: block;
+.achievement-card.locked {
+    opacity: 0.7;
+    background: #f9f9f9;
+    filter: grayscale(0.1);
 }
 
-.locked {
-    filter: grayscale(100%);
-    opacity: 0.5;
+.achievement-card.unlocked {
+    background: linear-gradient(135deg, #ffffff, #f8fff8);
+    border: 1px solid #4a8d6e;
 }
 
+/* Badge de candado/check */
 .lock-badge {
     position: absolute;
     top: 15px;
@@ -92,24 +224,100 @@ body {
     font-size: 1.2rem;
 }
 
+/* Icono del logro */
+.achievement-icon {
+    font-size: 3.5rem;
+    display: inline-block;
+    margin-bottom: 15px;
+}
+
+/* Título */
+.achievement-card h3 {
+    color: #2e5a44;
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+}
+
+/* Descripción */
+.achievement-card p {
+    color: #8a9e8a;
+    font-size: 0.85rem;
+    margin-bottom: 15px;
+    line-height: 1.4;
+}
+
+/* Badge de XP */
 .xp-badge {
     display: inline-block;
-    margin-top: 15px;
-    background: #e8f5e9;
-    color: #4a8d6e;
-    padding: 5px 15px;
-    border-radius: 15px;
+    background: linear-gradient(135deg, #ffd700, #ffaa00);
+    color: #2e5a44;
+    padding: 6px 15px;
+    border-radius: 30px;
+    font-size: 0.8rem;
     font-weight: bold;
 }
 
-.achievement-card h3 {
-    margin: 10px 0;
-    font-size: 1.2rem;
-    color: #222;
+/* Fecha de desbloqueo */
+.date-unlocked {
+    margin-top: 12px;
+    font-size: 0.7rem;
+    color: #4a8d6e;
+    background: #e8f3ec;
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
 }
 
-.achievement-card p {
-    font-size: 0.9rem;
-    color: #777;
-    line-height: 1.4;
+/* ========== RESPONSIVE ========== */
+@media (max-width: 768px) {
+    .navbar {
+        padding: 15px 20px;
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .stats-panel {
+        justify-content: center;
+        gap: 12px;
+        padding: 8px 15px;
+    }
+
+    .stat-item {
+        font-size: 0.8rem;
+    }
+
+    .divider {
+        display: none;
+    }
+
+    .container {
+        padding: 15px;
+    }
+
+    .page-header h1 {
+        font-size: 1.8rem;
+    }
+
+    .achievements-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+
+    .stats-card {
+        min-width: auto;
+        padding: 12px 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .stats-panel {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .stat-item {
+        background: rgba(255, 255, 255, 0.1);
+        padding: 4px 10px;
+        border-radius: 20px;
+    }
 }
