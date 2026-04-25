@@ -1,69 +1,90 @@
 <?php
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
+if (session_status() === PHP_SESSION_NONE) { session_start(); }
 include("conexion.php");
 
-$nombre_real = "Estudiante"; 
-$racha_usuario = 0;
-$mensaje_alerta = "";
+$id_logueado = $_SESSION['id_usuario'] ?? null;
 
-if (isset($_SESSION['id_usuario'])) {
-    $id_logueado = $_SESSION['id_usuario'];
-    date_default_timezone_set('America/Bogota');
-    $hoy = date("Y-m-d");
-    $ayer = date("Y-m-d", strtotime("-1 day"));
+if (!$id_logueado) {
+    $_SESSION['nombre_real'] = 'Estudiante';
+    $_SESSION['racha_usuario'] = 0;
+    return;
+}
 
-    $consulta = "SELECT nombre_usuario, dias_racha, ultima_conexion FROM usuario WHERE ID = '$id_logueado'";
-    $resultado = mysqli_query($conexion, $consulta);
+date_default_timezone_set('America/Bogota');
+$hoy = date("Y-m-d");
+$ayer = date("Y-m-d", strtotime("-1 day"));
 
-    if ($resultado && $user = mysqli_fetch_assoc($resultado)) {
-        $nombre_real = $user['nombre_usuario'];
-        $racha_bd = (int)$user['dias_racha'];
-        $ultima_vez = $user['ultima_conexion'];
+$res = mysqli_query($conexion, "SELECT * FROM usuario WHERE ID = '$id_logueado'");
 
-        if ($racha_bd <= 0 || empty($ultima_vez)) {
-            $racha_usuario = 1;
-            mysqli_query($conexion, "UPDATE usuario SET dias_racha = 1, ultima_conexion = '$hoy' WHERE ID = '$id_logueado'");
-            $mensaje_alerta = "¡Bienvenido! Hoy comienzas tu primer día de racha.";
+if ($user = mysqli_fetch_assoc($res)) {
+    $_SESSION['nombre_real'] = $user['nombre_usuario'];
+    
+    $racha_bd = (int)($user['dias_racha'] ?? 0);
+    $ultima_vez = $user['ultima_conexion'];
+    $xp_actual = (int)($user['puntos_xp'] ?? 0);
+    
+    $es_primera_vez = ($ultima_vez == NULL || $ultima_vez == '' || $ultima_vez != $hoy);
+    
+    if ($es_primera_vez) {
+        if ($ultima_vez == NULL || $ultima_vez == '') {
+            $nueva_racha = 1;
+            $mensaje_racha = "🎉 ¡Bienvenido! Comienzas tu racha con 10 XP.";
         }
-        elseif ($ultima_vez == $hoy) {
-            $racha_usuario = $racha_bd;
-            $mensaje_alerta = "¡Hola de nuevo! Tu racha se mantiene en $racha_usuario ";
-        } 
-        elseif ($ultima_vez == $ayer) {
-            $racha_usuario = $racha_bd + 1;
-            mysqli_query($conexion, "UPDATE usuario SET dias_racha = $racha_usuario, ultima_conexion = '$hoy' WHERE ID = '$id_logueado'");
-            $mensaje_alerta = "¡Genial! Has sumado un día. Racha actual: $racha_usuario ";
-        } 
+        else if ($ultima_vez == $ayer) {
+            $nueva_racha = $racha_bd + 1;
+            $mensaje_racha = "🔥 ¡Racha de $nueva_racha días! Ganaste 10 XP.";
+        }
         else {
-            $racha_usuario = 1;
-            mysqli_query($conexion, "UPDATE usuario SET dias_racha = 1, ultima_conexion = '$hoy' WHERE ID = '$id_logueado'");
-            $mensaje_alerta = "¡Uy! Pasó tiempo desde que nos visitas, pero hoy inicias una nueva racha de 1 día.";
+            $nueva_racha = 1;
+            $mensaje_racha = "🔄 ¡Racha reiniciada! Ganaste 10 XP.";
         }
-
-        $metas = [
-            7 => ['id' => 2, 'nombre' => 'Racha de 7 días', 'xp' => 100],
-            30 => ['id' => 8, 'nombre' => 'Racha de 30 días', 'xp' => 500]
-        ];
-
-        foreach ($metas as $dias => $datos) {
-            if ($racha_usuario >= $dias) {
-                $id_logro = $datos['id'];
-                $check = mysqli_query($conexion, "SELECT * FROM usuariologro WHERE ID_usuario = '$id_logueado' AND ID_logro = '$id_logro'");
-                
+        
+        $xp_actual += 10;
+        
+        $sql = "UPDATE usuario SET 
+                dias_racha = $nueva_racha, 
+                ultima_conexion = '$hoy', 
+                puntos_xp = $xp_actual 
+                WHERE ID = '$id_logueado'";
+        
+        if (mysqli_query($conexion, $sql)) {
+            $_SESSION['mostrar_alerta_racha'] = $mensaje_racha;
+            $_SESSION['puntos_recientes'] = 10;
+            $_SESSION['racha_usuario'] = $nueva_racha;
+            
+            $metas = [
+                7 => ['id' => 2, 'nombre' => 'Racha de 1 Semana', 'xp' => 100],
+                30 => ['id' => 8, 'nombre' => 'Maestro de Constancia', 'xp' => 500]
+            ];
+            
+            if (isset($metas[$nueva_racha])) {
+                $m = $metas[$nueva_racha];
+                $check = mysqli_query($conexion, "SELECT * FROM usuariologro WHERE ID_usuario = '$id_logueado' AND ID_logro = '{$m['id']}'");
                 if (mysqli_num_rows($check) == 0) {
-                    mysqli_query($conexion, "INSERT INTO usuariologro (ID_usuario, ID_logro, fecha_desbloqueo) VALUES ('$id_logueado', '$id_logro', NOW())");
-                    mysqli_query($conexion, "UPDATE usuario SET puntos_xp = puntos_xp + {$datos['xp']} WHERE ID = '$id_logueado'");
-                    
-                    $_SESSION['mostrar_logro'] = [
-                        'nombre' => $datos['nombre'],
-                        'xp' => $datos['xp']
-                    ];
+                    mysqli_query($conexion, "INSERT INTO usuariologro (ID_usuario, ID_logro, fecha_desbloqueo) VALUES ('$id_logueado', '{$m['id']}', NOW())");
+                    $xp_actual += $m['xp'];
+                    mysqli_query($conexion, "UPDATE usuario SET puntos_xp = $xp_actual WHERE ID = '$id_logueado'");
+                    $_SESSION['mostrar_logro'] = ['nombre' => $m['nombre'], 'xp' => $m['xp']];
                 }
             }
+        } else {
+            $_SESSION['racha_usuario'] = $racha_bd;
         }
-        $_SESSION['mensaje_racha'] = $mensaje_alerta;
+    } else {
+        $_SESSION['racha_usuario'] = $racha_bd;
     }
+    
+    $q_nivel = "SELECT ID, nombre FROM nivelprogreso WHERE puntos_requeridos <= $xp_actual ORDER BY puntos_requeridos DESC LIMIT 1";
+    $res_n = mysqli_query($conexion, $q_nivel);
+    if ($n_info = mysqli_fetch_assoc($res_n)) {
+        $_SESSION['rango_actual'] = $n_info['nombre'];
+        mysqli_query($conexion, "UPDATE usuario SET ID_nivelProgreso = '{$n_info['ID']}' WHERE ID = '$id_logueado'");
+    } else {
+        $_SESSION['rango_actual'] = "Principiante";
+    }
+    
+} else {
+    $_SESSION['nombre_real'] = 'Estudiante';
+    $_SESSION['racha_usuario'] = 0;
 }
 ?>

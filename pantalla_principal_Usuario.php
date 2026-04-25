@@ -7,20 +7,47 @@ if (!isset($_SESSION['id_usuario'])) {
 }
 
 include("Acciones/contador_racha_inicioUsuario.php"); 
+
+$nombre_real = $_SESSION['nombre_real'] ?? 'Estudiante';
+$racha_usuario = $_SESSION['racha_usuario'] ?? 0;
 ?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <link rel="stylesheet" href="css/pantalla_principal_Usuario.css?v=<?php echo time(); ?>">
     <title>LectoEscritura</title>
+    
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <link rel="stylesheet" href="css/pantalla_principal_Usuario.css?v=<?php echo time(); ?>">
+    <style>
+        .navbar { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            padding: 10px 20px;
+        }
+        .user-rank { 
+            color: white; 
+            font-weight: bold; 
+            background: rgba(255, 255, 255, 0.25); 
+            padding: 8px 20px; 
+            border-radius: 20px; 
+            font-size: 0.9rem;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+    </style>
 </head>
 <body>
 
     <header class="navbar">
         <span class="logo">LectoEscritura</span>
+        
+        <div class="user-rank">
+            🏆 <?php echo $_SESSION['rango_actual'] ?? 'Principiante'; ?>
+        </div>
+
         <a href="Acciones/cerrar_sesion.php" class="btn-logout">CERRAR SESIÓN</a>
     </header>
 
@@ -44,14 +71,14 @@ include("Acciones/contador_racha_inicioUsuario.php");
                 <h2>Ejercicios de Lectura</h2>
                 <p>Practica lectura comprensiva con textos y preguntas</p>
                 <div class="emoji-container">📖</div>
-                <a href="index.html" class="btn" style="text-decoration: none; display: inline-block;">Comenzar lectura</a>
+                <a href="index.html" class="btn" style="text-decoration: none; display: inline-block;">Comenzar</a>
             </div>
 
             <div class="card">
                 <h2>Ejercicios de Escritura</h2>
                 <p>Mejora tu escritura con actividades didácticas</p>
                 <div class="emoji-container">📝</div>
-                <a href="??" class="btn" style="text-decoration: none; display: inline-block;">Comenzar escritura</a>
+                <a href="#" class="btn" style="text-decoration: none; display: inline-block;">Comenzar</a>
             </div>
         </div>
 
@@ -73,39 +100,24 @@ include("Acciones/contador_racha_inicioUsuario.php");
             <div class="medals-section">
                 <h3>Tus Medallas</h3>
                 <div class="emoji-medal">🏆</div>
-                <a href="logros.php" class="btn small" style="text-decoration: none; display: inline-block;">Ingresa</a>
+                <a href="logros.php" class="btn small" style="text-decoration: none; display: inline-block;">Ver logros</a>
             </div>
         </section>
     </main>
-<script>
-    const alertaMostrada = sessionStorage.getItem('rachaMostrada');
+<div id="data-helper" style="display: none;"
+     data-mensaje-racha="<?php echo isset($_SESSION['mostrar_alerta_racha']) ? htmlspecialchars($_SESSION['mostrar_alerta_racha']) : ''; ?>"
+     data-puntos-recientes="<?php echo $_SESSION['puntos_recientes'] ?? 0; ?>"
+     data-logro-nombre="<?php echo $_SESSION['mostrar_logro']['nombre'] ?? ''; ?>"
+     data-logro-xp="<?php echo $_SESSION['mostrar_logro']['xp'] ?? ''; ?>">
+</div>
 
-    <?php if (isset($_SESSION['mensaje_racha']) && !empty($_SESSION['mensaje_racha'])): ?>
-        if (!alertaMostrada) {
-            Swal.fire({
-                title: '¡Hola De Nuevo!',
-                text: '<?php echo $_SESSION['mensaje_racha']; ?>',
-                icon: 'success',
-                confirmButtonColor: '#4a8d6e',
-                confirmButtonText: '¡A estudiar!'
-            }).then(() => {
-                sessionStorage.setItem('rachaMostrada', 'true');
-                <?php unset($_SESSION['mensaje_racha']); ?>
-            });
-        }
-    <?php endif; ?>
+<script src="JS/racha_alerta.js"></script>
 
-    <?php if (isset($_SESSION['mostrar_logro'])): ?>
-        Swal.fire({
-            title: '¡NUEVO LOGRO DESBLOQUEADO!',
-            html: 'Ganaste la medalla: <b><?php echo $_SESSION['mostrar_logro']['nombre']; ?></b><br>+<b><?php echo $_SESSION['mostrar_logro']['xp']; ?> XP</b>',
-            icon: 'success',
-            iconColor: '#ffbb33',
-            confirmButtonText: '¡Genial!',
-            confirmButtonColor: '#4a8d6e'
-        });
-        <?php unset($_SESSION['mostrar_logro']); ?>
-    <?php endif; ?>
-</script>
+<?php 
+unset($_SESSION['mostrar_alerta_racha']);
+unset($_SESSION['puntos_recientes']);
+unset($_SESSION['mostrar_logro']);
+?>
+
 </body>
 </html>
