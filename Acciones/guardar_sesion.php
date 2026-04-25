@@ -1,6 +1,6 @@
 <?php
 session_start(); 
-include 'conexion.php';
+include '../conexion.php';
 
 $email = $_POST['correo_electronico'];
 $password = $_POST['contrasenia_hash'];
@@ -27,7 +27,7 @@ if ($usuario = mysqli_fetch_assoc($resultado)) {
     }
 
     
-    echo "<script>window.location='pantalla_principal_usuario.php';</script>";
+    echo "<script>window.location='../pantalla_principal_usuario.php';</script>";
 
 } else {
     echo "<script>alert('Datos incorrectos'); window.location='login.html';</script>";

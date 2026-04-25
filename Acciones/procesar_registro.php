@@ -1,10 +1,8 @@
 <?php
-// 1. Incluimos tu archivo de conexión
-require_once("conexion.php"); 
+require_once("../conexion.php"); 
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     
-    // 2. Recibir datos del formulario
     $nombre = isset($_POST['nombre']) ? $_POST['nombre'] : null;
     $usuario_input = isset($_POST['usuario_correo']) ? $_POST['usuario_correo'] : null;
     $password_plana = isset($_POST['contrasena']) ? $_POST['contrasena'] : null;
@@ -13,18 +11,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         die("Error: Faltan datos en el formulario.");
     }
 
-    // 3. Preparar datos
     $correo_completo = $usuario_input . "@ucundinamarca.edu.co";
     $contrasenia_hash = password_hash($password_plana, PASSWORD_DEFAULT);
     $fecha_actual = date("Y-m-d H:i:s");
     
-    // Valores iniciales para Eva
     $puntos = 0;
     $racha = 0;
     $nivel = 1;
     $estado = "activo";
 
-    // 4. Verificar si el correo ya existe (Usando $conexion y MySQLi)
     $sql_check = "SELECT correo_electronico FROM usuario WHERE correo_electronico = ?";
     $stmt_check = mysqli_prepare($conexion, $sql_check);
     mysqli_stmt_bind_param($stmt_check, "s", $correo_completo);
@@ -39,7 +34,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         exit();
     }
 
-    // 5. Insertar el nuevo usuario
     $sql_insert = "INSERT INTO usuario (
                         nombre_usuario, 
                         correo_electronico, 
@@ -54,7 +48,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $stmt_insert = mysqli_prepare($conexion, $sql_insert);
     
-    // "ssssiiiss" significa: string, string, string, string, int, int, int, string, string
     mysqli_stmt_bind_param($stmt_insert, "ssssiiiss", 
         $nombre, 
         $correo_completo, 
@@ -70,7 +63,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (mysqli_stmt_execute($stmt_insert)) {
         echo "<script>
                 alert('¡Registro exitoso en Eva!');
-                window.location.href='login.html';
+                window.location.href='../login.html';
               </script>";
     } else {
         echo "Error al registrar: " . mysqli_error($conexion);

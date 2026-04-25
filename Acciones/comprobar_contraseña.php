@@ -1,6 +1,7 @@
+//opcional, quería seguir con lo de encriptar las contraseñas.
 <?php
 ob_start(); 
-require_once("conexion.php"); 
+require_once("../conexion.php"); 
 session_start(); 
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -21,7 +22,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $_SESSION['id_usuario'] = $user['ID']; 
             $_SESSION['nombre'] = $user['nombre_usuario'];
             
-            header("Location: pantalla_principal_Usuario.php"); 
+            header("Location: ../pantalla_principal_Usuario.php"); 
             exit();
 
         } else {
