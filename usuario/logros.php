@@ -1,4 +1,4 @@
-<?php include("Acciones/logros_logica.php"); ?>
+<?php include("../Acciones/logros_logica.php"); ?>
 
 <!DOCTYPE html>
 <html lang="es">
@@ -6,13 +6,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mis Logros</title>
-    <link rel="stylesheet" href="css/logros.css?v=<?php echo time(); ?>">
+    <link rel="stylesheet" href="../css/logros.css?v=<?php echo time(); ?>">
 </head>
 
 <body>
 
 <header class="navbar">
-    <div class="logo">📚 LectoEscritura</div>
+    <div class="logo"> LectoEscritura</div>
 
     <div class="stats-panel">
         <div class="stat-item">👤 <?php echo htmlspecialchars($nombre_usuario); ?></div>

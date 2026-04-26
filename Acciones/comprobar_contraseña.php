@@ -7,14 +7,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $correo_buscar = trim($_POST['correo_electronico']); 
     $password_digitada = $_POST['contrasenia_hash']; 
 
-    $sql_admin = "SELECT ID, nombre_usuario, contrasenia FROM admin WHERE correo_electronico = ?";
+    // para el admin
+    $sql_admin = "SELECT ID, nombre_usuario, contrasenia_hash FROM admin WHERE correo_electronico = ?";
     $stmt_admin = mysqli_prepare($conexion, $sql_admin);
     mysqli_stmt_bind_param($stmt_admin, "s", $correo_buscar);
     mysqli_stmt_execute($stmt_admin);
     $resultado_admin = mysqli_stmt_get_result($stmt_admin);
 
     if ($admin = mysqli_fetch_assoc($resultado_admin)) {
-        if (password_verify($password_digitada, $admin['contrasenia'])) {
+        if (password_verify($password_digitada, $admin['contraseña'])) {
             $_SESSION['id_usuario'] = $admin['ID'];
             $_SESSION['nombre_usuario'] = $admin['nombre_usuario'];
             $_SESSION['rol'] = 'admin';
@@ -26,6 +27,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     }
 
+    // para el usuario
     $sql_user = "SELECT ID, nombre_usuario, contrasenia_hash FROM usuario WHERE correo_electronico = ?";
     $stmt_user = mysqli_prepare($conexion, $sql_user);
     mysqli_stmt_bind_param($stmt_user, "s", $correo_buscar);
@@ -37,7 +39,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $_SESSION['id_usuario'] = $user['ID'];
             $_SESSION['nombre_usuario'] = $user['nombre_usuario'];
             $_SESSION['rol'] = 'estudiante';
-            header("Location: ../pantalla_principal_Usuario.php");
+            header("Location: ../usuario/pantalla_principal_Usuario.php");
             exit();
         } else {
             echo "<script>alert('Contraseña incorrecta.'); window.history.back();</script>";

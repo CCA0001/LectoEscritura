@@ -1,6 +1,6 @@
 <?php
 if (session_status() === PHP_SESSION_NONE) { session_start(); }
-include("conexion.php");
+include("../conexion.php");
 
 $id_logueado = $_SESSION['id_usuario'] ?? null;
 

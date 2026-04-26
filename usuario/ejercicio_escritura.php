@@ -1,6 +1,6 @@
 <?php
 session_start();
-include("conexion.php");
+include("../conexion.php");
 
 if (!isset($_SESSION['id_usuario'])) {
     header("Location: login.html");
@@ -13,7 +13,7 @@ $mensaje = $_GET['mensaje'] ?? '';
 $error = $_GET['error'] ?? '';
 
 $query = "SELECT e.*, d.nombre as dificultad_nombre, t.nombre as tipo_nombre, 
-                 det.puntaje_promedio, det.retroalimentacion
+                 e.puntaje_promedio, det.retroalimentacion
           FROM archivoescritura e
           LEFT JOIN niveldificultad d ON e.ID_dificultad = d.ID
           LEFT JOIN tipotexto t ON e.ID_tipoTexto = t.ID
@@ -30,8 +30,8 @@ $resultado = mysqli_query($conexion, $query);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ejercicio de Escritura - LectoEscritura</title>
-    <link rel="stylesheet" href="css/escritura.css?v=<?php echo time(); ?>">
-    <script src="JS/retroalimentacion.js"></script>
+    <link rel="stylesheet" href="../css/escritura.css?v=<?php echo time(); ?>">
+    <script src="../JS/retroalimentacion.js"></script>
 </head>
 
 <body>
@@ -62,7 +62,7 @@ $resultado = mysqli_query($conexion, $query);
 
         <div class="upload-card">
             <h2>📤 Subir nuevo archivo</h2>
-            <form action="Acciones/guardar_respuesta_escritura.php" method="POST" enctype="multipart/form-data">
+            <form action="../Acciones/guardar_respuesta_escritura.php" method="POST" enctype="multipart/form-data">
                 <div class="form-group">
                     <label>Nombre del ejercicio:</label>
                     <input type="text" name="nombre_archivo" placeholder="Ej: Ensayo sobre la lectura" required>
@@ -80,7 +80,7 @@ $resultado = mysqli_query($conexion, $query);
                         }
                         ?>
                         </select>
-                        <small>Básico: Cuento corto | Intermedio: Relato | Avanzado: Novela</small>
+                      
                     </div>
 
                     <div class="form-group half">
@@ -94,7 +94,7 @@ $resultado = mysqli_query($conexion, $query);
                         }
                         ?>
                         </select>
-                        <small>Narrativo, Expositivo, Argumentativo o Descriptivo</small>
+                       
                     </div>
                 </div>
 
@@ -104,7 +104,7 @@ $resultado = mysqli_query($conexion, $query);
                     <small>Máximo 5MB. Solo archivos PDF.</small>
                 </div>
 
-                <button type="submit" class="btn-subir">Subir y enviar</button>
+                <button type="submit" class="btn-subir"> Enviar</button>
             </form>
         </div>
 
@@ -148,7 +148,7 @@ $resultado = mysqli_query($conexion, $query);
                             </td>
                             <td>
                                 <?php if (!$row['puntaje_promedio']): ?>
-                                <a href="ia/evaluar_escritura.php?id=<?php echo $row['ID']; ?>" class="btn-ia">🤖 Evaluar</a>
+                                <a href="../ia/evaluar_escritura.php?id=<?php echo $row['ID']; ?>" class="btn-ia">🤖 Evaluar</a>
                                 <?php else: ?>
                                 <span class="completado"> <?php echo $row['puntaje_promedio']; ?>/10</span>
                                 <?php endif; ?>

@@ -14,7 +14,7 @@ $resultado = mysqli_query($conexion, $sql);
 $archivo = mysqli_fetch_assoc($resultado);
 
 if (!$archivo) {
-    header("Location: ../ejercicio_escritura.php?error=Archivo no encontrado");
+    header("Location: ../usuario/ejercicio_escritura.php?error=Archivo no encontrado");
     exit();
 }
 
@@ -23,7 +23,7 @@ $evaluacion = evaluarPDFconGemini($ruta_completa, $api_key);
 
 if (isset($evaluacion['error'])) {
     $error_msg = urlencode($evaluacion['error']);
-    header("Location: ../ejercicio_escritura.php?error=$error_msg");
+    header("Location: ../usuario/ejercicio_escritura.php?error=$error_msg");
 } else {
     $id_archivo_db = $archivo['ID'];
     
@@ -45,7 +45,7 @@ if (isset($evaluacion['error'])) {
     $sql_update = "UPDATE archivoescritura SET puntaje_promedio = '{$evaluacion['puntaje_promedio']}' WHERE ID = $id_archivo_db";
     mysqli_query($conexion, $sql_update);
     
-    header("Location: ../ejercicio_escritura.php?mensaje=Evaluacion completada. Puntaje: {$evaluacion['puntaje_promedio']}/10");
+    header("Location: ../usuario/ejercicio_escritura.php?mensaje=Evaluacion completada. Puntaje: {$evaluacion['puntaje_promedio']}/10");
 }
 exit();
 ?>

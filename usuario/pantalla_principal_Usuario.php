@@ -6,7 +6,7 @@ if (!isset($_SESSION['id_usuario'])) {
     exit();
 }
 
-include("Acciones/contador_racha_inicioUsuario.php"); 
+include("../Acciones/contador_racha_inicioUsuario.php"); 
 
 $nombre_real = $_SESSION['nombre_real'] ?? 'Estudiante';
 $racha_usuario = $_SESSION['racha_usuario'] ?? 0;
@@ -24,8 +24,8 @@ $total_logros = $_SESSION['total_logros'] ?? 0;
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    <link rel="stylesheet" href="css/pantalla_principal_Usuario.css?v=<?php echo time(); ?>">
-    <link rel="stylesheet" href="css/dropdown_usuario.css?v=<?php echo time(); ?>">
+    <link rel="stylesheet" href="../css/pantalla_principal_Usuario.css?v=<?php echo time(); ?>">
+    <link rel="stylesheet" href="../css/dropdown_usuario.css?v=<?php echo time(); ?>">
 </head>
 
 <body>
@@ -38,7 +38,7 @@ $total_logros = $_SESSION['total_logros'] ?? 0;
             <span class="dropdown-arrow">▼</span>
         </div>
 
-        <a href="Acciones/cerrar_sesion.php" class="btn-logout">CERRAR SESIÓN</a>
+        <a href="../Acciones/cerrar_sesion.php" class="btn-logout">CERRAR SESIÓN</a>
     </header>
 
     <div class="user-info-panel" id="userInfoPanel">
@@ -130,8 +130,8 @@ $total_logros = $_SESSION['total_logros'] ?? 0;
         data-logro-xp="<?php echo $_SESSION['mostrar_logro']['xp'] ?? ''; ?>">
     </div>
 
-    <script src="JS/racha_alerta.js"></script>
-    <script src="JS/dropdown_usuario.js"></script>
+    <script src="../JS/racha_alerta.js"></script>
+    <script src="../JS/dropdown_usuario.js"></script>
 
     <?php 
     unset($_SESSION['mostrar_alerta_racha']);

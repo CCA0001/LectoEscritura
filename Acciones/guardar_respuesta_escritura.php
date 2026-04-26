@@ -20,12 +20,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['archivo_pdf'])) {
     $tipo = strtolower(pathinfo($archivo['name'], PATHINFO_EXTENSION));
     if ($tipo != 'pdf') {
         $error = "Solo se permiten archivos PDF.";
-        header("Location: ../archivo_escritura.php?error=" . urlencode($error));
+        header("Location: ../usuario/ejercicio_escritura.php?error=" . urlencode($error));
         exit();
     } 
     else if ($archivo['size'] > 5 * 1024 * 1024) {
         $error = "El archivo no debe superar los 5MB.";
-        header("Location: ../archivo_escritura.php?error=" . urlencode($error));
+        header("Location: ../usuario/ejercicio_escritura.php?error=" . urlencode($error));
         exit();
     }
     
@@ -43,28 +43,26 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['archivo_pdf'])) {
     $url_guardar = "ejercicios/pdf_escritura/" . $nombre_unico;
     $ruta_fisica = $carpeta_destino . "/" . $nombre_unico;
 
-
-    //move_uploaded_file(origen, destino)
     if (move_uploaded_file($archivo['tmp_name'], $ruta_fisica)) {
         $sql = "INSERT INTO archivoescritura (ID_usuario, nombre_archivo, url_archivo, ID_dificultad, ID_tipoTexto) 
                 VALUES ('$id_usuario', '$nombre_archivo', '$url_guardar', '$ID_dificultad', '$ID_tipoTexto')";
         
         if (mysqli_query($conexion, $sql)) {
             $mensaje = "✅ ¡Archivo subido con éxito!";
-            header("Location: ../ejercicio_escritura.php?mensaje=" . urlencode($mensaje));
+            header("Location: ../usuario/ejercicio_escritura.php?mensaje=" . urlencode($mensaje));
             exit();
         } else {
             $error = "❌ Error al guardar en BD: " . mysqli_error($conexion);
-            header("Location: ../ejercicio_escritura.php?error=" . urlencode($error));
+            header("Location: ../usuario/ejercicio_escritura.php?error=" . urlencode($error));
             exit();
         }
     } else {
         $error = "❌ Error al subir el archivo.";
-        header("Location: ../archivo_escritura.php?error=" . urlencode($error));
+        header("Location: ../usuario/ejercicio_escritura.php?error=" . urlencode($error));
         exit();
     }
 } else {
-    header("Location: ../archivo_escritura.php");
+    header("Location: ../usuario/ejercicio_escritura.php");
     exit();
 }
 ?>

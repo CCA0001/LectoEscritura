@@ -1,6 +1,6 @@
 <?php
     session_start();
-    include("conexion.php");
+    include("../conexion.php");
 
     if (!isset($_SESSION['id_usuario'])) {
         header("Location: login.html");
@@ -17,7 +17,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ejercicio de Lectura — LectoEscritura</title>
     <script src="traerTextosLectura.js" defer></script>
-    <link rel="stylesheet" href="css/lectura.css?v=<?php echo time(); ?>">
+    <link rel="stylesheet" href="../css/lectura.css?v=<?php echo time(); ?>">
 </head>
 
 <body>
