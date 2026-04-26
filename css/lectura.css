@@ -1,0 +1,317 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: linear-gradient(135deg, #f0f4f0 0%, #e2ece2 100%);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ── Navbar ── */
+.navbar {
+    background: linear-gradient(135deg, #2e5a44 0%, #4a8d6e 100%);
+    padding: 15px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    flex-shrink: 0;
+    position: relative;
+    z-index: 10;
+}
+
+.logo {
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: white;
+}
+
+.user-rank {
+    color: white;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 8px 20px;
+    border-radius: 30px;
+    font-size: 0.9rem;
+}
+
+.btn-volver {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    text-decoration: none;
+    padding: 8px 20px;
+    border-radius: 30px;
+    font-size: 0.8rem;
+    transition: all 0.3s;
+}
+
+.btn-volver:hover {
+    background: white;
+    color: #4a8d6e;
+}
+
+/* ── Breadcrumb ── */
+.breadcrumb {
+    padding: 12px 40px;
+    color: #6b8c7a;
+    font-size: 0.85rem;
+    flex-shrink: 0;
+}
+
+/* ── Área de trabajo debajo del breadcrumb ── */
+.lectura-workspace {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+    min-height: 0;
+}
+
+/* ── Fondo / panel derecho: ocupa todo el workspace ── */
+.panel-derecho {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(160deg, #f7faf7 0%, #eaf2ea 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.panel-derecho-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    color: #a0bfad;
+    text-align: center;
+    padding: 40px;
+    pointer-events: none;
+    user-select: none;
+}
+
+.panel-derecho-placeholder .placeholder-icon {
+    font-size: 3rem;
+    opacity: 0.35;
+}
+
+.panel-derecho-placeholder p {
+    font-size: 0.9rem;
+    opacity: 0.5;
+    max-width: 240px;
+    line-height: 1.6;
+}
+
+/* ── Panel izquierdo FLOTANTE: separado de todos los bordes ── */
+.panel-lectura {
+    position: absolute;
+    top: 20px;          /* separado del breadcrumb */
+    left: 20px;         /* separado del borde izquierdo */
+    bottom: 20px;       /* separado del borde inferior */
+    width: calc(40% - 30px);
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 12px 40px rgba(46, 90, 68, 0.15),
+                0 4px 12px rgba(46, 90, 68, 0.08);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    z-index: 5;
+}
+
+.panel-lectura-header {
+    background: linear-gradient(135deg, #2e5a44 0%, #4a8d6e 100%);
+    padding: 16px 22px;
+    flex-shrink: 0;
+    border-radius: 20px 20px 0 0;
+}
+
+.panel-lectura-header h1 {
+    color: white;
+    font-size: 0.9rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    opacity: 0.92;
+    margin: 0;
+}
+
+#titulo {
+    padding: 18px 22px 6px;
+    color: #2e5a44;
+    font-size: 1.1rem;
+    font-weight: 700;
+    line-height: 1.4;
+    flex-shrink: 0;
+}
+
+.panel-lectura-scroll {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0 22px 16px;
+    scrollbar-width: thin;
+    scrollbar-color: #cde0cd #f0f4f0;
+}
+
+.panel-lectura-scroll::-webkit-scrollbar {
+    width: 5px;
+}
+
+.panel-lectura-scroll::-webkit-scrollbar-track {
+    background: #f0f4f0;
+}
+
+.panel-lectura-scroll::-webkit-scrollbar-thumb {
+    background: #4a8d6e;
+    border-radius: 3px;
+}
+
+#contenido {
+    color: #3a3a3a;
+    font-size: 0.93rem;
+    line-height: 1.75;
+    padding: 10px 0 18px;
+    border-bottom: 2px dashed #cde0cd;
+    white-space: pre-wrap;
+}
+
+.preguntas-titulo {
+    color: #2e5a44;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin: 18px 0 12px;
+}
+
+#preguntas h3 {
+    color: #2e5a44;
+    font-size: 0.92rem;
+    font-weight: 600;
+    margin-bottom: 9px;
+    margin-top: 16px;
+    line-height: 1.4;
+}
+
+#preguntas label {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 8px 12px;
+    border-radius: 10px;
+    border: 1.5px solid #e8f0e8;
+    margin-bottom: 6px;
+    cursor: pointer;
+    color: #3a3a3a;
+    font-size: 0.88rem;
+    line-height: 1.4;
+    transition: all 0.2s ease;
+}
+
+#preguntas label:hover {
+    background: #f0f4f0;
+    border-color: #4a8d6e;
+}
+
+#preguntas input[type="radio"] {
+    accent-color: #4a8d6e;
+    margin-top: 3px;
+    flex-shrink: 0;
+    width: 15px;
+    height: 15px;
+    cursor: pointer;
+}
+
+#preguntas label:has(input:checked) {
+    background: #f0f9f4;
+    border-color: #4a8d6e;
+    color: #2e5a44;
+    font-weight: 500;
+}
+
+.panel-lectura-footer {
+    padding: 14px 22px;
+    border-top: 1.5px solid #e8f0e8;
+    background: #fafcfa;
+    flex-shrink: 0;
+    border-radius: 0 0 20px 20px;
+}
+
+#btnVerificar {
+    width: 100%;
+    background: linear-gradient(135deg, #4a8d6e, #2e5a44);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 30px;
+    font-size: 0.95rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+#btnVerificar:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(74, 141, 110, 0.35);
+}
+
+#btnVerificar:active {
+    transform: translateY(0);
+}
+
+#resultado {
+    margin-top: 10px;
+    padding: 9px 14px;
+    border-radius: 10px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    text-align: center;
+    transition: all 0.3s;
+}
+
+#resultado:not(:empty) {
+    background: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+/* ── Responsive ── */
+@media (max-width: 900px) {
+    .lectura-workspace {
+        overflow: visible;
+        position: static;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        padding: 16px;
+        flex: unset;
+    }
+
+    .panel-lectura {
+        position: static;
+        width: 100%;
+        max-height: 60vh;
+        border-radius: 16px;
+    }
+
+    .panel-derecho {
+        position: static;
+        min-height: 280px;
+        border-radius: 16px;
+    }
+}
+
+@media (max-width: 600px) {
+    .navbar {
+        padding: 12px 16px;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .breadcrumb {
+        padding: 10px 16px;
+    }
+}

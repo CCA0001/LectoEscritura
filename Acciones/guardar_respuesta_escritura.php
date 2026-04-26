@@ -46,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['archivo_pdf'])) {
 
     //move_uploaded_file(origen, destino)
     if (move_uploaded_file($archivo['tmp_name'], $ruta_fisica)) {
-        $sql = "INSERT INTO ejercicioescritura (ID_usuario, nombre_archivo, url_archivo, ID_dificultad, ID_tipoTexto) 
+        $sql = "INSERT INTO archivoescritura (ID_usuario, nombre_archivo, url_archivo, ID_dificultad, ID_tipoTexto) 
                 VALUES ('$id_usuario', '$nombre_archivo', '$url_guardar', '$ID_dificultad', '$ID_tipoTexto')";
         
         if (mysqli_query($conexion, $sql)) {
