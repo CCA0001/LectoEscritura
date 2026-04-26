@@ -98,11 +98,19 @@ $resultado = mysqli_query($conexion, $query);
                     </div>
                 </div>
 
+<<<<<<< HEAD
+            <div class="form-group">
+                <label>📎 Archivo PDF:</label>
+                <input type="file" name="archivo_pdf" accept=".pdf,.docx,.txt" required>
+                <small>Máximo 5MB. Solo archivos PDF.</small>
+            </div>
+=======
                 <div class="form-group">
                     <label>📎 Archivo PDF:</label>
                     <input type="file" name="archivo_pdf" accept=".pdf" required>
                     <small>Máximo 5MB. Solo archivos PDF.</small>
                 </div>
+>>>>>>> 98ef8edf731759a49759a3ea2b04403ad55b11d4
 
                 <button type="submit" class="btn-subir">Subir y enviar</button>
             </form>

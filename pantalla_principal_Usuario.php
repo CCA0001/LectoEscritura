@@ -65,7 +65,7 @@ $total_logros = $_SESSION['total_logros'] ?? 0;
     </div>
 
     <nav class="breadcrumb">
-        &lt; 📍 Inicio / Panel Usuario
+         📍 Inicio / Panel Usuario
     </nav>
 
     <main class="container">
@@ -84,7 +84,7 @@ $total_logros = $_SESSION['total_logros'] ?? 0;
                 <h2>Ejercicios de Lectura</h2>
                 <p>Practica lectura comprensiva con textos y preguntas</p>
                 <div class="emoji-container">📖</div>
-                <a href="index.html" class="btn" style="text-decoration: none; display: inline-block;">Comenzar</a>
+                <a href="moduloLectura.php" class="btn" style="text-decoration: none; display: inline-block;">Comenzar</a>
             </div>
 
             <div class="card">

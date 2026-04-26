@@ -18,7 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['archivo_pdf'])) {
     $archivo = $_FILES['archivo_pdf'];
     
     $tipo = strtolower(pathinfo($archivo['name'], PATHINFO_EXTENSION));
-    if ($tipo != 'pdf') {
+    if ($tipo != 'pdf' && $tipo != '.txt' && $tipo='.docx') {
         $error = "Solo se permiten archivos PDF.";
         header("Location: ../archivo_escritura.php?error=" . urlencode($error));
         exit();

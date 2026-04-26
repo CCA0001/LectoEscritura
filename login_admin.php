@@ -9,12 +9,12 @@
 <body>
 
     <div class="login-card">
-        <h2>Iniciar Sesión</h2>
+        <h2>Iniciar Sesión (Administradores) </h2>
         
         <form action="Acciones/comprobar_contraseña.php" method="POST">
             <div class="input-group">
-                <label>Correo Institucional:</label>
-                <input type="email" name="correo_electronico" placeholder="ejemplo@ucundinamarca.edu.co" required>
+                <label>Correo Electrónico:</label>
+                <input type="email" name="correo_electronico" required>
             </div>
             
             <div class="input-group">
@@ -26,10 +26,7 @@
         </form>
 
         <p class="footer-text">
-            ¿No tienes cuenta? <a href="registro.html">Crear cuenta</a>
-        </p>
-        <p class="footer-text">
-            ¿Eres administrador? <a href="login_admin.php">Acceso administradores</a>
+            ¿Eres usuario? <a href="login_admin.php">Acceso usuarios</a>
         </p>
     </div>
 
