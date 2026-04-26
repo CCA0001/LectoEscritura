@@ -10,7 +10,6 @@ body {
     min-height: 100vh;
 }
 
-/* ========== NAVBAR ========== */
 .navbar {
     background: linear-gradient(135deg, #2e5a44 0%, #4a8d6e 100%);
     padding: 15px 40px;
@@ -39,7 +38,6 @@ body {
     font-weight: normal;
 }
 
-/* Panel de estadísticas */
 .stats-panel {
     display: flex;
     align-items: center;
@@ -100,7 +98,6 @@ body {
     transform: translateY(-2px);
 }
 
-/* ========== BREADCRUMB ========== */
 .breadcrumb {
     padding: 15px 40px;
     color: #6b8c7a;
@@ -108,14 +105,12 @@ body {
     background: transparent;
 }
 
-/* ========== CONTENEDOR PRINCIPAL ========== */
 .container {
     max-width: 1200px;
     margin: 0 auto;
     padding: 20px 40px 60px;
 }
 
-/* Header de la página */
 .page-header {
     text-align: center;
     margin-bottom: 40px;
@@ -135,7 +130,6 @@ body {
     font-size: 1rem;
 }
 
-/* Barra de progreso de logros */
 .progress-stats {
     display: flex;
     justify-content: center;
@@ -181,14 +175,12 @@ body {
     transition: width 0.5s ease;
 }
 
-/* ========== GRID DE LOGROS ========== */
 .achievements-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 25px;
 }
 
-/* Tarjeta de logro */
 .achievement-card {
     background: white;
     border-radius: 20px;
@@ -216,7 +208,6 @@ body {
     border: 1px solid #4a8d6e;
 }
 
-/* Badge de candado/check */
 .lock-badge {
     position: absolute;
     top: 15px;
@@ -224,21 +215,18 @@ body {
     font-size: 1.2rem;
 }
 
-/* Icono del logro */
 .achievement-icon {
     font-size: 3.5rem;
     display: inline-block;
     margin-bottom: 15px;
 }
 
-/* Título */
 .achievement-card h3 {
     color: #2e5a44;
     font-size: 1.2rem;
     margin-bottom: 10px;
 }
 
-/* Descripción */
 .achievement-card p {
     color: #8a9e8a;
     font-size: 0.85rem;
@@ -246,7 +234,6 @@ body {
     line-height: 1.4;
 }
 
-/* Badge de XP */
 .xp-badge {
     display: inline-block;
     background: linear-gradient(135deg, #ffd700, #ffaa00);
@@ -257,7 +244,6 @@ body {
     font-weight: bold;
 }
 
-/* Fecha de desbloqueo */
 .date-unlocked {
     margin-top: 12px;
     font-size: 0.7rem;
@@ -268,7 +254,6 @@ body {
     border-radius: 20px;
 }
 
-/* ========== RESPONSIVE ========== */
 @media (max-width: 768px) {
     .navbar {
         padding: 15px 20px;

@@ -7,6 +7,8 @@ $id_logueado = $_SESSION['id_usuario'] ?? null;
 if (!$id_logueado) {
     $_SESSION['nombre_real'] = 'Estudiante';
     $_SESSION['racha_usuario'] = 0;
+    $_SESSION['puntos_xp'] = 0; 
+    $_SESSION['total_logros'] = 0; 
     return;
 }
 
@@ -22,6 +24,13 @@ if ($user = mysqli_fetch_assoc($res)) {
     $racha_bd = (int)($user['dias_racha'] ?? 0);
     $ultima_vez = $user['ultima_conexion'];
     $xp_actual = (int)($user['puntos_xp'] ?? 0);
+    
+    $_SESSION['puntos_xp'] = $xp_actual;
+    
+    $query_logros = "SELECT COUNT(*) as total FROM usuariologro WHERE ID_usuario = '$id_logueado'";
+    $res_logros = mysqli_query($conexion, $query_logros);
+    $total_logros = mysqli_fetch_assoc($res_logros)['total'];
+    $_SESSION['total_logros'] = $total_logros;
     
     $es_primera_vez = ($ultima_vez == NULL || $ultima_vez == '' || $ultima_vez != $hoy);
     
@@ -40,7 +49,7 @@ if ($user = mysqli_fetch_assoc($res)) {
         }
         
         $xp_actual += 10;
-        
+        $_SESSION['puntos_xp'] = $xp_actual;
         $sql = "UPDATE usuario SET 
                 dias_racha = $nueva_racha, 
                 ultima_conexion = '$hoy', 
@@ -63,8 +72,12 @@ if ($user = mysqli_fetch_assoc($res)) {
                 if (mysqli_num_rows($check) == 0) {
                     mysqli_query($conexion, "INSERT INTO usuariologro (ID_usuario, ID_logro, fecha_desbloqueo) VALUES ('$id_logueado', '{$m['id']}', NOW())");
                     $xp_actual += $m['xp'];
+                    $_SESSION['puntos_xp'] = $xp_actual; 
                     mysqli_query($conexion, "UPDATE usuario SET puntos_xp = $xp_actual WHERE ID = '$id_logueado'");
                     $_SESSION['mostrar_logro'] = ['nombre' => $m['nombre'], 'xp' => $m['xp']];
+                    
+                    $total_logros++;
+                    $_SESSION['total_logros'] = $total_logros;
                 }
             }
         } else {
@@ -86,5 +99,7 @@ if ($user = mysqli_fetch_assoc($res)) {
 } else {
     $_SESSION['nombre_real'] = 'Estudiante';
     $_SESSION['racha_usuario'] = 0;
+    $_SESSION['puntos_xp'] = 0;
+    $_SESSION['total_logros'] = 0;
 }
 ?>
