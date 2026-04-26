@@ -20,12 +20,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['archivo_pdf'])) {
     $tipo = strtolower(pathinfo($archivo['name'], PATHINFO_EXTENSION));
     if ($tipo != 'pdf') {
         $error = "Solo se permiten archivos PDF.";
-        header("Location: ../ejercicio_escritura.php?error=" . urlencode($error));
+        header("Location: ../archivo_escritura.php?error=" . urlencode($error));
         exit();
     } 
     else if ($archivo['size'] > 5 * 1024 * 1024) {
         $error = "El archivo no debe superar los 5MB.";
-        header("Location: ../ejercicio_escritura.php?error=" . urlencode($error));
+        header("Location: ../archivo_escritura.php?error=" . urlencode($error));
         exit();
     }
     
@@ -46,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['archivo_pdf'])) {
 
     //move_uploaded_file(origen, destino)
     if (move_uploaded_file($archivo['tmp_name'], $ruta_fisica)) {
-        $sql = "INSERT INTO ejercicioescritura (ID_usuario, nombre_archivo, url_archivo, ID_dificultad, ID_tipoTexto) 
+        $sql = "INSERT INTO archivoescritura (ID_usuario, nombre_archivo, url_archivo, ID_dificultad, ID_tipoTexto) 
                 VALUES ('$id_usuario', '$nombre_archivo', '$url_guardar', '$ID_dificultad', '$ID_tipoTexto')";
         
         if (mysqli_query($conexion, $sql)) {
@@ -60,11 +60,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['archivo_pdf'])) {
         }
     } else {
         $error = "❌ Error al subir el archivo.";
-        header("Location: ../ejercicio_escritura.php?error=" . urlencode($error));
+        header("Location: ../archivo_escritura.php?error=" . urlencode($error));
         exit();
     }
 } else {
-    header("Location: ../ejercicio_escritura.php");
+    header("Location: ../archivo_escritura.php");
     exit();
 }
 ?>
