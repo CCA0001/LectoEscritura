@@ -96,7 +96,69 @@
 
     </aside>
 
+    <div></div>
+
+
 </div><!-- /.lectura-workspace -->
 
+
+<!-- ══════════════════════════════════════
+     SECCIÓN AVANZADO / INTERMEDIO
+     Las tarjetas se generan dinámicamente
+     con PHP o JS — pueden ser n textos.
+══════════════════════════════════════ -->
+    <section class="seccion-avanzado">
+    
+        <div class="seccion-avanzado-header">
+            <h2>🎯 Textos de nivel intermedio y avanzado</h2>
+            <p>Pon a prueba tu comprensión lectora con textos más exigentes.</p>
+        </div>
+    
+        <!--
+        ══════════════════════════════════════════════════════════════
+        CONTENEDOR DINÁMICO
+        Aquí PHP (o JS) inyectará una tarjeta por cada texto
+        de dificultad intermedia o avanzada que traiga la BD.
+    
+        Cuando me pidas el código, cada tarjeta generada
+        seguirá esta estructura:
+    
+        <article class="ejercicio-avanzado">
+    
+            <div class="ejercicio-avanzado-header">
+                <span class="badge-dificultad intermedio">Intermedio</span>
+                ó
+                <span class="badge-dificultad avanzado">Avanzado</span>
+                <h3>Título del texto</h3>
+            </div>
+    
+            <div class="ejercicio-avanzado-body">
+                <p class="ejercicio-texto">Texto largo aquí...</p>
+                <p class="ejercicio-preguntas-label">📝 Preguntas</p>
+                <div class="ejercicio-preguntas-lista">
+                    <div class="ejercicio-pregunta">
+                        <h4>1. ¿Pregunta?</h4>
+                        <label><input type="radio" name="ejN-pM" value="ID_opcion"> Opción</label>
+                        ...
+                    </div>
+                    ...
+                </div>
+            </div>
+    
+            <div class="ejercicio-avanzado-footer">
+                <button class="btn-verificar-avanzado">¡Terminé!</button>
+                <p class="resultado-avanzado"></p>
+            </div>
+    
+        </article>
+    
+        N puede ser cualquier número — el CSS se adapta solo.
+        ══════════════════════════════════════════════════════════════
+        -->
+        <div id="lista-ejercicios-avanzados">
+            <!-- Las tarjetas van aquí, generadas por PHP o JS -->
+        </div>
+    
+    </section><!-- /.seccion-avanzado -->
 </body>
 </html>
