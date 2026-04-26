@@ -62,7 +62,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if (mysqli_stmt_execute($stmt_insert)) {
         echo "<script>
-                alert('¡Registro exitoso en Eva!');
+                alert('¡Registro exitoso en Eval!');
                 window.location.href='../login.html';
               </script>";
     } else {

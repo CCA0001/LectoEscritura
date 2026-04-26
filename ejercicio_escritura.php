@@ -12,12 +12,12 @@ $id_usuario = $_SESSION['id_usuario'];
 $mensaje = $_GET['mensaje'] ?? '';
 $error = $_GET['error'] ?? '';
 
-$query = "SELECT e.*, d.nombre as dificultad_nombre, t.nombre as tipo_nombre 
-          FROM ejercicioescritura e
-          LEFT JOIN niveldificultad d ON e.ID_dificultad = d.ID
-          LEFT JOIN tipotexto t ON e.ID_tipoTexto = t.ID
-          WHERE e.ID_usuario = '$id_usuario' 
-          ORDER BY e.fecha_subida DESC";
+$query = "SELECT a.*, d.nombre as dificultad_nombre, t.nombre as tipo_nombre 
+          FROM archivoescritura a
+          LEFT JOIN niveldificultad d ON a.ID_dificultad = d.ID
+          LEFT JOIN tipotexto t ON a.ID_tipoTexto = t.ID
+          WHERE a.ID_usuario = '$id_usuario' 
+          ORDER BY a.fecha_subida DESC";
 $resultado = mysqli_query($conexion, $query);
 ?>
 
