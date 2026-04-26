@@ -20,12 +20,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['archivo_pdf'])) {
     $tipo = strtolower(pathinfo($archivo['name'], PATHINFO_EXTENSION));
     if ($tipo != 'pdf' && $tipo != '.txt' && $tipo='.docx') {
         $error = "Solo se permiten archivos PDF.";
-        header("Location: ../ejercicio_escritura.php?error=" . urlencode($error));
+        header("Location: ../archivo_escritura.php?error=" . urlencode($error));
         exit();
     } 
     else if ($archivo['size'] > 5 * 1024 * 1024) {
         $error = "El archivo no debe superar los 5MB.";
-        header("Location: ../ejercicio_escritura.php?error=" . urlencode($error));
+        header("Location: ../archivo_escritura.php?error=" . urlencode($error));
         exit();
     }
     
@@ -60,11 +60,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['archivo_pdf'])) {
         }
     } else {
         $error = "❌ Error al subir el archivo.";
-        header("Location: ../ejercicio_escritura.php?error=" . urlencode($error));
+        header("Location: ../archivo_escritura.php?error=" . urlencode($error));
         exit();
     }
 } else {
-    header("Location: ../ejercicio_escritura.php");
+    header("Location: ../archivo_escritura.php");
     exit();
 }
 ?>

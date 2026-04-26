@@ -1,3 +1,4 @@
+
 * {
     margin: 0;
     padding: 0;
@@ -55,7 +56,7 @@ body {
 }
 
 .container {
-    max-width: 1000px;
+    max-width: 1200px;
     margin: 0 auto;
     padding: 20px 40px 60px;
 }
@@ -114,7 +115,8 @@ h1 {
     font-weight: bold;
 }
 
-.form-group input[type="text"] {
+.form-group input[type="text"],
+.form-group select {
     width: 100%;
     padding: 12px;
     border: 1px solid #cde0cd;
@@ -131,6 +133,17 @@ h1 {
     color: #8a9e8a;
     margin-top: 5px;
     font-size: 0.75rem;
+}
+
+.form-row {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.form-group.half {
+    flex: 1;
+    margin-bottom: 0;
 }
 
 .btn-subir {
@@ -150,14 +163,20 @@ h1 {
     box-shadow: 0 5px 15px rgba(74, 141, 110, 0.3);
 }
 
+.tabla-responsive {
+    overflow-x: auto;
+}
+
 .tabla-archivos {
     width: 100%;
     border-collapse: collapse;
+    min-width: 1000px;
+    font-size: 0.9rem;
 }
 
 .tabla-archivos th,
 .tabla-archivos td {
-    padding: 12px;
+    padding: 15px 12px;
     text-align: left;
     border-bottom: 1px solid #e8f0e8;
 }
@@ -166,50 +185,157 @@ h1 {
     background: #f0f4f0;
     color: #2e5a44;
     font-weight: bold;
+    font-size: 0.9rem;
+}
+
+.tabla-archivos td {
+    vertical-align: middle;
 }
 
 .btn-ver {
     background: #4a8d6e;
     color: white;
     text-decoration: none;
-    padding: 5px 12px;
-    border-radius: 15px;
+    padding: 6px 14px;
+    border-radius: 20px;
     font-size: 0.75rem;
     transition: all 0.2s;
+    display: inline-block;
 }
 
 .btn-ver:hover {
     background: #2e5a44;
+    transform: scale(1.02);
 }
 
 .puntaje {
     background: #d4edda;
     color: #155724;
-    padding: 4px 10px;
+    padding: 5px 12px;
     border-radius: 20px;
     font-weight: bold;
+    display: inline-block;
+    font-size: 0.8rem;
 }
 
-.pendiente, .espera {
+.pendiente {
     color: #856404;
     background: #fff3cd;
-    padding: 4px 10px;
+    padding: 5px 12px;
     border-radius: 20px;
     font-size: 0.75rem;
+    display: inline-block;
+}
+
+.espera {
+    color: #856404;
+    background: #fff3cd;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    display: inline-block;
 }
 
 .completado {
     color: #155724;
     background: #d4edda;
-    padding: 4px 10px;
+    padding: 5px 12px;
     border-radius: 20px;
     font-size: 0.75rem;
+    display: inline-block;
 }
 
 .vacio {
     text-align: center;
     color: #8a9e8a;
     padding: 40px;
+}
+
+.btn-ia {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    text-decoration: none;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: bold;
+    display: inline-block;
+    transition: all 0.2s;
+}
+
+.btn-ia:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+/* Modal */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+}
+
+.modal-content {
+    background-color: white;
+    margin: 10% auto;
+    padding: 25px;
+    border-radius: 20px;
+    width: 80%;
+    max-width: 500px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    position: relative;
+}
+
+.modal-close {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 28px;
+    cursor: pointer;
+    color: #999;
+}
+
+.modal-close:hover {
+    color: #333;
+}
+
+.modal-content h3 {
+    color: #4a8d6e;
+    margin-bottom: 15px;
+}
+
+#retroTexto {
+    font-size: 1rem;
+    line-height: 1.5;
+    color: #333;
+    background: #f8faf8;
+    padding: 15px;
+    border-radius: 15px;
+}
+
+.retro-tooltip {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    text-decoration: none;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    cursor: pointer;
+    display: inline-block;
+}
+
+.retro-tooltip:hover {
+    transform: scale(1.05);
+}
+
+.sin-retro {
+    color: #aaa;
+    font-size: 0.8rem;
 }
 
 @media (max-width: 768px) {
@@ -221,36 +347,26 @@ h1 {
     
     .container {
         padding: 15px;
+        max-width: 100%;
+    }
+    
+    .form-row {
+        flex-direction: column;
+        gap: 15px;
     }
     
     .tabla-archivos {
-        font-size: 0.8rem;
+        font-size: 0.7rem;
+        min-width: 700px;
     }
     
     .tabla-archivos th,
     .tabla-archivos td {
-        padding: 8px;
+        padding: 10px 8px;
     }
-}
-.tabla-responsive {
-    overflow-x: auto;
-}
-
-.tabla-archivos {
-    width: 100%;
-    border-collapse: collapse;
-    min-width: 600px;
-}
-
-.tabla-archivos th,
-.tabla-archivos td {
-    padding: 12px;
-    text-align: left;
-    border-bottom: 1px solid #e8f0e8;
-}
-
-.tabla-archivos th {
-    background: #f0f4f0;
-    color: #2e5a44;
-    font-weight: bold;
+    
+    .btn-ia, .btn-ver {
+        padding: 4px 10px;
+        font-size: 0.65rem;
+    }
 }
