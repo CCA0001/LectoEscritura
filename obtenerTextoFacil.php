@@ -2,7 +2,12 @@
 
 include("conexion.php");
 
-$stmtTextoLectura = $conexion->prepare("SELECT * FROM textolectura ORDER BY RAND() LIMIT 1");
+$stmtTextoLectura = $conexion->prepare("
+    SELECT t.*, tt.nombre AS tipo_texto_nombre
+    FROM textolectura t
+    LEFT JOIN tipotexto tt ON t.ID_tipoTexto = tt.ID
+    ORDER BY RAND() LIMIT 1
+");
 $stmtTextoLectura->execute();
 
 $resultadoTextoLectura = $stmtTextoLectura->get_result();
@@ -15,7 +20,12 @@ if(!$textoLectura){
 
 $idTexto = $textoLectura['ID'];
 
-$stmtPreguntas = $conexion->prepare("SELECT * FROM preguntalectura WHERE ID_textoLectura = ?");
+$stmtPreguntas = $conexion->prepare("
+    SELECT p.*, nc.nombre AS nivel_comprension_nombre
+    FROM preguntalectura p
+    LEFT JOIN nivelcomprensionlectora nc ON p.ID_nivelComprension = nc.ID
+    WHERE p.ID_textoLectura = ?
+");
 $stmtPreguntas->bind_param("i", $idTexto);
 
 if($stmtPreguntas->execute()){

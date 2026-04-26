@@ -468,6 +468,66 @@ body {
 }
 
 /* ══════════════════════════════════════
+   BADGE — TIPO DE TEXTO
+══════════════════════════════════════ */
+.badge-tipo-texto {
+    display: inline-block;
+    padding: 3px 12px;
+    border-radius: 20px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    background: rgba(180, 220, 200, 0.3);
+    color: #d0f0e0;
+    border: 1px solid rgba(180, 220, 200, 0.45);
+    flex-shrink: 0;
+}
+
+/* Cuando aparece debajo del título en el panel flotante */
+#badge-tipo-facil {
+    display: inline-block;
+    margin: 4px 22px 10px;
+    background: #eaf4ef;
+    color: #2e5a44;
+    border: 1px solid #b4dcc8;
+}
+
+/* ══════════════════════════════════════
+   BADGE — NIVEL DE COMPRENSIÓN
+══════════════════════════════════════ */
+.badge-nivel-comprension {
+    display: inline-block;
+    vertical-align: middle;
+    margin-left: 8px;
+    padding: 2px 10px;
+    border-radius: 20px;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.badge-nivel-comprension.literal {
+    background: #e8f5e9;
+    color: #2e7d32;
+    border: 1px solid #a5d6a7;
+}
+
+.badge-nivel-comprension.inferencial {
+    background: #e3f2fd;
+    color: #1565c0;
+    border: 1px solid #90caf9;
+}
+
+.badge-nivel-comprension.critico {
+    background: #fce4ec;
+    color: #ad1457;
+    border: 1px solid #f48fb1;
+}
+
+/* ══════════════════════════════════════
    RESPONSIVE
 ══════════════════════════════════════ */
 @media (max-width: 900px) {
