@@ -31,7 +31,7 @@ $total_logros = $_SESSION['total_logros'] ?? 0;
 <body>
 
     <header class="navbar">
-        <span class="logo">LectoEscritura</span>
+        <span class="logo">EVAL</span>
 
         <div class="user-rank" id="userRankBtn">
             🏅 <?php echo $rango_actual; ?>

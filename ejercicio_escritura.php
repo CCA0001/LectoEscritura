@@ -31,6 +31,7 @@ $resultado = mysqli_query($conexion, $query);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ejercicio de Escritura - LectoEscritura</title>
     <link rel="stylesheet" href="css/escritura.css?v=<?php echo time(); ?>">
+    <script src="JS/retroalimentacion.js"></script>
 </head>
 
 <body>
@@ -130,16 +131,6 @@ $resultado = mysqli_query($conexion, $query);
                     </thead>
                     <tbody>
                         <?php while($row = mysqli_fetch_assoc($resultado)): ?>
-                        <td>
-                            <?php if (!empty($row['retroalimentacion'])): ?>
-                            <span class="retro-tooltip"
-                                onclick="mostrarRetro('<?php echo htmlspecialchars($row['retroalimentacion']); ?>')">
-                                💬 Ver feedback
-                            </span>
-                            <?php else: ?>
-                            <span class="sin-retro">—</span>
-                            <?php endif; ?>
-                        </td>
                         <tr>
                             <td><?php echo htmlspecialchars($row['nombre_archivo']); ?></td>
                             <td><?php echo $row['tipo_nombre'] ?? '—'; ?></td>
@@ -157,10 +148,18 @@ $resultado = mysqli_query($conexion, $query);
                             </td>
                             <td>
                                 <?php if (!$row['puntaje_promedio']): ?>
-                                <a href="ia/evaluar_escritura.php?id=<?php echo $row['ID']; ?>" class="btn-ia">🤖
-                                    Evaluar</a>
+                                <a href="ia/evaluar_escritura.php?id=<?php echo $row['ID']; ?>" class="btn-ia">🤖 Evaluar</a>
                                 <?php else: ?>
                                 <span class="completado"> <?php echo $row['puntaje_promedio']; ?>/10</span>
+                                <?php endif; ?>
+                            </td>
+                            <td>
+                                <?php if (!empty($row['retroalimentacion'])): ?>
+                                <span class="retro-tooltip" onclick="mostrarRetro('<?php echo htmlspecialchars($row['retroalimentacion']); ?>')">
+                                    💬 Ver feedback
+                                </span>
+                                <?php else: ?>
+                                <span class="sin-retro">—</span>
                                 <?php endif; ?>
                             </td>
                             <td>
@@ -178,14 +177,14 @@ $resultado = mysqli_query($conexion, $query);
             <?php endif; ?>
         </div>
     </main>
-   
-<div id="modalRetro" class="modal">
-    <div class="modal-content">
-        <span class="modal-close" onclick="cerrarModal()">&times;</span>
-        <h3>🤖 Retroalimentación de la IA</h3>
-        <div id="retroTexto"></div>
+
+    <div id="modalRetro" class="modal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="cerrarModal()">&times;</span>
+            <h3>🤖 Retroalimentación de la IA</h3>
+            <div id="retroTexto"></div>
+        </div>
     </div>
-</div>
 
 </body>
 

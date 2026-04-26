@@ -2,6 +2,15 @@
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
+    session_start();
+    include("conexion.php");
+
+    if (!isset($_SESSION['id_usuario'])) {
+        header("Location: login.html");
+        exit();
+    }
+
+$id_usuario = $_SESSION['id_usuario'];
 include("conexion.php");
 
 $datos = json_decode(file_get_contents("php://input"), true);
@@ -81,14 +90,15 @@ if($totalPreguntasPorNivelComprension['critico'] > 0){
 
     $stmtInsertarResumenIntento = $conexion -> prepare("
     INSERT INTO intentolectura 
-        (ID_usuario, ID_texto, puntaje, respuestas_correctas, 
+        (ID_usuario, ID_texto, puntaje_total, respuestas_correctas, 
         total_preguntas, `tiempo(m)`, puntaje_literal, puntaje_inferencial, puntaje_critico)
-        VALUES(1, ?, ?, ?, ?, 0, ?, ?, ?)"
+        VALUES(?, ?, ?, ?, ?, 0, ?, ?, ?)"
     );
 
     $stmtInsertarResumenIntento->bind_param(
-        "idiiddd", 
-        $idTexto, 
+        "iidiiddd",
+        $id_usuario, 
+        $idTexto,
         $puntajeGlobal,
         $totalRespuestasCorrectas,
         $totalPreguntas,
