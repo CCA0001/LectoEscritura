@@ -110,7 +110,7 @@ if ($res) {
         <div class="form-body">
             <p class="subtitulo">Completa los campos para registrar un nuevo administrador en el sistema.</p>
  
-            <form method="POST" action="Acciones/registrar_admin.php" id="formAdmin">
+            <form method="POST" action="Acciones/agregar_admin.php" id="formAdmin">
  
                 <div class="form-group">
                     <label for="nombre">Nombre completo</label>
@@ -119,7 +119,7 @@ if ($res) {
                 </div>
   
                 <div class="form-group">
-                    <label for="nombre">Nombre_usuario</label>
+                    <label for="nombre_usuario">Nombre_usuario</label>
                     <input type="text" id="nombre_usuario" name="nombre_usuario"
                            placeholder="Ej: magarcia" required>
                 </div>
