@@ -70,7 +70,7 @@
                 <h2>Ejercicios de Lectura</h2>
                 <p>Practica lectura comprensiva con textos y preguntas</p>
                 <div class="emoji-container">📖</div>
-                <a href="../usuario/moduloLectura.php" class="btn">Comenzar</a>
+                <a href="../controllers/controlador_lectura.php." class="btn">Comenzar</a>
             </div>
 
             <div class="card">

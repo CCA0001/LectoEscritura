@@ -1,37 +1,25 @@
-<?php
-    session_start();
-    include("../config/conexion.php");
-
-    if (!isset($_SESSION['id_usuario'])) {
-        header("Location: login.html");
-        exit();
-    }
-
-    $id_usuario = $_SESSION['id_usuario'];
-?>
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ejercicio de Lectura — LectoEscritura</title>
-    <script src="traerTextosLectura.js" defer></script>
-    <link rel="stylesheet" href="../css/lectura.css?v=<?php echo time(); ?>">
+    <title>EVAL — LectoEscritura</title>
+    <script src="../public/JS/traerTextosLectura.js" defer></script>
+    <link rel="stylesheet" href="../public/css/lectura.css?v=<?php echo time(); ?>">
 </head>
 
 <body>
 
     <header class="navbar">
-        <span class="logo">LectoEscritura — Lectura</span>
+        <span class="logo">EVAL — Lectura</span>
         <div class="user-rank">
             🏅 <?php echo $_SESSION['rango_actual'] ?? 'Principiante'; ?>
         </div>
-        <a href="pantalla_principal_Usuario.php" class="btn-volver">← Volver</a>
+        <a href="../controllers/controlador_usuario.php" class="btn-volver"> Volver</a>
     </header>
 
     <nav class="breadcrumb">
-        📍 Inicio / Panel Usuario / Ejercicio de Lectura
+        <📍 Inicio / Panel Usuario / Ejercicio de Lectura
     </nav>
 
     <div class="lectura-workspace">

@@ -1,5 +1,5 @@
 
-fetch("obtenerTextoFacil.php?nocache=" + Date.now())
+fetch("../controllers/obtenerTextoFacil.php?nocache=" + Date.now())
     .then(res => res.json())
     .then(data => {
 
@@ -47,7 +47,7 @@ fetch("obtenerTextoFacil.php?nocache=" + Date.now())
    Trae todos los textos de dificultad 2 y 3, y genera
    dinámicamente una tarjeta por cada uno.
 ────────────────────────────────────────────────────────── */
-fetch("obtenerTextosAvanzados.php?nocache=" + Date.now())
+fetch("../controllers/obtenerTextosAvanzados.php?nocache=" + Date.now())
     .then(res => res.json())
     .then(data => {
 
@@ -153,7 +153,7 @@ function verificarRespuestas(data, idResultado) {
         respuestas[pregunta.ID] = seleccionada ? seleccionada.value : null;
     });
 
-    fetch("guardar.php", {
+    fetch("../controllers/guardar.php", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -179,7 +179,7 @@ function verificarRespuestasAvanzado(texto, index, idResultado) {
         respuestas[pregunta.ID] = seleccionada ? seleccionada.value : null;
     });
 
-    fetch("guardar.php", {
+    fetch("../controllers/guardar.php", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
