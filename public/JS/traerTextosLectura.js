@@ -1,4 +1,3 @@
-
 fetch("../controllers/obtenerTextoFacil.php?nocache=" + Date.now())
     .then(res => res.json())
     .then(data => {
@@ -16,9 +15,7 @@ fetch("../controllers/obtenerTextoFacil.php?nocache=" + Date.now())
         let htmlTotal = "";
 
         data.preguntas.forEach((pregunta, i) => {
-
             htmlTotal += `<h3>${i + 1}. ${pregunta.texto_pregunta}</h3>`;
-
             pregunta.opciones.forEach(opcion => {
                 htmlTotal += `
                 <label>
@@ -44,9 +41,10 @@ fetch("../controllers/obtenerTextoFacil.php?nocache=" + Date.now())
 
 /* ──────────────────────────────────────────────────────────
    SECCIÓN 2 — Textos intermedios y avanzados
-   Trae todos los textos de dificultad 2 y 3, y genera
-   dinámicamente una tarjeta por cada uno.
 ────────────────────────────────────────────────────────── */
+
+let textosAvanzadosCargados = [];
+
 fetch("../controllers/obtenerTextosAvanzados.php?nocache=" + Date.now())
     .then(res => res.json())
     .then(data => {
@@ -61,30 +59,25 @@ fetch("../controllers/obtenerTextosAvanzados.php?nocache=" + Date.now())
             return;
         }
 
+        textosAvanzadosCargados = data.textos;
+
         data.textos.forEach((texto, index) => {
 
-            // Badge según dificultad
             const esDificultad = texto.dificultad_nombre
                 ? texto.dificultad_nombre.toLowerCase()
                 : "intermedio";
             const esBadgeClass = esDificultad.includes("avanzado") ? "avanzado" : "intermedio";
             const badgeLabel   = esDificultad.includes("avanzado") ? "Avanzado" : "Intermedio";
 
-            // IDs únicos por tarjeta para no colisionar entre ejercicios
-            const idContenido  = `contenido-ej${index}`;
-            const idPreguntas  = `preguntas-ej${index}`;
-            const idBtn        = `btn-ej${index}`;
-            const idResultado  = `resultado-ej${index}`;
+            const idContenido = `contenido-ej${index}`;
+            const idPreguntas = `preguntas-ej${index}`;
 
-            // Construir HTML de preguntas y opciones
             let htmlPreguntas = "";
 
             texto.preguntas.forEach((pregunta, pi) => {
-
                 htmlPreguntas += `
                     <div class="ejercicio-pregunta">
                         <h4>${pi + 1}. ${pregunta.texto_pregunta}</h4>`;
-
                 pregunta.opciones.forEach(opcion => {
                     htmlPreguntas += `
                         <label>
@@ -94,11 +87,9 @@ fetch("../controllers/obtenerTextosAvanzados.php?nocache=" + Date.now())
                             ${opcion.texto_opcion}
                         </label>`;
                 });
-
                 htmlPreguntas += `</div>`;
             });
 
-            // Armar la tarjeta completa
             const tarjeta = document.createElement("article");
             tarjeta.className = "ejercicio-avanzado";
             tarjeta.innerHTML = `
@@ -106,24 +97,46 @@ fetch("../controllers/obtenerTextosAvanzados.php?nocache=" + Date.now())
                     <span class="badge-dificultad ${esBadgeClass}">${badgeLabel}</span>
                     <h3>${texto.titulo}</h3>
                 </div>
-
                 <div class="ejercicio-avanzado-body">
                     <p class="ejercicio-texto" id="${idContenido}">${texto.contenido}</p>
                     <p class="ejercicio-preguntas-label">📝 Preguntas</p>
                     <div id="${idPreguntas}">${htmlPreguntas}</div>
                 </div>
-
-                <div class="ejercicio-avanzado-footer">
-                    <button class="btn-verificar-avanzado" id="${idBtn}">¡Terminé!</button>
-                    <p class="resultado-avanzado" id="${idResultado}"></p>
-                </div>
             `;
 
             lista.appendChild(tarjeta);
+        });
 
-            // Evento del botón verificar de esta tarjeta
-            document.getElementById(idBtn).addEventListener("click", () => {
-                verificarRespuestasAvanzado(texto, index, idResultado);
+        // Un solo listener. Al hacer clic, recoge TODAS las respuestas de todos
+        // los textos y las manda en una sola llamada a guardar_avanzado.php.
+        document.getElementById("btnTermineAvanzado").addEventListener("click", () => {
+
+            // Armar un array con { idTexto, respuestas } por cada texto
+            const todosLosTextos = textosAvanzadosCargados.map((texto, index) => {
+                const respuestas = {};
+                texto.preguntas.forEach(pregunta => {
+                    const seleccionada = document.querySelector(
+                        `input[name="ej${index}-p${pregunta.ID}"]:checked`
+                    );
+                    respuestas[pregunta.ID] = seleccionada ? seleccionada.value : null;
+                });
+                return { idTexto: texto.ID, respuestas };
+            });
+
+            fetch("../controllers/guardar_avanzado.php", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ textos: todosLosTextos })
+            })
+            .then(res => res.json())
+            .then(resultado => {
+                document.getElementById("resultado-avanzado-global").innerText =
+                    `✅ ${resultado.mensaje} — Puntaje global: ${resultado.puntaje}%`;
+            })
+            .catch(err => {
+                console.error(err);
+                document.getElementById("resultado-avanzado-global").innerText =
+                    "❌ Error al guardar las respuestas.";
             });
         });
 
@@ -138,10 +151,9 @@ fetch("../controllers/obtenerTextosAvanzados.php?nocache=" + Date.now())
 
 
 /* ──────────────────────────────────────────────────────────
-   HELPERS — Verificación de respuestas
+   HELPERS — Verificación de respuestas (texto fácil, sección 1)
 ────────────────────────────────────────────────────────── */
 
-// Verificar respuestas del panel flotante (sección 1)
 function verificarRespuestas(data, idResultado) {
 
     const respuestas = {};
@@ -164,32 +176,5 @@ function verificarRespuestas(data, idResultado) {
     .then(res => res.json())
     .then(resultado => {
         document.getElementById(idResultado).innerText = resultado.mensaje;
-    });
-}
-
-// Verificar respuestas de una tarjeta avanzada (sección 2)
-function verificarRespuestasAvanzado(texto, index, idResultado) {
-
-    const respuestas = {};
-
-    texto.preguntas.forEach(pregunta => {
-        const seleccionada = document.querySelector(
-            `input[name="ej${index}-p${pregunta.ID}"]:checked`
-        );
-        respuestas[pregunta.ID] = seleccionada ? seleccionada.value : null;
-    });
-
-    fetch("../controllers/guardar.php", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-            idTexto: texto.ID,
-            respuestas: respuestas
-        })
-    })
-    .then(res => res.json())
-    .then(resultado => {
-        const el = document.getElementById(idResultado);
-        el.innerText = `✅ ${resultado.mensaje} — Puntaje: ${resultado.puntaje}%`;
     });
 }

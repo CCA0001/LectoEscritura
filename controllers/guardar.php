@@ -26,6 +26,9 @@ $correctasPorNivelComprension = ['literal' => 0, 'inferencial' => 0, 'critico' =
 $totalPreguntasPorNivelComprension = ['literal' => 0, 'inferencial' => 0, 'critico' => 0];
 $totalRespuestasCorrectas = 0;
 
+// Guardar temporalmente los resultados por opción para usarlos al insertar en RespuestaLectura
+$resultadosPorOpcion = [];
+
 foreach ($respuestas as $idPregunta => $idOpcion) {
 
     $stmtVerificarSiEsCorrecta = $conexion->prepare("
@@ -61,6 +64,9 @@ foreach ($respuestas as $idPregunta => $idOpcion) {
         $correctasPorNivelComprension[$nivel]++;
         $totalRespuestasCorrectas++;
     }
+
+    // Guardar el idOpcion para usarlo luego al insertar en RespuestaLectura
+    $resultadosPorOpcion[] = (int)$idOpcion;
 }
 
 $totalPreguntas = count($respuestas);
@@ -78,6 +84,7 @@ $puntajeCritico = ($totalPreguntasPorNivelComprension['critico'] > 0)
     ? round(($correctasPorNivelComprension['critico'] / $totalPreguntasPorNivelComprension['critico']) * 100) 
     : null;
 
+// 1) Insertar el resumen del intento en intentolectura
 $stmtInsertarResumenIntento = $conexion->prepare("
     INSERT INTO intentolectura 
         (ID_usuario, ID_texto, puntaje_total, respuestas_correctas, 
@@ -98,6 +105,20 @@ $stmtInsertarResumenIntento->bind_param(
 );
 
 $stmtInsertarResumenIntento->execute();
+
+// 2) Obtener el ID del intento recién insertado
+$idIntento = $conexion->insert_id;
+
+// 3) Insertar cada respuesta individual en RespuestaLectura
+$stmtInsertarRespuesta = $conexion->prepare("
+    INSERT INTO respuestalectura (ID_opcionPregunta, ID_intentoLectura)
+    VALUES (?, ?)
+");
+
+foreach ($resultadosPorOpcion as $idOpcion) {
+    $stmtInsertarRespuesta->bind_param("ii", $idOpcion, $idIntento);
+    $stmtInsertarRespuesta->execute();
+}
 
 echo json_encode([
     "mensaje" => "Respuestas guardadas correctamente",

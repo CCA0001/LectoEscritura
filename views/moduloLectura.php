@@ -55,6 +55,11 @@
         </div>
 
         <div id="lista-ejercicios-avanzados"></div>
+        
+        <div class="seccion-avanzado-footer">
+            <button id="btnTermineAvanzado">¡Terminé!</button>
+            <p id="resultado-avanzado-global"></p>
+        </div>
 
     </section>
 
