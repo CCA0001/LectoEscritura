@@ -1,0 +1,269 @@
+Gestionaradministradores · CSS
+Copiar
+
+/* ══════════════════════════════════════
+   BREADCRUMB
+══════════════════════════════════════ */
+.breadcrumb a {
+    color: #4a8d6e;
+    text-decoration: none;
+}
+ 
+/* ══════════════════════════════════════
+   WORKSPACE — dos columnas
+══════════════════════════════════════ */
+.workspace {
+    display: flex;
+    gap: 24px;
+    padding: 20px 40px 40px;
+    align-items: flex-start;
+}
+ 
+/* ══════════════════════════════════════
+   PANELES
+══════════════════════════════════════ */
+.panel-tabla {
+    flex: 0 0 45%;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+    overflow: hidden;
+}
+ 
+.panel-form {
+    flex: 1;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+    overflow: hidden;
+}
+ 
+.panel-header {
+    background-color: #4a8d6e;
+    padding: 16px 24px;
+}
+ 
+.panel-header h2 {
+    color: white;
+    font-size: 1rem;
+    font-weight: bold;
+    margin: 0;
+    text-transform: uppercase;
+}
+ 
+/* ══════════════════════════════════════
+   TABLA
+══════════════════════════════════════ */
+.tabla-scroll {
+    overflow-x: auto;
+    overflow-y: auto;
+    max-height: calc(100vh - 230px);
+}
+ 
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+}
+ 
+thead tr {
+    background-color: #f0f7f3;
+}
+ 
+thead th {
+    padding: 12px 16px;
+    text-align: left;
+    color: #2e5a44;
+    font-size: 0.75rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom: 2px solid #d4e9dc;
+    white-space: nowrap;
+}
+ 
+tbody tr {
+    border-bottom: 1px solid #f0f4f0;
+}
+ 
+tbody tr:last-child {
+    border-bottom: none;
+}
+ 
+tbody td {
+    padding: 12px 16px;
+    color: #3a3a3a;
+    vertical-align: middle;
+}
+ 
+.td-id {
+    color: #aaa;
+    font-size: 0.8rem;
+    font-weight: bold;
+}
+ 
+.td-nombre {
+    font-weight: bold;
+    color: #2e5a44;
+}
+ 
+.td-correo {
+    color: #555;
+    font-size: 0.83rem;
+}
+ 
+.td-fecha {
+    color: #999;
+    font-size: 0.78rem;
+    white-space: nowrap;
+}
+ 
+.btn-eliminar {
+    background: none;
+    border: 1.5px solid #e8a0a0;
+    color: #c0392b;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: bold;
+    cursor: pointer;
+    font-family: Arial, sans-serif;
+}
+ 
+.btn-eliminar:hover {
+    background-color: #c0392b;
+    color: white;
+}
+ 
+.tabla-vacia {
+    padding: 48px 24px;
+    text-align: center;
+    color: #aaa;
+    font-size: 0.9rem;
+}
+ 
+.panel-footer {
+    padding: 12px 20px;
+    background: #f7fbf8;
+    border-top: 1px solid #e8f0e8;
+    font-size: 0.8rem;
+    color: #6b8c7a;
+}
+ 
+/* ══════════════════════════════════════
+   FORMULARIO
+══════════════════════════════════════ */
+.form-body {
+    padding: 28px 28px 20px;
+}
+ 
+.form-body p.subtitulo {
+    color: #777;
+    font-size: 0.875rem;
+    margin-bottom: 24px;
+}
+ 
+.form-group {
+    margin-bottom: 18px;
+}
+ 
+.form-group label {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: bold;
+    color: #2e5a44;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 6px;
+}
+ 
+.form-group input {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1.5px solid #dce8dc;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    font-family: Arial, sans-serif;
+    color: #3a3a3a;
+    background: #fafcfa;
+    outline: none;
+    box-sizing: border-box;
+}
+ 
+.form-group input:focus {
+    border-color: #4a8d6e;
+    background: white;
+}
+ 
+.form-group input::placeholder {
+    color: #c0c0c0;
+}
+ 
+.form-group .hint {
+    margin-top: 4px;
+    font-size: 0.75rem;
+    color: #9ab8a8;
+}
+ 
+hr.divider {
+    border: none;
+    border-top: 1.5px solid #eef4ee;
+    margin: 20px 0;
+}
+ 
+.form-footer {
+    padding: 16px 28px;
+    border-top: 1px solid #e8f0e8;
+    background: #f7fbf8;
+    display: flex;
+    gap: 12px;
+}
+ 
+.btn-guardar {
+    flex: 1;
+    background-color: #4a8d6e;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 30px;
+    font-size: 0.95rem;
+    font-weight: bold;
+    cursor: pointer;
+    font-family: Arial, sans-serif;
+}
+ 
+.btn-guardar:hover {
+    background-color: #2e5a44;
+}
+ 
+.btn-limpiar {
+    background: none;
+    border: 1.5px solid #dce8dc;
+    color: #6b8c7a;
+    padding: 12px 20px;
+    border-radius: 30px;
+    font-size: 0.85rem;
+    font-weight: bold;
+    cursor: pointer;
+    font-family: Arial, sans-serif;
+}
+ 
+.btn-limpiar:hover {
+    border-color: #4a8d6e;
+    color: #2e5a44;
+}
+ 
+/* ══════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════ */
+@media (max-width: 900px) {
+    .workspace {
+        flex-direction: column;
+        padding: 16px;
+    }
+ 
+    .panel-tabla {
+        flex: none;
+        width: 100%;
+    }
+}

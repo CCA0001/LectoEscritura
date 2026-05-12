@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro - Eva</title>
+    <link rel="stylesheet" href="../public/css/registro.css">
+</head>
+<body>
+
+<div class="container">
+    <div class="form-card">
+        <h2>Crear cuenta</h2>
+        <p>Ingresa tus datos para registrarte</p>
+
+       <form action="../controllers/procesar_registro.php" method="POST">
+            
+            <div class="input-group">
+                <input type="text" name="nombre" placeholder="Nombre de Usuario" required>
+            </div>
+
+            <div class="input-group email-field">
+                <input type="text" name="usuario_correo" placeholder="Correo institucional" required>
+                <span class="domain">@ucundinamarca.edu.co</span>
+            </div>
+
+            <div class="input-group">
+                <input type="password" name="contrasena" placeholder="Contraseña" required>
+            </div>
+
+            <button type="submit" class="btn-ingresar">Registrarse</button>
+        </form>
+
+        <div class="footer-text">
+            ¿Ya tienes cuenta? <a href="login.html" class="link-verde">Iniciar sesión</a>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
