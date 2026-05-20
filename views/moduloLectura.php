@@ -4,8 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EVAL — LectoEscritura</title>
-    <script src="../public/JS/traerTextosLectura.js" defer></script>
     <link rel="stylesheet" href="../public/css/lectura.css?v=<?php echo time(); ?>">
+
+
 </head>
 
 <body>
@@ -64,4 +65,12 @@
     </section>
 
     </body>
+
+    <script src="../public/JS/lectura/cargarTextoFacil.js"></script>
+
+    <script src="../public/JS/lectura/cargarTextosDificiles.js"></script>
+
+    <script src="../public/JS/lectura/guardarLecturaFacil.js"></script>
+
+    <script src="../public/JS/lectura/guardarLecturaAvanzada.js"></script>
 </html>

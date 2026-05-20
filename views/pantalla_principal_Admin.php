@@ -20,8 +20,8 @@ $nombre_real = $_SESSION['nombre'] ?? 'Administrador';
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    <link rel="stylesheet" href="css/pantalla_principal_Usuario.css?v=<?php echo time(); ?>">
-    <link rel="stylesheet" href="css/dropdown_usuario.css?v=<?php echo time(); ?>">
+    <link rel="stylesheet" href="../public/css/pantalla_principal_Usuario.css?v=<?php echo time(); ?>">
+    <link rel="stylesheet" href="../css/dropdown_usuario.css?v=<?php echo time(); ?>">
 </head>
 
 <body>
@@ -54,26 +54,26 @@ $nombre_real = $_SESSION['nombre'] ?? 'Administrador';
                 <h2>Gestiona Administradores</h2>
                 <p>Crear, actualiza o desactiva administradores del sistema</p>
                 <div class="emoji-container">📖</div>
-                <a href="gestionarAdministradores.php" class="btn" style="text-decoration: none; display: inline-block;">Comenzar</a>
+                <a href="../controllers/AdminController.php?accion=listarAdministradores" class="btn" style="text-decoration: none; display: inline-block;">Comenzar</a>
             </div>
 
             <div class="card">
                 <h2>Gestiona Textos</h2>
                 <p>Registra nuevos textos, verifica fuentes o desactiva su aparición para los usuarios</p>
                 <div class="emoji-container">📝</div>
-                <a href="gestionarTextos.php" class="btn" style="text-decoration: none; display: inline-block;">Comenzar</a>
+                <a href="../controllers/TextoController.php?accion=listarTextos" class="btn" style="text-decoration: none; display: inline-block;">Comenzar</a>
             </div>
             <div class="card">
                 <h2>Gestiona logros</h2>
                 <p>Añade o desactiva logros personalizados</p>
                 <div class="emoji-container">📝</div>
-                <a href="gestionarLogros.php" class="btn" style="text-decoration: none; display: inline-block;">Comenzar</a>
+                <a href="../controllers/LogroController.php?accion=listarLogros" class="btn" style="text-decoration: none; display: inline-block;">Comenzar</a>
             </div>
             <div class="card">
                 <h2>Gestiona niveles de progreso</h2>
                 <p>Crea niveles de progreso nuevos para que puedan ser alcanzados por los usuarios </p>
                 <div class="emoji-container">📝</div>
-                <a href="gestionarNivelesProgreso.php" class="btn" style="text-decoration: none; display: inline-block;">Comenzar</a>
+                <a href="../controllers/NivelController.php?accion=listarNiveles" class="btn" style="text-decoration: none; display: inline-block;">Comenzar</a>
             </div>        
         </div>
 

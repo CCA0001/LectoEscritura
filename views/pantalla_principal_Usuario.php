@@ -70,14 +70,14 @@
                 <h2>Ejercicios de Lectura</h2>
                 <p>Practica lectura comprensiva con textos y preguntas</p>
                 <div class="emoji-container">📖</div>
-                <a href="../controllers/controlador_lectura.php." class="btn">Comenzar</a>
+                <a href="../controllers/ModuloLecturaController.php." class="btn">Comenzar</a>
             </div>
 
             <div class="card">
                 <h2>Ejercicios de Escritura</h2>
                 <p>Mejora tu escritura con actividades didácticas</p>
                 <div class="emoji-container">📝</div>
-                <a href="../controllers/controlador_escritura.php" class="btn">Comenzar</a>
+                <a href="../controllers/ModuloEscrituraController.php" class="btn">Comenzar</a>
             </div>
         </div>
 

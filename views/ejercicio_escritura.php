@@ -35,7 +35,7 @@
 
     <div class="upload-card">
         <h2>Subir nuevo archivo</h2>
-        <form action="../controllers/guardar_respuesta_escritura.php" method="POST" enctype="multipart/form-data">
+        <form id="formSubirArchivo" method="POST" enctype="multipart/form-data">
             <div class="form-group">
                 <label>Nombre del ejercicio:</label>
                 <input type="text" name="nombre_archivo" placeholder="Ej: Ensayo sobre la lectura" required>
@@ -44,21 +44,15 @@
             <div class="form-row">
                 <div class="form-group half">
                     <label>Nivel de dificultad:</label>
-                    <select name="ID_dificultad" required>
+                    <select name="ID_dificultad" id="selectDificultad" required>
                         <option value="">Selecciona...</option>
-                        <?php while($d = mysqli_fetch_assoc($dificultades)): ?>
-                        <option value="<?php echo $d['ID']; ?>"><?php echo $d['nombre']; ?></option>
-                        <?php endwhile; ?>
                     </select>
                 </div>
 
                 <div class="form-group half">
                     <label>Tipo de texto:</label>
-                    <select name="ID_tipoTexto" required>
+                    <select name="ID_tipoTexto" id="selectTipoTexto" required>
                         <option value="">Selecciona...</option>
-                        <?php while($t = mysqli_fetch_assoc($tipos)): ?>
-                        <option value="<?php echo $t['ID']; ?>"><?php echo $t['nombre']; ?></option>
-                        <?php endwhile; ?>
                     </select>
                 </div>
             </div>
@@ -76,68 +70,9 @@
     <div class="historial-card">
         <h2>Mis archivos subidos</h2>
 
-        <?php if (mysqli_num_rows($resultado) == 0): ?>
-        <p class="vacio">Aún no has subido ningún archivo. ¡Sube tu primer PDF!</p>
-        <?php else: ?>
-        <div class="tabla-responsive">
-            <table class="tabla-archivos">
-                <thead>
-                    <tr>
-                        <th>Nombre</th>
-                        <th>Tipo</th>
-                        <th>Dificultad</th>
-                        <th>Fecha</th>
-                        <th>Archivo</th>
-                        <th>Puntaje</th>
-                        <th>IA</th>
-                        <th>Retroalimentación</th>
-                        <th>Estado</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php while($row = mysqli_fetch_assoc($resultado)): ?>
-                    <tr>
-                        <td><?php echo htmlspecialchars($row['nombre_archivo']); ?></td>
-                        <td><?php echo $row['tipo_nombre'] ?? '—'; ?></td>
-                        <td><?php echo $row['dificultad_nombre'] ?? '—'; ?></td>
-                        <td><?php echo date("d/m/Y H:i", strtotime($row['fecha_subida'])); ?></td>
-                        <td><a href="<?php echo $row['url_archivo']; ?>" target="_blank" class="btn-ver">Ver PDF</a></td>
-                        <td>
-                            <?php if ($row['puntaje_promedio']): ?>
-                            <span class="puntaje"><?php echo $row['puntaje_promedio']; ?>/10</span>
-                            <?php else: ?>
-                            <span class="pendiente">Pendiente</span>
-                            <?php endif; ?>
-                        </td>
-                        <td>
-                            <?php if (!$row['puntaje_promedio']): ?>
-                            <a href="../public/ia/evaluar_escritura.php?id=<?php echo $row['ID']; ?>" class="btn-ia">🤖 Evaluar</a>
-                            <?php else: ?>
-                            <span class="completado"><?php echo $row['puntaje_promedio']; ?>/10</span>
-                            <?php endif; ?>
-                        </td>
-                        <td>
-                            <?php if (!empty($row['retroalimentacion'])): ?>
-                            <span class="retro-tooltip" onclick="mostrarRetro('<?php echo htmlspecialchars($row['retroalimentacion']); ?>')">
-                                 Ver feedback
-                            </span>
-                            <?php else: ?>
-                            <span class="sin-retro">—</span>
-                            <?php endif; ?>
-                        </td>
-                        <td>
-                            <?php if ($row['puntaje_promedio']): ?>
-                            <span class="completado">Evaluado</span>
-                            <?php else: ?>
-                            <span class="espera">En revisión</span>
-                            <?php endif; ?>
-                        </td>
-                    </tr>
-                    <?php endwhile; ?>
-                </tbody>
-            </table>
+        <div id="contenedorArchivos">
+            <p class="cargando"> Cargando archivos... </p>
         </div>
-        <?php endif; ?>
     </div>
 </main>
 
@@ -150,4 +85,11 @@
 </div>
 
 </body>
+
+    <script src="../public/JS/escritura/cargarArchivosUsuario.js"></script>
+    <script src="../public/JS/escritura/cargarDificultades.js"></script>
+    <script src="../public/JS/escritura/cargarTipoTexto.js"></script>
+    <script src="../public/JS/escritura/evaluarArchivo.js"></script>
+    <script src="../public/JS/escritura/mostrarRetroalimentacion.js"></script>
+    <script src="../public/JS/escritura/subirArchivo.js"></script>
 </html>

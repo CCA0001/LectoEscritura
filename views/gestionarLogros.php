@@ -1,28 +1,11 @@
-<?php
-session_start();
-include("../config/conexion.php");
-
-/*
-if (!isset($_SESSION['id_admin'])) {
-    header("Location: login_admin.php");
-    exit();
-}
-*/
-
-$logros = [];
-$res = $conexion->query("SELECT ID, nombre, descripcion, recompensa_xp FROM logro ORDER BY ID ASC");
-if ($res) {
-    while ($row = $res->fetch_assoc()) $logros[] = $row;
-}
-?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestionar Logros — EVAL</title>
-    <link rel="stylesheet" href="css/pantalla_principal_Usuario.css?v=<?php echo time(); ?>">
-    <link rel="stylesheet" href="css/gestionar.css?v=<?php echo time(); ?>">
+    <link rel="stylesheet" href="../public/css/pantalla_principal_Usuario.css?v=<?php echo time(); ?>">
+    <link rel="stylesheet" href="../public/css/gestionar.css?v=<?php echo time(); ?>">
     <style>
         .td-xp {
             font-weight: bold;
@@ -39,7 +22,7 @@ if ($res) {
 
 <header class="navbar">
     <span class="logo">EVAL</span>
-    <a href="Acciones/cerrar_sesion.php" class="btn-logout">Cerrar sesión</a>
+    <a href="../controllers/cerrar_sesion.php" class="btn-logout">Cerrar sesión</a>
 </header>
 
 <nav class="breadcrumb">
@@ -66,6 +49,7 @@ if ($res) {
                         <th>Nombre</th>
                         <th>Descripción</th>
                         <th>XP</th>
+                        <th>Estado</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
@@ -76,12 +60,20 @@ if ($res) {
                         <td class="td-nombre"><?php echo htmlspecialchars($l['nombre']); ?></td>
                         <td class="td-desc"><?php echo htmlspecialchars($l['descripcion']); ?></td>
                         <td class="td-xp">+<?php echo htmlspecialchars($l['recompensa_xp']); ?> XP</td>
+                        <td class="td-estado">+<?php echo htmlspecialchars($l['estado']); ?> </td>
                         <td>
-                            <form method="POST" action="Acciones/eliminar_logro.php"
-                                  onsubmit="return confirm('¿Eliminar el logro &quot;<?php echo htmlspecialchars($l['nombre']); ?>&quot;?')">
-                                <input type="hidden" name="id" value="<?php echo (int)$l['ID']; ?>">
-                                <button type="submit" class="btn-eliminar">Eliminar</button>
+                            <form method="POST" action="../controllers/LogroController.php?accion=invertirEstado"
+                                  onsubmit="return confirm('Invertir el estado del logro &quot;<?php echo htmlspecialchars($l['nombre']); ?>&quot;?')">
+                                <input type="hidden" name="ID" value="<?php echo (int)$l['ID']; ?>">
+                                <input type="hidden" name="estado" value="<?php echo htmlspecialchars($l['estado']); ?>">
+                                <button type="submit" class="btn-estado">Cambiar estado</button>
                             </form>
+                            <a
+                                href="../controllers/LogroController.php?accion=mostrarVistaActualizar&id=<?php echo $l['ID']; ?>"
+                                class="btn-estado"
+                            >
+                                Actualizar
+                            </a>
                         </td>
                     </tr>
                     <?php endforeach; ?>
@@ -106,7 +98,7 @@ if ($res) {
         <div class="form-body">
             <p class="subtitulo">Completa los campos para crear un nuevo logro que los usuarios podrán desbloquear.</p>
 
-            <form method="POST" action="Acciones/agregar_logro.php" id="formLogro">
+            <form method="POST" action="../controllers/LogroController.php?accion=agregarLogros" id="formLogro">
 
                 <div class="form-group">
                     <label for="nombre">Nombre del logro</label>
@@ -127,6 +119,12 @@ if ($res) {
                     <p class="hint">Puntos de experiencia que recibirá el usuario al desbloquearlo.</p>
                 </div>
 
+                <div class="form-group">
+                    <label for="estado">Estado</label>
+                    <input type="text" id="estado" name="estado"
+                           placeholder="Ej: Activo" min="0" required>
+                    <p class="hint">Puntos de experiencia que recibirá el usuario al desbloquearlo.</p>
+                </div>
             </form>
         </div>
 
