@@ -11,69 +11,196 @@ class LogroController{
     public function listarLogros(){
         $logros = $this->LogroModel->obtenerTodosLosLogros();
 
-        include("../views/gestionarLogros.php");
+        echo json_encode([
+
+            "success" => true,
+
+            "logros" => $logros
+        ]);    
     }
 
-    public function agregarLogros(){
-        $nombre = isset($_POST['nombre'])        ? trim($_POST['nombre'])       : null;
-        $descripcion = isset($_POST['descripcion'])   ? trim($_POST['descripcion'])  : null;
-        $recompensa  = isset($_POST['recompensa_xp']) ? (int)$_POST['recompensa_xp'] : null;
-        $idAdmin = $_SESSION['id_admin'];
-        $estado = isset($_POST['estado']) ? trim($_POST['estado']) : null;
+public function obtenerLogro(){
 
-        $resultado = $this->LogroModel->agregarLogro(
-            $nombre,
-            $descripcion,
-            $recompensa,
-            $idAdmin,
-            $estado
+    header(
+        'Content-Type: application/json'
+    );
+
+    $id =
+        $_GET['id'];
+
+    $logro =
+        $this->LogroModel
+            ->obtenerLogroPorId($id);
+
+    if($logro){
+
+        echo json_encode([
+
+            "success" => true,
+
+            "logro" => $logro
+        ]);
+
+    }else{
+
+        echo json_encode([
+
+            "success" => false,
+
+            "mensaje" =>
+                "Logro no encontrado"
+        ]);
+    }
+}
+
+public function agregarLogros(){
+
+    header(
+        'Content-Type: application/json'
+    );
+
+    $datos =
+        json_decode(
+            file_get_contents("php://input"),
+            true
         );
 
-        if($resultado){
-            header("Location: LogroController.php");
-            exit();
+    $nombre =
+        trim(
+            $datos['nombre']
+        );
 
-        } else {
-            echo "Error -  Insertar";
-        }
+    $descripcion =
+        trim(
+            $datos['descripcion']
+        );
+
+    $recompensa =
+        (int)$datos['recompensa_xp'];
+
+    $estado =
+        trim(
+            $datos['estado']
+        );
+
+    $idAdmin =
+        $_SESSION['id_admin'];
+
+    $resultado =
+        $this->LogroModel
+            ->agregarLogro(
+
+                $nombre,
+
+                $descripcion,
+
+                $recompensa,
+
+                $idAdmin,
+
+                $estado
+            );
+
+    if($resultado){
+
+        echo json_encode([
+
+            "success" => true,
+
+            "mensaje" =>
+                "Logro agregado correctamente"
+        ]);
+
+    }else{
+
+        echo json_encode([
+
+            "success" => false,
+
+            "mensaje" =>
+                "Error al insertar logro"
+        ]);
     }
+}
 
     public function actualizarLogros(){
-        $id = isset($_POST['ID'])        ? trim($_POST['ID'])       : null;
-        $nombre = isset($_POST['nombre'])        ? trim($_POST['nombre'])       : null;
-        $descripcion = isset($_POST['descripcion'])   ? trim($_POST['descripcion'])  : null;
-        $recompensa  = isset($_POST['recompensa_xp']) ? (int)$_POST['recompensa_xp'] : null;
-        $estado = isset($_POST['estado']) ? trim($_POST['estado']) : null;
-        $idAdmin = $_SESSION['id_admin'];
 
-        $resultado = $this->LogroModel->actualizarLogro(
-            $id,
-            $nombre,
-            $descripcion,
-            $recompensa,
-            $idAdmin,
-            $estado
+    header(
+        'Content-Type: application/json'
+    );
 
+    $datos =
+        json_decode(
+            file_get_contents("php://input"),
+            true
         );
 
-        if($resultado){
-            header("Location: LogroController.php");
-            exit();
+    $resultado =
+        $this->LogroModel
+            ->actualizarLogro(
 
-        } else {
-            echo "Error - Actualizar";
-        }
+                $datos['ID'],
+
+                $datos['nombre'],
+
+                $datos['descripcion'],
+
+                $datos['recompensa_xp'],
+
+                $_SESSION['id_admin'],
+
+                $datos['estado']
+            );
+
+    if($resultado){
+
+        echo json_encode([
+
+            "success" => true
+
+        ]);
+
+    }else{
+
+        echo json_encode([
+
+            "success" => false,
+
+            "mensaje" =>
+                "No se pudo actualizar"
+        ]);
     }
+}
 
     public function invertirEstado(){
-        $id = $_POST['ID'];
-        $estadoActual = $_POST['estado'];
 
-        $nuevoEstado =
-            $estadoActual === "Activo"
-            ? "Inactivo"
-            : "Activo";
 
+    header(
+        'Content-Type: application/json'
+    );
+
+    $datos =
+        json_decode(
+            file_get_contents("php://input"),
+            true
+        );
+
+    $id =
+        trim(
+            $datos['ID']
+        );   
+    
+    $estado =
+        trim(
+            $datos['estadoActual']
+        );
+
+        if($estado == "Activo"){
+            $nuevoEstado = "Inactivo";
+        } else {
+            $nuevoEstado = "Activo";
+        }
+        
         $resultado = $this->LogroModel
             ->invertirEstadoLogro(
                 $id,
@@ -82,12 +209,23 @@ class LogroController{
 
         if($resultado){
 
-            header("Location: LogroController.php");
-            exit();
+            echo json_encode([
 
-        } else {
+                "success" => true,
 
-            echo "Error - Invertir estado";
+                "mensaje" =>
+                    "Logro con estado invertido correctamente"
+            ]);
+
+        }else{
+
+            echo json_encode([
+
+                "success" => false,
+
+                "mensaje" =>
+                    "Error al invertir estado del logro"
+            ]);
         }    
     }
     
@@ -98,6 +236,11 @@ class LogroController{
 
         include("../views/actualizarLogro.php");
     }
+
+    public function mostrarVistaGestionarLogros(){
+
+        include("../views/gestionarLogros.php");     
+    }
 }
 
 session_start();
@@ -107,7 +250,7 @@ require_once("../models/logroModel.php");
 
 $controller = new LogroController($conexion);
 
-$accion = $_GET['accion'] ?? 'listarLogros';
+$accion = $_GET['accion'] ?? 'mostrarVistaGestionarLogros';
 if(method_exists($controller, $accion)){
     $controller->$accion();
 } else {

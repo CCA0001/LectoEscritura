@@ -1,0 +1,241 @@
+/* ══════════════════════════════════════
+   ACTUALIZAR NIVEL — CSS
+   Consistente con gestionar.css / pantalla_principal_Usuario.css
+══════════════════════════════════════ */
+
+/* Contenedor principal centrado */
+.actualizar-wrapper {
+    display: flex;
+    justify-content: center;
+    padding: 32px 40px 60px;
+}
+
+/* Tarjeta central */
+.actualizar-card {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.07);
+    overflow: hidden;
+    width: 100%;
+    max-width: 680px;
+}
+
+/* ══════════════════════════════════════
+   ENCABEZADO DE LA TARJETA
+══════════════════════════════════════ */
+.actualizar-header {
+    background-color: #4a8d6e;
+    padding: 20px 28px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.actualizar-header-icon {
+    font-size: 2rem;
+    line-height: 1;
+}
+
+.actualizar-titulo {
+    color: white;
+    font-size: 1.1rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin: 0 0 4px;
+}
+
+.actualizar-subtitulo {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.82rem;
+    margin: 0;
+}
+
+.actualizar-subtitulo strong {
+    color: white;
+}
+
+/* ══════════════════════════════════════
+   FORMULARIO
+══════════════════════════════════════ */
+.actualizar-form {
+    padding: 28px 28px 8px;
+}
+
+/* Fila de dos columnas */
+.actualizar-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+/* Grupos de campo — hereda de gestionar.css pero también funciona standalone */
+.actualizar-form .form-group {
+    margin-bottom: 20px;
+}
+
+.actualizar-form .form-group label {
+    display: block;
+    font-size: 0.78rem;
+    font-weight: bold;
+    color: #2e5a44;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 6px;
+}
+
+.actualizar-form .form-group input,
+.actualizar-form .form-group select,
+.actualizar-form .form-group textarea {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1.5px solid #dce8dc;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    font-family: Arial, sans-serif;
+    color: #3a3a3a;
+    background: #fafcfa;
+    outline: none;
+    box-sizing: border-box;
+    transition: border-color 0.2s, background 0.2s;
+}
+
+.actualizar-form .form-group input:focus,
+.actualizar-form .form-group select:focus,
+.actualizar-form .form-group textarea:focus {
+    border-color: #4a8d6e;
+    background: white;
+}
+
+.actualizar-form .form-group textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+.actualizar-form .form-group select {
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%234a8d6e' d='M6 8L0 0h12z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    padding-right: 36px;
+}
+
+.actualizar-form .hint {
+    display: block;
+    margin-top: 4px;
+    font-size: 0.74rem;
+    color: #9ab8a8;
+}
+
+/* ══════════════════════════════════════
+   ALERTAS
+══════════════════════════════════════ */
+.alerta {
+    padding: 12px 16px;
+    border-radius: 10px;
+    font-size: 0.85rem;
+    margin-bottom: 16px;
+}
+
+.alerta-error {
+    background-color: #fdf0f0;
+    border: 1.5px solid #f5c6c6;
+    color: #c0392b;
+}
+
+.alerta-exito {
+    background-color: #f0faf5;
+    border: 1.5px solid #b4ddc8;
+    color: #2e7d52;
+}
+
+/* ══════════════════════════════════════
+   PIE DEL FORMULARIO — BOTONES
+══════════════════════════════════════ */
+.actualizar-footer {
+    padding: 16px 28px;
+    border-top: 1px solid #e8f0e8;
+    background: #f7fbf8;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    margin: 0 -28px -8px;
+}
+
+.btn-cancelar {
+    color: #6b8c7a;
+    text-decoration: none;
+    font-size: 0.82rem;
+    font-weight: bold;
+    padding: 10px 16px;
+    border-radius: 30px;
+    border: 1.5px solid #dce8dc;
+    font-family: Arial, sans-serif;
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+
+.btn-cancelar:hover {
+    border-color: #4a8d6e;
+    color: #2e5a44;
+    background: white;
+}
+
+.btn-limpiar {
+    background: none;
+    border: 1.5px solid #dce8dc;
+    color: #6b8c7a;
+    padding: 10px 20px;
+    border-radius: 30px;
+    font-size: 0.85rem;
+    font-weight: bold;
+    cursor: pointer;
+    font-family: Arial, sans-serif;
+    transition: all 0.2s;
+}
+
+.btn-limpiar:hover {
+    border-color: #4a8d6e;
+    color: #2e5a44;
+}
+
+.btn-guardar {
+    flex: 1;
+    background-color: #4a8d6e;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 30px;
+    font-size: 0.95rem;
+    font-weight: bold;
+    cursor: pointer;
+    font-family: Arial, sans-serif;
+    transition: background-color 0.2s;
+}
+
+.btn-guardar:hover {
+    background-color: #2e5a44;
+}
+
+/* ══════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════ */
+@media (max-width: 700px) {
+    .actualizar-wrapper {
+        padding: 16px;
+    }
+
+    .actualizar-row {
+        grid-template-columns: 1fr;
+    }
+
+    .actualizar-footer {
+        flex-wrap: wrap;
+    }
+
+    .btn-guardar {
+        flex: none;
+        width: 100%;
+    }
+}

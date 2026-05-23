@@ -19,63 +19,86 @@ class AdminController {
         $admins = $this->AdminModel
             ->obtenerTodosLosAdministradores();
 
-        include("../views/gestionarAdministradores.php");
+        echo json_encode([
+
+            "success" => true,
+
+            "admins" => $admins
+        ]);        
     }
 
     public function agregarAdministrador(){
 
-        $nombre = isset($_POST['nombre'])
-            ? trim($_POST['nombre'])
-            : null;
+    header(
+        'Content-Type: application/json'
+    );
 
-        $nombre_usuario = isset($_POST['nombre_usuario'])
-            ? trim($_POST['nombre_usuario'])
-            : null;
+    $datos =
+        json_decode(
+            file_get_contents("php://input"),
+            true
+        );
 
-        $correo = isset($_POST['correo_electronico'])
-            ? trim($_POST['correo_electronico'])
-            : null;
+        $nombres = $datos['nombres'];
 
-        $password = isset($_POST['contrasenia'])
-            ? $_POST['contrasenia']
-            : null;
+        $apellidos = $datos['apellidos'];
 
-        $password_confirmar = isset($_POST['contrasenia_confirmar'])
-            ? $_POST['contrasenia_confirmar']
-            : null;
+        $nombre_usuario = trim($datos['nombre_usuario']);
 
-        $estado = isset($_POST['estado'])
-            ? $_POST['estado']
-            : null;
+        $correo = trim($datos['correo']);
+
+        $password = $datos['contrasenia'];
+
+        $confirmar_password = $datos['confirmar_contrasenia'];
+
+        $estado = $datos['estado'];
+  
         if(
-            !$nombre ||
+            !$nombres ||
+            !$apellidos ||
             !$nombre_usuario ||
             !$correo ||
             !$password ||
-            !$password_confirmar ||
+            !$confirmar_password ||
             !$estado
         ){
 
-            echo "Todos los campos son obligatorios";
+            echo json_encode([
+
+                "success" => false,
+
+                "mensaje" =>
+                    "Todos los campos son obligatorios"
+            ]);
+
             return;
         }
 
         if(strlen($password) < 8){
 
-            echo "La contraseña debe tener mínimo 8 caracteres";
+            echo json_encode([
+
+                "success" => false,
+
+                "mensaje" =>
+                    "Contraseña debe ser superior a 8 caracteres"
+            ]);
+
             return;
         }
 
-        if($password !== $password_confirmar){
+        if($password !== $confirmar_password){
 
-            echo "Las contraseñas no coinciden";
+            echo json_encode([
+
+                "success" => false,
+
+                "mensaje" =>
+                    "Las contraseñas no coinciden"
+            ]);
+
             return;
         }
-
-        $partes = explode(" ", $nombre);
-
-        $nombres = $partes[0] ?? '';
-        $apellidos = $partes[1] ?? '';
 
         $contrasenia_hash = password_hash(
             $password,
@@ -94,22 +117,41 @@ class AdminController {
 
         if($resultado){
 
-            header(
-                "Location: AdminController.php?accion=listarAdministradores"
-            );
+            echo json_encode([
 
-            exit();
+                "success" => true,
 
-        } else {
+                "mensaje" =>
+                    "admin agregado correctamente"
+            ]);
 
-            echo "Ya existe un administrador con ese correo";
+        }else{
+
+            echo json_encode([
+
+                "success" => false,
+
+                "mensaje" =>
+                    "Error al insertar admin"
+            ]);
         }
-    }
+        }
 
     public function invertirEstadoAdmin(){
 
-        $id = $_POST['ID'];
-        $estadoActual = $_POST['estado'];
+
+        header(
+        'Content-Type: application/json'
+        );
+
+        $datos =
+        json_decode(
+            file_get_contents("php://input"),
+            true
+        );
+
+        $id = $datos['ID'];
+        $estadoActual = $datos['estadoActual'];
 
         $nuevoEstado =
             $estadoActual === "Activo"
@@ -124,16 +166,37 @@ class AdminController {
 
         if($resultado){
 
-            header(
-                "Location: AdminController.php?accion=listarAdministradores"
-            );
+            echo json_encode([
 
-            exit();
+                "success" => true,
 
-        } else {
+                "mensaje" =>
+                    "Admin con estado invertido correctamente"
+            ]);
 
-            echo "Error al desactivar administrador";
+        }else{
+
+            echo json_encode([
+
+                "success" => false,
+
+                "mensaje" =>
+                    "Error al invertir estado del admin"
+            ]);
         }
+    }
+
+    public function actualizarAdmin(){
+        
+        header(
+        'Content-Type: application/json'
+        );
+
+        $datos =
+        json_decode(
+            file_get_contents("php://input"),
+            true
+        );
     }
 
     public function mostrarVistaActualizar(){
@@ -143,11 +206,17 @@ class AdminController {
 
         include("../views/actualizarAdmin.php");
     }
+
+    public function mostrarVistaGestionarAministradores(){
+
+        include("../views/gestionarAdministradores.php");
+    }
 }
+
 
 $controller = new AdminController($conexion);
 
-$accion = $_GET['accion'] ?? 'listarAdministradores';
+$accion = $_GET['accion'] ?? 'mostrarVistaGestionarAministradores';
 
 if(method_exists($controller, $accion)){
 

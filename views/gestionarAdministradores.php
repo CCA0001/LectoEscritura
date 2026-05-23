@@ -8,11 +8,15 @@
 
     <title>Gestionar Administradores — EVAL</title>
 
-    <link rel="stylesheet"
-          href="../public/css/pantalla_principal_Usuario.css?v=<?php echo time(); ?>">
+    <link
+        rel="stylesheet"
+        href="../public/css/pantalla_principal_Usuario.css"
+    >
 
-    <link rel="stylesheet"
-          href="../public/css/gestionar.css?v=<?php echo time(); ?>">
+    <link
+        rel="stylesheet"
+        href="../public/css/gestionar.css"
+    >
 </head>
 <body>
 
@@ -31,7 +35,7 @@
 
     📍 Inicio /
 
-    <a href="pantalla_principal_Admin.php">
+    <a href="../views/pantalla_principal_Admin.php">
         Panel Admin
     </a>
 
@@ -43,150 +47,68 @@
 
     <!-- TABLA -->
 
+    
     <section class="panel-tabla">
 
         <div class="panel-header">
-            <h2>👥 Administradores registrados</h2>
-        </div>
 
-        <div class="tabla-scroll">
-
-            <?php if(empty($admins)): ?>
-
-                <div class="tabla-vacia">
-                    <p>No hay administradores registrados aún.</p>
-                </div>
-
-            <?php else: ?>
-
-            <table>
-
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Usuario</th>
-                        <th>Correo</th>
-                        <th>Estado</th>
-                        <th>Fecha</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-
-                    <?php foreach($admins as $admin): ?>
-
-                    <tr>
-
-                        <td>
-                            <?php echo htmlspecialchars($admin['ID']); ?>
-                        </td>
-
-                        <td>
-                            <?php echo htmlspecialchars($admin['nombre_usuario']); ?>
-                        </td>
-
-                        <td>
-                            <?php echo htmlspecialchars($admin['correo_electronico']); ?>
-                        </td>
-
-                        <td>
-                            <?php echo htmlspecialchars($admin['estado']); ?>
-                        </td>
-
-                        <td>
-                            <?php
-                                echo date(
-                                    'd/m/Y',
-                                    strtotime($admin['fecha_registro'])
-                                );
-                            ?>
-                        </td>
-
-                        <td>
-
-                            <form
-                                method="POST"
-                                action="../controllers/AdminController.php?accion=invertirEstadoAdmin"
-                                onsubmit="return confirm('Cambiar estado del administrador?')"
-                            >
-
-                                <input
-                                    type="hidden"
-                                    name="ID"
-                                    value="<?php echo (int)$admin['ID']; ?>"
-                                >
-                                <input
-                                    type="hidden"
-                                    name="estado"
-                                    value="<?php echo $admin['estado']; ?>"
-                                >
-                                <button
-                                    type="submit"
-                                    class="btn-eliminar"
-                                >
-                                    Invertir estado
-                                </button>
-
-                            </form>
-
-                            <a
-                                href="../controllers/AdminController.php?accion=mostrarVistaActualizar&id=<?php echo $admin['ID']; ?>"
-                                class="btn-estado"
-                            >
-                                Actualizar
-                            </a>
-                        </td>
-
-                    </tr>
-
-                    <?php endforeach; ?>
-
-                </tbody>
-
-            </table>
-
-            <?php endif; ?>
+            <h2>
+                👥 Administradores registrados
+            </h2>
 
         </div>
 
-        <div class="panel-footer">
+        <div
+            class="tabla-scroll"
+            id="contenedorTablaAdmins"
+        >
 
-            Total:
+            <p>
+                Cargando administradores...
+            </p>
 
-            <strong>
-                <?php echo count($admins); ?>
-            </strong>
+        </div>
 
-            administrador(es)
-
+        <div
+            class="panel-footer"
+            id="totalAdmins"
+        >
+            Total: 0
         </div>
 
     </section>
-
-    <!-- FORMULARIO -->
+    <!-- FORM -->
 
     <section class="panel-form">
 
         <div class="panel-header">
-            <h2>➕ Agregar administrador</h2>
+
+            <h2>
+                ➕ Agregar administrador
+            </h2>
+
         </div>
 
         <div class="form-body">
 
-            <form
-                method="POST"
-                action="../controllers/AdminController.php?accion=agregarAdministrador"
-                id="formAdmin"
-            >
+            <p class="subtitulo">
+
+                Completa los campos para crear un nuevo administrador.
+
+            </p>
+
+            <form id="formAdmin">
 
                 <div class="form-group">
 
-                    <label>Nombre completo</label>
+                    <label for="nombres">
+                        Nombres del administrador
+                    </label>
 
                     <input
                         type="text"
-                        name="nombre"
+                        id="nombres"
+                        name="nombres"
                         required
                     >
 
@@ -194,10 +116,28 @@
 
                 <div class="form-group">
 
-                    <label>Nombre usuario</label>
+                    <label for="apellidos">
+                        Apellidos del administrador
+                    </label>
 
                     <input
                         type="text"
+                        id="apellidos"
+                        name="apellidos"
+                        required
+                    >
+
+                </div>
+
+                <div class="form-group">
+
+                    <label for="nombre_usuario">
+                        Nombre de Usuario
+                    </label>
+
+                    <input
+                        type="text"
+                        id="nombre_usuario"
                         name="nombre_usuario"
                         required
                     >
@@ -206,22 +146,13 @@
 
                 <div class="form-group">
 
-                    <label>Correo electrónico</label>
-
-                    <input
-                        type="email"
-                        name="correo_electronico"
-                        required
-                    >
-
-                </div>
-
-                <div class="form-group">
-
-                    <label>Contraseña</label>
+                    <label for="contrasenia">
+                        Contraseña
+                    </label>
 
                     <input
                         type="password"
+                        id="contrasenia"
                         name="contrasenia"
                         required
                     >
@@ -230,11 +161,14 @@
 
                 <div class="form-group">
 
-                    <label>Confirmar contraseña</label>
+                    <label for="confirmar_contrasenia">
+                        Confirmar Contraseña
+                    </label>
 
                     <input
                         type="password"
-                        name="contrasenia_confirmar"
+                        id="confirmar_contrasenia"
+                        name="confirmar_contrasenia"
                         required
                     >
 
@@ -242,15 +176,42 @@
 
                 <div class="form-group">
 
-                    <label>Estado</label>
+                    <label for="correo">
+                        Correo Electrónico
+                    </label>
 
                     <input
-                        type="text"
-                        name="estado"
+                        type="email"
+                        id="correo"
+                        name="correo"
                         required
                     >
 
                 </div>
+
+                <div class="form-group">
+
+                    <label for="estado">
+                        Estado
+                    </label>
+
+                    <select
+                        id="estado"
+                        name="estado"
+                    >
+
+                        <option value="Activo">
+                            Activo
+                        </option>
+
+                        <option value="Inactivo">
+                            Inactivo
+                        </option>
+
+                    </select>
+
+                </div>
+
             </form>
 
         </div>
@@ -270,7 +231,7 @@
                 form="formAdmin"
                 class="btn-guardar"
             >
-                Registrar administrador
+                Agregar admin
             </button>
 
         </div>
@@ -278,6 +239,10 @@
     </section>
 
 </div>
+
+<script src="../public/JS/administradores/cargarAdmins.js"></script>
+
+<script src="../public/JS/administradores/agregarAdmin.js"></script>
 
 </body>
 </html>

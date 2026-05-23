@@ -33,6 +33,7 @@ class NivelProgresoModel {
         return $niveles;
     }
 
+
     public function comprobarExistenciaNivel($nombre){
 
         $sql = "
@@ -68,7 +69,7 @@ public function agregarNivel(
         $estado
     ){
 
-        $existe = $this->comprobarExistenciaNivel($nivel);
+        $existe = $this->comprobarExistenciaNivel($nombre);
 
         if($existe){
             return false;
@@ -85,6 +86,13 @@ public function agregarNivel(
             )
             VALUES (?, ?, ?, ?, ?)
         ";        
+
+        $stmt =
+            mysqli_prepare(
+                $this->conexion,
+                $sql
+        );
+              
         mysqli_stmt_bind_param(
             $stmt,
             "siiss",
@@ -92,7 +100,7 @@ public function agregarNivel(
             $xp_requerida,
             $id_Admin,
             $descripcion,
-            $estado,
+            $estado
         );
 
         return mysqli_stmt_execute($stmt);

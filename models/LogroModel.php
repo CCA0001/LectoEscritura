@@ -30,9 +30,9 @@
             $stmt_check = mysqli_prepare($this->conexion, $sql_check);
             $resultado = mysqli_stmt_bind_param($stmt_check, "s", $nombre);
 
-            mysqli_stmt_execute($stmt);
+            mysqli_stmt_execute($stmt_check);
 
-            $resultado = mysqli_stmt_get_result($stmt);
+            $resultado = mysqli_stmt_get_result($stmt_check);
 
             return mysqli_num_rows($resultado) > 0;
 
@@ -79,24 +79,40 @@
 
             return $logros;
 
-        }
+                }
 
         public function obtenerLogroPorId($id){
-            $sql_check = "SELECT ID FROM logro WHERE ID = ?";
-            $stmt_check = mysqli_prepare($this->conexion, $sql_check);
-            $resultado = mysqli_stmt_bind_param($stmt_check, "i", $id);
 
-            mysqli_stmt_execute($stmt);
+            $sql = "
+                SELECT *
+                FROM logro
+                WHERE ID = ?
+            ";
 
-            $resultado = mysqli_stmt_get_result($stmt);
+            $stmt =
+                mysqli_prepare(
+                    $this->conexion,
+                    $sql
+                );
 
-            $logro = [];
+            mysqli_stmt_bind_param(
+                $stmt,
+                "i",
+                $id
+            );
 
-            while($fila = mysqli_fetch_assoc($resultado)){
-                $logro[] = $fila;
-            }
+            mysqli_stmt_execute(
+                $stmt
+            );
 
-            return $logro;
+            $resultado =
+                mysqli_stmt_get_result(
+                    $stmt
+                );
+
+            return mysqli_fetch_assoc(
+                $resultado
+            );
         }
     }
 ?>

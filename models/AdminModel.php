@@ -122,14 +122,14 @@ class AdminModel {
         return mysqli_stmt_execute($stmt);
     }
 
-    public function obtenerLogroPorId($id){
+    public function obtenerAdminPorId($id){
         $sql_check = "SELECT ID FROM `admin` WHERE ID = ?";
         $stmt_check = mysqli_prepare($this->conexion, $sql_check);
         $resultado = mysqli_stmt_bind_param($stmt_check, "i", $id);
 
-        mysqli_stmt_execute($stmt);
+        mysqli_stmt_execute($stmt_check);
 
-        $resultado = mysqli_stmt_get_result($stmt);
+        $resultado = mysqli_stmt_get_result($stmt_check);
 
         $admin = [];
 
@@ -141,7 +141,7 @@ class AdminModel {
     }
 
 
-    public function actualizarLogro($ID, $nombres, $apellidos, $nombre_usuario, $contrasenia_hash, $estado){
+    public function actualizarAdmin($ID, $nombres, $apellidos, $nombre_usuario, $contrasenia_hash, $estado){
         $sql = "UPDATE `admin`
             SET nombres = ?, 
             apellidos = ?,  

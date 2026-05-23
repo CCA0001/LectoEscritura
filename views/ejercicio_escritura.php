@@ -25,14 +25,6 @@
     <h1>Ejercicio de Escritura</h1>
     <p>Sube tu archivo PDF para ser evaluado. Recibirás retroalimentación y puntos de experiencia.</p>
 
-    <?php if ($mensaje): ?>
-    <div class="alert success"><?php echo htmlspecialchars($mensaje); ?></div>
-    <?php endif; ?>
-
-    <?php if ($error): ?>
-    <div class="alert error"><?php echo htmlspecialchars($error); ?></div>
-    <?php endif; ?>
-
     <div class="upload-card">
         <h2>Subir nuevo archivo</h2>
         <form id="formSubirArchivo" method="POST" enctype="multipart/form-data">

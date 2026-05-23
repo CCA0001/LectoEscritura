@@ -21,7 +21,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $_SESSION['id_admin'] = $user['ID']; 
             $_SESSION['nombre'] = $user['nombre_usuario'];
             
-            header("Location: ../pantalla_principal_Admin.php"); 
+            header("Location: ../views/pantalla_principal_Admin.php"); 
             exit();
 
         } else {
