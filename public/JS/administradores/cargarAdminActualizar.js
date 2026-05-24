@@ -42,14 +42,14 @@ document.addEventListener(
                 return;
             }
 
-            const logro =
-                data.logro;
+            const admin =
+                data.admin;
 
             datosOriginales =
-                logro;
+                admin;
 
             llenarFormulario(
-                logro
+                admin
             );
 
         }catch(error){
@@ -57,38 +57,48 @@ document.addEventListener(
             console.error(error);
 
             mostrarError(
-                "Error cargando logro"
+                "Error cargando administrador"
             );
         }
     }
 );
 
-function llenarFormulario(logro){
+function llenarFormulario(admin){
 
     document.getElementById(
         "ID"
     ).value =
-        logro.ID;
+        admin.ID;
 
     document.getElementById(
-        "nombre"
+        "nombres"
     ).value =
-        logro.nombre;
+        admin.nombres;
 
     document.getElementById(
-        "recompensa_xp"
+        "apellidos"
     ).value =
-        logro.recompensa_xp;
+        admin.apellidos;
 
     document.getElementById(
-        "descripcion"
+        "nombre_usuario"
     ).value =
-        logro.descripcion;
+        admin.nombre_usuario;
+
+    document.getElementById(
+        "correo"
+    ).value =
+        admin.correo_electronico;
+
+    document.getElementById(
+        "contrasenia"
+    ).value = 
+        null
 
     document.getElementById(
         "estado"
-    ).value =
-        logro.estado;
+    ).value = 
+        admin.estado
 }
 
 function restaurarValoresOriginales(){

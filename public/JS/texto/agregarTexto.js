@@ -1,7 +1,5 @@
 document.getElementById(
-
-    "formActualizarAdmin"
-
+    "formTexto"
 ).addEventListener(
 
     "submit",
@@ -10,62 +8,52 @@ document.getElementById(
 
         e.preventDefault();
 
-        try{
+        try {
 
             const body = {
 
-                ID:
+                dificultad:
                     document.getElementById(
-                        "ID"
+                        "dificultad"
                     ).value,
 
-                nombres:
+                tipo_texto:
                     document.getElementById(
-                        "nombres"
+                        "tipo_texto"
                     ).value,
 
-                apellidos:
+                titulo:
                     document.getElementById(
-                        "apellidos"
+                        "titulo"
                     ).value,
 
-                nombre_usuario:
+                contenido:
                     document.getElementById(
-                        "nombre_usuario"
+                        "contenido"
                     ).value,
 
-                correo:
+                fuente:
                     document.getElementById(
-                        "correo"
-                    ).value,
-
-                contrasenia:
-                    document.getElementById(
-                        "contrasenia"
-                    ).value,
-
-                confirmar_contrasenia:
-                    document.getElementById(
-                        "confirmar_contrasenia"
+                        "fuente"
                     ).value,
 
                 estado:
                     document.getElementById(
                         "estado"
                     ).value
+
             };
 
             const response =
                 await fetch(
 
-                    "../controllers/AdminController.php?accion=actualizarAdmin",
+                    "../controllers/TextoController.php?accion=agregarTextoManualmente",
 
                     {
 
-                        method:"POST",
+                        method: "POST",
 
-                        headers:{
-
+                        headers: {
                             "Content-Type":
                                 "application/json"
                         },
@@ -74,35 +62,53 @@ document.getElementById(
                             JSON.stringify(
                                 body
                             )
+
                     }
+
                 );
 
             const data =
                 await response.json();
 
-            if(data.success){
+            if (data.success) {
 
                 alert(
-                    "Admin actualizado correctamente"
+                    data.mensaje ??
+                    "Texto agregado correctamente"
                 );
 
-                window.location.href =
-                    "../views/gestionarAdministradores.php";
+                document.getElementById(
+                    "formTexto"
+                ).reset();
 
-            }else{
+                if (
+                    typeof cargarTextos ===
+                    "function"
+                ) {
 
-                mostrarError(
-                    data.mensaje
+                    cargarTextos();
+
+                }
+
+            } else {
+
+                alert(
+                    data.mensaje ??
+                    "No se pudo agregar el texto"
                 );
+
             }
 
-        }catch(error){
+        } catch (error) {
 
             console.error(error);
 
-            mostrarError(
-                "Error actualizando administrador"
+            alert(
+                "Error de comunicación con el servidor"
             );
+
         }
+
     }
+
 );

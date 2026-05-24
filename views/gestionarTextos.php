@@ -2,27 +2,46 @@
 ?>
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
 
     <meta charset="UTF-8">
 
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
-    <title>Gestionar Textos — EVAL</title>
+    <title>
+        Gestionar Textos — EVAL
+    </title>
 
-    <link rel="stylesheet"
-          href="../public/css/pantalla_principal_Usuario.css?v=<?php echo time(); ?>">
+    <link
+        rel="stylesheet"
+        href="../public/css/pantalla_principal_Usuario.css"
+    >
 
-    <link rel="stylesheet"
-          href="../public/css/gestionar.css?v=<?php echo time(); ?>">
+    <link
+        rel="stylesheet"
+        href="../public/css/gestionar.css"
+    >
 
 </head>
+
 <body>
 
 <header class="navbar">
 
-    <span class="logo">EVAL</span>
+    <span class="logo">
+        EVAL
+    </span>
+
+    <a
+        href="../controllers/AuthController.php?accion=logout"
+        class="btn-logout"
+    >
+        Cerrar sesión
+    </a>
 
 </header>
 
@@ -30,7 +49,7 @@
 
     📍 Inicio /
 
-    <a href="pantalla_principal_Admin.php">
+    <a href="../views/pantalla_principal_Admin.php">
         Panel Admin
     </a>
 
@@ -45,171 +64,99 @@
     <section class="panel-tabla">
 
         <div class="panel-header">
-            <h2>📚 Textos registrados</h2>
+
+            <h2>
+                📚 Textos registrados
+            </h2>
+
         </div>
 
-        <div class="tabla-scroll">
+        <div
+            class="tabla-scroll"
+            id="contenedorTablaTextos"
+        >
 
-            <?php if(empty($textos)): ?>
+            <p>
+                Cargando textos...
+            </p>
 
-                <div class="tabla-vacia">
-                    <p>No hay textos registrados aún.</p>
-                </div>
+        </div>
 
-            <?php else: ?>
-
-            <table>
-
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Nivel Dificultad</th>
-                        <th>Tipo Texto</th>
-                        <th>Título</th>
-                        <th>Fuente</th>
-                        <th>ID Generacion IA</th>
-                        <th>ID Admin Responsable</th>
-                        <th>Estado</th>
-                        <th>Fecha de Registro</th>
-                        <th>Acciones</th>
-
-                    </tr>
-                </thead>
-
-                <tbody>
-
-                    <?php foreach($textos as $texto): ?>
-
-                    <tr>
-
-                        <td>
-                            <?php echo htmlspecialchars($texto['ID']); ?>
-                        </td>
-
-                        <td>
-                            <?php echo htmlspecialchars($texto['ID_dificultad']); ?>
-                        </td>
-
-                        <td>
-                            <?php echo htmlspecialchars($texto['ID_tipoTexto']); ?>
-                        </td>
-
-                        <td>
-                            <?php echo htmlspecialchars($texto['titulo']); ?>
-                        </td>
-                        <td>
-                            <?php echo htmlspecialchars($texto['fuente']); ?>
-                        </td>
-
-                        <td>
-                            <?php echo htmlspecialchars($texto['ID_generacionIA']); ?>
-                        </td>
-                        <td>
-                            <?php echo htmlspecialchars($texto['ID_adminResponsable']); ?>
-                        </td>
-
-                        <td>
-                            <?php echo htmlspecialchars($texto['estado']); ?>
-                        </td>    
-                        <td>
-                            <?php echo htmlspecialchars($texto['fecha_registro']); ?>
-                        </td>  
-                        <td>
-
-
-                            <form
-                                method="POST"
-                                action="../controllers/TextoController.php?accion=invertirEstadoTexto"
-                            >
-
-                                <input
-                                    type="hidden"
-                                    name="ID"
-                                    value="<?php echo $texto['ID']; ?>"
-                                >
-
-                                <input
-                                    type="hidden"
-                                    name="estado"
-                                    value="<?php echo $texto['estado']; ?>"
-                                >
-
-                                <button
-                                    type="submit"
-                                    class="btn-estado"
-                                >
-                                    Cambiar estado
-                                </button>
-
-                            </form>
-
-
-                            <a
-                                href="../controllers/TextoController.php?accion=mostrarVistaActualizar&id=<?php echo $texto['ID']; ?>"
-                                class="btn-estado"
-                            >
-                                Actualizar
-                            </a>
-
-                        </td>
-
-                    </tr>
-
-                    <?php endforeach; ?>
-
-                </tbody>
-
-            </table>
-
-            <?php endif; ?>
-
+        <div
+            class="panel-footer"
+            id="totalTextos"
+        >
+            Total: 0
         </div>
 
     </section>
 
-    <!-- FORMULARIO -->
+    <!-- FORM -->
 
     <section class="panel-form">
 
         <div class="panel-header">
-            <h2>➕ Agregar Texto</h2>
+
+            <h2>
+                ➕ Agregar texto
+            </h2>
+
         </div>
 
         <div class="form-body">
 
-            <form
-                method="POST"
-                action="../controllers/TextoController.php?accion=agregarTextoManualmente"
-                id="formTexto"
-            >
+            <p class="subtitulo">
 
+                Completa los campos para registrar un nuevo texto.
+
+            </p>
+
+            <form id="formTexto">
                 <div class="form-group">
 
-                    <label>Nivel de Dificultad</label>
+                    <label for="dificultad">
+                        Nivel de dificultad
+                    </label>
 
-                    <input
-                        type="text"
+                    <select
+                        id="dificultad"
                         name="dificultad"
                         required
                     >
+                        <option value="">
+                            Cargando...
+                        </option>
+                    </select>
 
                 </div>
+
                 <div class="form-group">
 
-                    <label>Tipo de Texto</label>
+                    <label for="tipo_texto">
+                        Tipo de texto
+                    </label>
 
-                    <input
-                        type="text"
+                    <select
+                        id="tipo_texto"
                         name="tipo_texto"
                         required
                     >
-                </div>             
+                        <option value="">
+                            Cargando...
+                        </option>
+                    </select>
+
+                </div>
+
                 <div class="form-group">
 
-                    <label>Título</label>
+                    <label for="titulo">
+                        Título
+                    </label>
 
                     <input
                         type="text"
+                        id="titulo"
                         name="titulo"
                         required
                     >
@@ -218,9 +165,12 @@
 
                 <div class="form-group">
 
-                    <label>Contenido</label>
+                    <label for="contenido">
+                        Contenido
+                    </label>
 
                     <textarea
+                        id="contenido"
                         name="contenido"
                         required
                     ></textarea>
@@ -229,19 +179,28 @@
 
                 <div class="form-group">
 
-                    <label>Fuente</label>
+                    <label for="fuente">
+                        Fuente
+                    </label>
 
                     <textarea
+                        id="fuente"
                         name="fuente"
                         required
                     ></textarea>
 
                 </div>
+
                 <div class="form-group">
 
-                    <label>Estado</label>
+                    <label for="estado">
+                        Estado
+                    </label>
 
-                    <select name="estado">
+                    <select
+                        id="estado"
+                        name="estado"
+                    >
 
                         <option value="Activo">
                             Activo
@@ -274,7 +233,7 @@
                 form="formTexto"
                 class="btn-guardar"
             >
-                Registrar texto
+                Agregar texto
             </button>
 
         </div>
@@ -282,6 +241,9 @@
     </section>
 
 </div>
+<script src="../public/JS/texto/cargarDificultadYTipoTexto.js"></script>
+<script src="../public/JS/texto/cargarTextos.js"></script>
+<script src="../public/JS/texto/agregarTexto.js"></script>
 
 </body>
 </html>

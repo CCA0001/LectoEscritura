@@ -61,7 +61,7 @@ $nombre_real = $_SESSION['nombre'] ?? 'Administrador';
                 <h2>Gestiona Textos</h2>
                 <p>Registra nuevos textos, verifica fuentes o desactiva su aparición para los usuarios</p>
                 <div class="emoji-container">📝</div>
-                <a href="../controllers/TextoController.php?accion=listarTextos" class="btn" style="text-decoration: none; display: inline-block;">Comenzar</a>
+                <a href="../controllers/TextoController.php?" class="btn" style="text-decoration: none; display: inline-block;">Comenzar</a>
             </div>
             <div class="card">
                 <h2>Gestiona logros</h2>

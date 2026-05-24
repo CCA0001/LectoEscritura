@@ -5,6 +5,10 @@ session_start();
 require_once("../config/conexion.php");
 
 require_once("../models/TextoModel.php");
+require_once("../models/PreguntaModel.php");
+require_once("../models/OpcionPreguntaModel.php");
+require_once("../models/NivelDificultadModel.php");
+require_once("../models/TipoTextoModel.php");
 
 
 class TextoController {
@@ -12,6 +16,8 @@ class TextoController {
     private $TextoModel;
     private $PreguntaModel;
     private $OpcionModel;
+    private $dificultad;
+    private $tipo;
 
     public function __construct($conexion){
 
@@ -22,94 +28,164 @@ class TextoController {
             new PreguntaModel($conexion);
 
         $this->OpcionModel =
-            new OpcionRespuestaModel($conexion);
+            new OpcionPreguntaModel($conexion);
+        
+
+        $this->dificultad =
+            new NivelDificultadModel($conexion);
+        
+        $this->tipo =
+            new TipoTextoModel($conexion);
         }
 
     public function listarTextos(){
 
-        $textos = $this->TextoModel
-            ->obtenerTodosLosTextos();
+        header(
+            'Content-Type: application/json'
+        );
 
-        include("../views/gestionarTextos.php");
+        $textos =
+            $this->TextoModel
+                ->obtenerTodosLosTextos();
+
+        echo json_encode([
+
+            "success" => true,
+
+            "textos" => $textos
+        ]);        
+    }
+
+    public function obtenerCombos()
+    {
+
+        $dificultades =
+            $this->dificultad
+                ->obtenerTodos();
+
+        $tiposTexto =
+            $this->tipo
+                ->obtenerTodos();
+
+        header(
+            'Content-Type: application/json'
+        );
+
+        echo json_encode([
+            'dificultades' => $dificultades,
+            'tiposTexto' => $tiposTexto
+        ]);
+
     }
 
     public function agregarTextoManualmente(){
 
-        $dificultad = isset($_POST['dificultad'])
-            ? trim($_POST['dificultad'])
-            : null;
+        header(
+            'Content-Type: application/json'
+        );
 
-        $tipo_texto = isset($_POST['tipo_texto'])
-            ? trim($_POST['tipo_texto'])
-            : null;
-    
-        $titulo = isset($_POST['titulo'])
-            ? trim($_POST['titulo'])
-            : null;
-
-        $contenido = isset($_POST['contenido'])
-            ? trim($_POST['contenido'])
-            : null;
-
-            
-        $fuente = isset($_POST['fuente'])
-            ? trim($_POST['fuente'])
-            : 'Activo';
-
-        $estado = isset($_POST['estado'])
-            ? trim($_POST['estado'])
-            : 'Activo';
-
-        $id_admin = $_SESSION['id_admin'];
-
-        if(
-            !$dificultad ||
-            !$tipo_texto ||
-            !$titulo ||
-            !$contenido ||
-            !$fuente ||
-            !$estado
-        ){
-            echo "Todos los campos son obligatorios";
-            return;
-        }
-
-        $resultado = $this->TextoModel
-            ->agregarTextoManualmente(
-                $dificultad,
-                $tipo_texto,
-                $titulo,
-                $contenido,
-                $fuente,
-                $id_admin,
-                $estado
+        $datos =
+            json_decode(
+                file_get_contents("php://input"),
+                true
             );
+
+        $dificultad =
+            trim(
+                $datos['dificultad']
+            );
+        $tipo_texto =
+            trim($datos['tipo_texto']);
+
+        $titulo =
+            trim(
+                $datos['titulo']
+            );
+
+        $contenido =
+            $datos['contenido'];
+
+        $fuente =
+            trim(
+                $datos['fuente']
+            );
+
+        $estado =
+            trim(
+                $datos['estado']
+            );
+
+        $idAdmin =
+            $_SESSION['id_admin'];
+
+        $resultado =
+            $this->TextoModel
+                ->agregarTextoManualmente(
+
+                    $dificultad,
+
+                    $tipo_texto,
+
+                    $titulo,
+
+                    $contenido,
+
+                    $fuente,
+                    $idAdmin,
+
+                    $estado
+                );
 
         if($resultado){
 
-            header(
-                "Location: TextoController.php?accion=listarTextos"
-            );
+            echo json_encode([
 
-            exit();
+                "success" => true,
 
-        } else {
+                "mensaje" =>
+                    "Texto agregado correctamente"
+            ]);
 
-            echo "Error al agregar texto";
+        }else{
+
+            echo json_encode([
+
+                "success" => false,
+
+                "mensaje" =>
+                    "Error al insertar Texto"
+            ]);
         }
     }
 
     public function invertirEstadoTexto(){
 
-        $id = $_POST['ID'];
+    header(
+        'Content-Type: application/json'
+    );
 
-        $estadoActual = $_POST['estado'];
+    $datos =
+        json_decode(
+            file_get_contents("php://input"),
+            true
+        );
 
-        $nuevoEstado =
-            ($estadoActual === "Activo")
-            ? "Inactivo"
-            : "Activo";
+    $id =
+        trim(
+            $datos['ID']
+        );   
+    
+    $estado =
+        trim(
+            $datos['estado']
+        );
 
+        if($estado == "Activo"){
+            $nuevoEstado = "Inactivo";
+        } else {
+            $nuevoEstado = "Activo";
+        }
+        
         $resultado = $this->TextoModel
             ->invertirEstadoTexto(
                 $id,
@@ -118,16 +194,24 @@ class TextoController {
 
         if($resultado){
 
-            header(
-                "Location: TextoController.php?accion=listarTextos"
-            );
+            echo json_encode([
 
-            exit();
+                "success" => true,
 
-        } else {
+                "mensaje" =>
+                    "Texto con estado invertido correctamente"
+            ]);
 
-            echo "Error al cambiar estado";
-        }
+        }else{
+
+            echo json_encode([
+
+                "success" => false,
+
+                "mensaje" =>
+                    "Error al invertir estado del Texto"
+            ]);
+        }    
     }
 
 
@@ -139,6 +223,10 @@ class TextoController {
             ->obtenerTextoPorId($id);
 
         include("../views/actualizarTexto.php");
+    }
+
+    public function mostrarVistaGestionarTextos(){
+        include("../views/gestionarTextos.php");
     }
 
     public function actualizarTexto(){
@@ -214,7 +302,7 @@ class TextoController {
 
 $controller = new TextoController($conexion);
 
-$accion = $_GET['accion'] ?? 'listarTextos';
+$accion = $_GET['accion'] ?? 'mostrarVistaGestionarTextos';
 
 if(method_exists($controller, $accion)){
 

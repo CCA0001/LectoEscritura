@@ -14,6 +14,25 @@ class AdminController {
         $this->AdminModel = new AdminModel($conexion);
     }
 
+    public function obtenerAdmin(){
+        $id = $_GET['id'];
+
+        $adminActual = $this->AdminModel->obtenerAdminPorId($id);
+
+
+        if($adminActual){
+            echo json_encode([
+                "success" => true,
+                "admin" => $adminActual
+            ]);
+        } else {
+            echo json_encode([
+                "success" => false,
+                "mensaje" => "Error trayendo el admin"
+            ]);
+        }
+    }
+
     public function listarAdministradores(){
 
         $admins = $this->AdminModel
@@ -187,22 +206,78 @@ class AdminController {
     }
 
     public function actualizarAdmin(){
-        
+            
         header(
-        'Content-Type: application/json'
+            'Content-Type: application/json'
         );
 
         $datos =
-        json_decode(
-            file_get_contents("php://input"),
-            true
-        );
+            json_decode(
+                file_get_contents("php://input"),
+                true
+            );
+
+        $adminActual = $this->AdminModel->obtenerAdminPorId($datos['ID']);
+
+        if(!empty($datos['contrasenia'])){
+            if($datos['contrasenia'] == $datos['confirmar_contrasenia']){
+                    $contrasenia_hash = password_hash(
+                        $datos['contrasenia'],
+                        PASSWORD_DEFAULT
+                );
+
+                $contrasenia = $contrasenia_hash;
+            } else {
+                echo json_encode([
+                    "success" => false,
+                    "mensaje" => "Las contraseñas no coinciden"
+                ]);
+            }
+        } else {
+            $contrasenia = $adminActual['contrasenia_hash'];
+        }
+
+        $resultado =
+            $this->AdminModel
+                ->actualizarAdmin(
+
+                    $datos['ID'],
+
+                    $datos['nombres'],
+
+                    $datos['apellidos'],
+
+                    $datos['nombre_usuario'],
+
+                    $contrasenia,
+
+                    $datos['correo'],
+
+                    $datos['estado']
+                );
+
+        if($resultado){
+
+            echo json_encode([
+
+                "success" => true
+
+            ]);
+
+        }else{
+
+            echo json_encode([
+
+                "success" => false,
+
+                "mensaje" =>
+                    "No se pudo actualizar"
+            ]);
+        }
+
     }
 
     public function mostrarVistaActualizar(){
-        $id = $_GET['id'];
-
-        $admin = $this->AdminModel->obtenerAdminPorId($id);
 
         include("../views/actualizarAdmin.php");
     }

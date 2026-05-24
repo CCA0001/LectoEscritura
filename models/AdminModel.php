@@ -38,6 +38,36 @@ class AdminModel {
         return $admins;
     }
 
+
+    public function buscarPorCorreo($correo){
+
+        $sql = "
+            SELECT ID, nombre_usuario, contrasenia_hash
+            FROM `admin`
+            WHERE correo_electronico = ?
+        ";
+
+        $stmt =
+            mysqli_prepare(
+                $this->conexion,
+                $sql
+            );
+
+        mysqli_stmt_bind_param(
+            $stmt,
+            "s",
+            $correo
+        );
+
+        mysqli_stmt_execute($stmt);
+
+        $resultado =
+            mysqli_stmt_get_result($stmt);
+
+        return mysqli_fetch_assoc($resultado);
+    }
+
+
     public function comprobarExistenciaCorreo($correo){
 
         $sql = "
@@ -123,7 +153,7 @@ class AdminModel {
     }
 
     public function obtenerAdminPorId($id){
-        $sql_check = "SELECT ID FROM `admin` WHERE ID = ?";
+        $sql_check = "SELECT * FROM `admin` WHERE ID = ?";
         $stmt_check = mysqli_prepare($this->conexion, $sql_check);
         $resultado = mysqli_stmt_bind_param($stmt_check, "i", $id);
 
@@ -131,17 +161,11 @@ class AdminModel {
 
         $resultado = mysqli_stmt_get_result($stmt_check);
 
-        $admin = [];
-
-        while($fila = mysqli_fetch_assoc($resultado)){
-            $admin[] = $fila;
-        }
-
-        return $admin;
+        return mysqli_fetch_assoc($resultado);
     }
 
 
-    public function actualizarAdmin($ID, $nombres, $apellidos, $nombre_usuario, $contrasenia_hash, $estado){
+    public function actualizarAdmin($ID, $nombres, $apellidos, $nombre_usuario, $contrasenia_hash, $correo, $estado){
         $sql = "UPDATE `admin`
             SET nombres = ?, 
             apellidos = ?,  
@@ -152,7 +176,7 @@ class AdminModel {
             WHERE ID = ?";
             
             $stmt = mysqli_prepare($this->conexion, $sql);
-            mysqli_stmt_bind_param($stmt, "ssiisi", $nombres, $apellidos, $nombre_usuario, $contrasenia_hash, $estado, $ID);
+            mysqli_stmt_bind_param($stmt, "ssssssi", $nombres, $apellidos, $nombre_usuario, $contrasenia_hash, $correo, $estado, $ID);
         
             return mysqli_stmt_execute($stmt);
         
