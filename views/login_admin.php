@@ -11,15 +11,15 @@
     <div class="login-card">
         <h2>Iniciar Sesión (Administradores) </h2>
         
-        <form action="../controllers/comprobar_contraseñaAdmin.php" method="POST">
+        <form id="formLogin">
             <div class="input-group">
                 <label>Correo Electrónico:</label>
-                <input type="email" name="correo_electronico" required>
+                <input id="correo" type="email" required>
             </div>
             
             <div class="input-group">
                 <label>Contraseña:</label>
-                <input type="password" name="contrasenia_hash" placeholder="Tu contraseña" required>
+                <input id="contrasenia" type="password" placeholder="Tu contraseña" required>
             </div>
             
             <button type="submit" class="btn-ingresar">Ingresar</button>
@@ -30,5 +30,7 @@
         </p>
     </div>
 
+
+    <script src="../public/JS/Auth/obtenerDatosLoginAdmin.js"></script>
 </body>
 </html>

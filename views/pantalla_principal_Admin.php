@@ -29,7 +29,7 @@ $nombre_real = $_SESSION['nombre'] ?? 'Administrador';
     <header class="navbar">
         <span class="logo">EVAL</span>
 
-        <a href="Acciones/cerrar_sesion.php" class="btn-logout">CERRAR SESIÓN</a>
+        <a id="btnLogout" class="btn-logout">CERRAR SESIÓN</a>
     </header>
 
     <div class="user-info-panel" id="userInfoPanel">
@@ -77,37 +77,7 @@ $nombre_real = $_SESSION['nombre'] ?? 'Administrador';
             </div>        
         </div>
 
-            <!--
-        <section class="bottom-panel">
-            <div class="progress-section">
-                <h3>Tus Progresos</h3>
-                <div class="progress-item">
-                    <span>📚 Lectura</span>
-                    <span class="percent">70%</span>
-                    <div class="progress-bar">
-                        <div class="fill" style="width: 70%;"></div>
-                    </div>
-                </div>
-                <div class="progress-item">
-                    <span>📗 Escritura</span>
-                    <span class="percent">30%</span>
-                    <div class="progress-bar">
-                        <div class="fill" style="width: 30%;"></div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="medals-section">
-                <h3>Tus Medallas</h3>
-                <div class="emoji-medal">🏆</div>
-                <a href="logros.php" class="btn small" style="text-decoration: none; display: inline-block;">Ver
-                    logros</a>
-            </div>
-        </section>
-    </main>
--->
-
-    <script src="JS/dropdown_usuario.js"></script>
+    <script src="../public/JS/auth/logout.js"></script>
 
 </body>
 

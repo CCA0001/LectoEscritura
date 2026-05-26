@@ -25,12 +25,12 @@ async function cargarPerfilUsuario()
         document.getElementById(
             "rangoUsuario"
         ).textContent =
-            usuario.rango;
+            usuario.nivel;
 
         document.getElementById(
             "rangoPanel"
         ).textContent =
-            usuario.rango;
+            usuario.nivel;
 
         document.getElementById(
             "nombreUsuario"
@@ -60,7 +60,7 @@ async function cargarPerfilUsuario()
         document.getElementById(
             "logrosUsuario"
         ).textContent =
-            `${usuario.logros} desbloqueados`;
+            `${usuario.logros.length} desbloqueados`;
 
     } catch(error){
 

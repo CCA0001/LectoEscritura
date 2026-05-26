@@ -21,10 +21,6 @@
         href="../public/css/pantalla_principal_Usuario.css"
     >
 
-    <link
-        rel="stylesheet"
-        href="../public/css/dropdown_usuario.css"
-    >
 
 </head>
 
@@ -54,7 +50,6 @@
     </div>
 
     <a
-        href="#"
         id="btnLogout"
         class="btn-logout"
     >
@@ -297,7 +292,7 @@
             </div>
 
             <a
-                href="../views/logros.html"
+                href="../views/logros.php"
                 class="btn small"
             >
                 Ver logros
@@ -310,10 +305,9 @@
 </main>
 
 <script src="../public/JS/usuario/cargarPerfilUsuario.js"></script>
-
-<script src="../public/JS/auth/logout.js"></script>
-
+<script src="../public/JS/Auth/logout.js"></script>
 <script src="../public/JS/dropdown_usuario.js"></script>
+<script src="../public/JS/racha_alerta.js"></script>
 
 </body>
 
