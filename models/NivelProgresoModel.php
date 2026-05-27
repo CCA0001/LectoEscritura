@@ -193,6 +193,41 @@ public function agregarNivel(
 
         return mysqli_fetch_assoc($resultado);
     }
+
+    public function obtenerNivelPorXP(
+        $xp
+    ){
+
+        $sql = "
+            SELECT *
+            FROM nivelprogreso
+            WHERE puntos_requeridos <= ?
+            AND estado = 'Activo'
+            ORDER BY puntos_requeridos DESC
+            LIMIT 1
+        ";
+
+        $stmt =
+            mysqli_prepare(
+                $this->conexion,
+                $sql
+            );
+
+        mysqli_stmt_bind_param(
+            $stmt,
+            "i",
+            $xp
+        );
+
+        mysqli_stmt_execute($stmt);
+
+        $resultado =
+            mysqli_stmt_get_result($stmt);
+
+        return mysqli_fetch_assoc(
+            $resultado
+        );
+    }
 }
 
 ?>

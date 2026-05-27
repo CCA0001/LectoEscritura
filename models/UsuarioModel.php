@@ -9,8 +9,51 @@ class UsuarioModel {
         $this->conexion = $conexion;
     }
 
-    public function actualizarUltimaVez($id, $fecha){
-        $sql = "UPDATE usuario SET ultima_conexion = ? WHERE ID = ?";
+    public function actualizarRachaYXp(
+        $id,
+        $racha,
+        $xp,
+        $fecha
+    ){
+
+    $sql = "
+        UPDATE usuario
+        SET dias_racha = ?,
+            puntos_xp = ?,
+            ultima_conexion = ?
+        WHERE ID = ?
+    ";
+
+    $stmt =
+        mysqli_prepare(
+            $this->conexion,
+            $sql
+        );
+
+    mysqli_stmt_bind_param(
+        $stmt,
+        "iisi",
+        $racha,
+        $xp,
+        $fecha,
+        $id
+    );
+
+    return mysqli_stmt_execute(
+        $stmt
+    );
+}
+
+    public function sumarXp(
+        $idUsuario,
+        $xp
+    ){
+
+        $sql = "
+            UPDATE usuario
+            SET puntos_xp = puntos_xp + ?
+            WHERE ID = ?
+        ";
 
         $stmt =
             mysqli_prepare(
@@ -20,19 +63,49 @@ class UsuarioModel {
 
         mysqli_stmt_bind_param(
             $stmt,
-            "si",
-            $fecha,
-            $id
+            "ii",
+            $xp,
+            $idUsuario
         );
 
-        mysqli_stmt_execute($stmt);
+        return mysqli_stmt_execute(
+            $stmt
+        );
+    }
 
+    public function actualizarNivel(
+        $idUsuario,
+        $idNivel
+    ){
+
+        $sql = "
+            UPDATE usuario
+            SET ID_nivelProgreso = ?
+            WHERE ID = ?
+        ";
+
+        $stmt =
+            mysqli_prepare(
+                $this->conexion,
+                $sql
+            );
+
+        mysqli_stmt_bind_param(
+            $stmt,
+            "ii",
+            $idNivel,
+            $idUsuario
+        );
+
+        return mysqli_stmt_execute(
+            $stmt
+        );
     }
 
     public function buscarPorCorreo($correo){
 
         $sql = "
-            SELECT ID, nombre_usuario, contrasenia_hash
+            SELECT *
             FROM usuario
             WHERE correo_electronico = ?
         ";

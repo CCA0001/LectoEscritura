@@ -14,8 +14,6 @@
         LectoEscritura
     </title>
 
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
     <link
         rel="stylesheet"
         href="../public/css/pantalla_principal_Usuario.css"
@@ -188,7 +186,7 @@
             </div>
 
             <a
-                href="../views/moduloLectura.html"
+                href="../views/moduloLectura.php"
                 class="btn"
             >
                 Comenzar
@@ -211,7 +209,7 @@
             </div>
 
             <a
-                href="../views/moduloEscritura.html"
+                href="../views/ejercicio_escritura.php"
                 class="btn"
             >
                 Comenzar
@@ -304,6 +302,7 @@
 
 </main>
 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="../public/JS/usuario/cargarPerfilUsuario.js"></script>
 <script src="../public/JS/Auth/logout.js"></script>
 <script src="../public/JS/dropdown_usuario.js"></script>

@@ -56,6 +56,24 @@ document.getElementById(
 
             if(data.success){
 
+
+                if(data.xp_diario){
+
+                    await Swal.fire({
+
+                        title: '¡Bienvenido!',
+
+                        html: `
+                            Ganaste
+                            <strong>
+                                +${data.xp_diario} XP
+                            </strong>
+                            por ingresar hoy.
+                        `,
+
+                        icon: 'success'
+                    });
+                }                
                 window.location.href =
                     "../views/pantalla_principal_Usuario.php";
 

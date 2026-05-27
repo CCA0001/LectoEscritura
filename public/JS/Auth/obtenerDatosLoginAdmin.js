@@ -58,7 +58,7 @@ document.getElementById(
 
                 window.location.href =
                     "../views/pantalla_principal_Admin.php";
-
+            
             }else{
 
                 alert(
