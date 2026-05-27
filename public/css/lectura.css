@@ -299,6 +299,15 @@ body {
     font-size: 0.9rem;
 }
 
+.seccion-avanzado-footer {
+    margin-top: 25px;
+    background: white;
+    padding: 25px;
+    border-radius: 20px;
+    box-shadow: 0 12px 40px rgba(46, 90, 68, 0.12),
+                0 4px 12px rgba(46, 90, 68, 0.07);
+}
+
 /* Cada ejercicio avanzado es una tarjeta flotante */
 .ejercicio-avanzado {
     background: white;
@@ -465,6 +474,20 @@ body {
     background: #d4edda;
     color: #155724;
     border: 1px solid #c3e6cb;
+}
+
+#resultado-avanzado-global {
+    margin-top: 16px;
+    padding: 14px;
+    border-radius: 14px;
+    text-align: center;
+    font-size: 0.95rem;
+    font-weight: 600;
+    line-height: 1.6;
+    color: #155724;
+    background: #d4edda;
+    border: 1px solid #c3e6cb;
+    white-space: pre-line;
 }
 
 /* ══════════════════════════════════════
@@ -728,5 +751,29 @@ body {
             margin: 10px 12px 14px 12px;
             padding: 10px;
         }
+    }
 
+    #btnTermineAvanzado {
+    width: 100%;
+    background: linear-gradient(135deg, #4a8d6e, #2e5a44);
+    color: white;
+    border: none;
+    padding: 14px 22px;
+    border-radius: 30px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    box-shadow: 0 4px 12px rgba(74, 141, 110, 0.25);
+    }
+
+    #btnTermineAvanzado:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(74, 141, 110, 0.35);
+    }
+
+    #btnTermineAvanzado:active {
+        transform: translateY(0);
 }
+

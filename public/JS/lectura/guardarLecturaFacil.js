@@ -2,7 +2,7 @@ document
 .getElementById("btnVerificar")
 .addEventListener("click", () => {
 
-    const texto = window.textoFacilCargado;
+    const texto = window.textoFacilCargado.texto;
 
     if(!texto){
         alert("No hay texto cargado");
