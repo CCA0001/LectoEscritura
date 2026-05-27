@@ -8,6 +8,16 @@ Copiar
     color: #4a8d6e;
     text-decoration: none;
 }
+
+.td-xp {
+    font-weight: bold;
+    color: #b8860b;
+}
+.td-desc {
+    color: #666;
+    font-size: 0.82rem;
+    max-width: 200px;
+}
  
 /* ══════════════════════════════════════
    WORKSPACE — dos columnas

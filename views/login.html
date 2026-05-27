@@ -11,18 +11,18 @@
     <div class="login-card">
         <h2>Iniciar Sesión</h2>
         
-        <form action="../controllers/comprobar_contraseñaUsuario.php" method="POST">
+        <form id="formLogin">
             <div class="input-group">
                 <label>Correo Institucional:</label>
-                <input type="email" name="correo_electronico" placeholder="ejemplo@ucundinamarca.edu.co" required>
+                <input id="correo" type="email" name="correo_electronico" placeholder="ejemplo@ucundinamarca.edu.co" required>
             </div>
             
             <div class="input-group">
                 <label>Contraseña:</label>
-                <input type="password" name="contrasenia_hash" placeholder="Tu contraseña" required>
+                <input id="contrasenia" type="password" name="contrasenia_hash" placeholder="Tu contraseña" required>
             </div>
             
-            <button type="submit" class="btn-ingresar">Ingresar</button>
+            <button id="btn-ingresar" type="submit" class="btn-ingresar">Ingresar</button>
         </form>
 
         <p class="footer-text">
@@ -33,5 +33,7 @@
         </p>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="../public/JS/Auth/obtenerDatosLoginUsuario.js"></script>
 </body>
 </html>

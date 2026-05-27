@@ -1,4 +1,9 @@
 <?php
+
+date_default_timezone_set(
+    "America/Bogota"
+);
+
 $host = "mysql-duolinguistico-dev-lcnc28032510.mysql.database.azure.com";
 $usuario = "admin_data";
 $password = "Database123";
