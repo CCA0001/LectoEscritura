@@ -14,7 +14,7 @@
     <div class="user-rank">
         🏅 <?php echo $_SESSION['rango_actual'] ?? 'Principiante'; ?>
     </div>
-    <a href="../controllers/controlador_usuario.php" class="btn-volver">Volver</a>
+    <a href="../views/pantalla_principal_Usuario.php" class="btn-volver">Volver</a>
 </header>
 
 <nav class="breadcrumb">

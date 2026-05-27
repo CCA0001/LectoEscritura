@@ -306,7 +306,6 @@
 <script src="../public/JS/usuario/cargarPerfilUsuario.js"></script>
 <script src="../public/JS/Auth/logout.js"></script>
 <script src="../public/JS/dropdown_usuario.js"></script>
-<script src="../public/JS/racha_alerta.js"></script>
 
 </body>
 

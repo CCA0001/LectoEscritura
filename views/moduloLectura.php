@@ -11,12 +11,29 @@
 
 <body>
 
+
     <header class="navbar">
-        <span class="logo">EVAL — Lectura</span>
-        <div class="user-rank">
-            🏅 <?php echo $_SESSION['rango_actual'] ?? 'Principiante'; ?>
+
+        <span class="logo">
+            EVAL
+        </span>
+
+        <div
+            class="user-rank"
+            id="userRankBtn"
+        >
+
+            🏅
+
+            <span id="rangoUsuario">
+                Cargando...
+            </span>
+
+            <span class="dropdown-arrow">
+                ▼
+            </span>
+
         </div>
-        <a href="../controllers/controlador_usuario.php" class="btn-volver"> Volver</a>
     </header>
 
     <nav class="breadcrumb">
@@ -65,12 +82,10 @@
     </section>
 
     </body>
-
+    <script src="../public/JS/dropdown_usuario.js"></script>
+    <script src="../public/JS/usuario/cargarPerfilUsuario.js"></script>
     <script src="../public/JS/lectura/cargarTextoFacil.js"></script>
-
     <script src="../public/JS/lectura/cargarTextosDificiles.js"></script>
-
     <script src="../public/JS/lectura/guardarLecturaFacil.js"></script>
-
     <script src="../public/JS/lectura/guardarLecturaAvanzada.js"></script>
 </html>

@@ -1,51 +1,35 @@
 {
-  "error": {
-    "code": 429,
-    "message": "You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_input_token_count, limit: 0, model: gemini-2.0-flash\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-2.0-flash\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-2.0-flash\nPlease retry in 4.594951328s.",
-    "status": "RESOURCE_EXHAUSTED",
-    "details": [
-      {
-        "@type": "type.googleapis.com/google.rpc.Help",
-        "links": [
+  "candidates": [
+    {
+      "content": {
+        "parts": [
           {
-            "description": "Learn more about Gemini API quotas",
-            "url": "https://ai.google.dev/gemini-api/docs/rate-limits"
+            "text": "```json\n{\n    \"coherencia\": 6,\n    \"cohesion\": 7,\n    \"gramatica\": 5,\n    \"argumentacion\": 8,\n    \"estructura\": 5,\n    \"puntaje_promedio\": 6.2,\n    \"retroalimentacion\": \"El documento presenta de manera clara un proyecto interesante sobre la integración de ESP32, Docker y una API REST para visualizar datos de sensores. La descripción de las herramientas utilizadas y el rol de cada componente en el sistema es precisa y fácil de entender.\\n\\n**Puntos fuertes:**\\n*   **Claridad técnica:** Se explica bien la función de cada herramienta (EMQX, MariaDB, Nginx, Python/Flask, Chart.js) y su justificación en la arquitectura.\\n*   **Detalle del backend:** El desarrollo del backend en Python está bien detallado, incluyendo la suscripción MQTT, la exposición del endpoint Flask y la lógica de creación automática de tablas.\\n*   **Proceso de despliegue y verificación:** La explicación de cómo se despliega el sistema y cómo se verifica su funcionamiento es concisa y efectiva.\\n*   **Uso de Docker Compose:** La configuración y operación con Docker Compose se describe adecuadamente, incluyendo el uso de redes internas y condiciones de salud de los servicios.\\n\\n**Áreas de mejora:**\\n*   **Estructura (5/10):** Presenta varias inconsistencias. La sección \\\"II. HERRAMIENTAS UTILIZADAS\\\" contiene una subsección \\\"A. Subtítulos\\\" que parece un error tipográfico y simplemente introduce una lista de herramientas. Hay un salto en la numeración de las subsecciones bajo \\\"III. PROCESO DE CONSTRUCCION E IMPLEMENTACIÓN\\\" (de A a C, faltando B). La sección \\\"B. Operación con Docker Compose\\\" (actualmente bajo \\\"II. HERRAMIENTAS UTILIZADAS\\\") describe un proceso de implementación y configuración, por lo que lógicamente encajaría mejor bajo \\\"III. PROCESO DE CONSTRUCCION E IMPLEMENTACIÓN\\\". La sección \\\"IV. FLUJO GENERAL DEL SISTEMA\\\" es una buena síntesis, pero su ubicación al final del documento, después del despliegue y verificación detallados, hace que se sienta un poco redundante. Falta una sección de \\\"Conclusión\\\" explícita que resuma los logros, desafíos o futuras mejoras del proyecto. Las imágenes (capturas de pantalla) no están numeradas ni referenciadas en el texto.\\n*   **Coherencia (6/10):** Si bien el objetivo general del proyecto es claro, la organización de las secciones, especialmente la colocación de la descripción de la operación de Docker Compose y el resumen del flujo general al final, interrumpe el flujo lógico ideal para un texto técnico-académico.\\n*   **Cohesión (7/10):** La conexión entre oraciones y párrafos es generalmente buena, con un uso consistente de la terminología técnica. Sin embargo, las inconsistencias estructurales mencionadas y la repetición de ideas en la sección final afectan ligeramente la fluidez general del texto.\\n*   **Gramática (5/10):** Se observan errores ortográficos (\"dischos\" por \"dichos\", \"incio\" por \"inicio\", \"flas\" por \"filas\" en pie de imagen). Hay oportunidades para mejorar la puntuación, especialmente el uso de comas en enumeraciones y después de frases introductorias. Algunas frases pueden ser reformuladas para lograr un estilo más formal y académico. También hay inconsistencia en la capitalización de nombres propios como \"MariaDB\" y \"phpMyAdmin\".\\n*   **Argumentación (8/10):** La justificación de las herramientas y la explicación de su funcionamiento dentro del sistema son claras y lógicas. Se describe adecuadamente el propósito y la implementación de cada componente, demostrando un buen entendimiento técnico del proyecto. Podría beneficiarse de un diagrama arquitectónico que complemente las descripciones textuales.\"\n}\n```"
           }
-        ]
+        ],
+        "role": "model"
+      },
+      "finishReason": "STOP",
+      "index": 0
+    }
+  ],
+  "usageMetadata": {
+    "promptTokenCount": 649,
+    "candidatesTokenCount": 862,
+    "totalTokenCount": 5956,
+    "promptTokensDetails": [
+      {
+        "modality": "TEXT",
+        "tokenCount": 133
       },
       {
-        "@type": "type.googleapis.com/google.rpc.QuotaFailure",
-        "violations": [
-          {
-            "quotaMetric": "generativelanguage.googleapis.com/generate_content_free_tier_input_token_count",
-            "quotaId": "GenerateContentInputTokensPerModelPerMinute-FreeTier",
-            "quotaDimensions": {
-              "location": "global",
-              "model": "gemini-2.0-flash"
-            }
-          },
-          {
-            "quotaMetric": "generativelanguage.googleapis.com/generate_content_free_tier_requests",
-            "quotaId": "GenerateRequestsPerMinutePerProjectPerModel-FreeTier",
-            "quotaDimensions": {
-              "location": "global",
-              "model": "gemini-2.0-flash"
-            }
-          },
-          {
-            "quotaMetric": "generativelanguage.googleapis.com/generate_content_free_tier_requests",
-            "quotaId": "GenerateRequestsPerDayPerProjectPerModel-FreeTier",
-            "quotaDimensions": {
-              "location": "global",
-              "model": "gemini-2.0-flash"
-            }
-          }
-        ]
-      },
-      {
-        "@type": "type.googleapis.com/google.rpc.RetryInfo",
-        "retryDelay": "4s"
+        "modality": "DOCUMENT",
+        "tokenCount": 516
       }
-    ]
-  }
+    ],
+    "thoughtsTokenCount": 4445,
+    "serviceTier": "standard"
+  },
+  "modelVersion": "gemini-2.5-flash",
+  "responseId": "gG4Waq_yJZaFz7IP9MrqwQo"
 }

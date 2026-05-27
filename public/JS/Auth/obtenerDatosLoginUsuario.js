@@ -55,8 +55,6 @@ document.getElementById(
                 await response.json();
 
             if(data.success){
-
-
                 if(data.xp_diario){
 
                     await Swal.fire({
