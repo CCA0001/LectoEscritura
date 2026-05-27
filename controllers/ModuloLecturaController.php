@@ -9,6 +9,7 @@ require_once("../models/PreguntaModel.php");
 require_once("../models/OpcionPreguntaModel.php");
 require_once("../models/IntentoLecturaModel.php");
 require_once("../models/RespuestaLecturaModel.php");
+require_once("../models/UsuarioModel.php");
 
 class ModuloLecturaController {
 
@@ -17,6 +18,7 @@ class ModuloLecturaController {
     private $OpcionPreguntaModel;
     private $IntentoLecturaModel;
     private $RespuestaLecturaModel;
+    private $UsuarioModel;
 
     public function __construct($conexion){
 
@@ -34,6 +36,9 @@ class ModuloLecturaController {
         
         $this->RespuestaLecturaModel =
             new RespuestaLecturaModel($conexion);
+
+        $this->UsuarioModel =
+            new UsuarioModel($conexion);
     }    
     
     public function obtenerTextoFacilAleatorio(){
@@ -253,8 +258,10 @@ class ModuloLecturaController {
 
                     $respuesta['idPregunta']
                 );
+
         }
-        
+        $this->UsuarioModel->sumarXp($_SESSION['id_usuario'],$puntajeGeneral);
+
         header('Content-Type: application/json');
         
         echo json_encode([
@@ -275,7 +282,9 @@ class ModuloLecturaController {
 
             "totalPreguntas" => $totalPreguntas,
 
-            "mensaje" => "Intento guardado correctamente"
+            "mensaje" => "Intento guardado correctamente",
+
+            "xp" => "Felicidades! Obtuviste ". strval($puntajeGeneral). " de experiencia por tu esfuerzo!"
         ]);
     }
 

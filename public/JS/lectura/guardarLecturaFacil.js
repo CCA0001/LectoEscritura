@@ -46,7 +46,7 @@ document
     .then(resultado => {
 
         document.getElementById("resultado").innerText =
-            resultado.mensaje;
+            resultado.mensaje + "\n" + resultado.xp;
     })
     .catch(error => {
 

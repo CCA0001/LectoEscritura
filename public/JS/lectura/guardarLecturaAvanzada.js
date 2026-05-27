@@ -53,7 +53,7 @@ document
             document.getElementById(
                 "resultado-avanzado-global"
             ).innerText =
-                resultado.mensaje;
+                resultado.mensaje + "\n" + resultado.xp;
         });
 
     });

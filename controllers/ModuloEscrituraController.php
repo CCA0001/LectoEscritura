@@ -317,6 +317,8 @@ class ModuloEscrituraController{
                 $resultadoIA['puntaje_promedio']
             );   
 
+        $this->UsuarioModel->sumarXp($_SESSION['id_usuario'],$resultadoIA['puntaje_promedio']);
+
         echo json_encode([
             "success" => true,
             "mensaje" => "Archivo evaluado correctamente",

@@ -9,13 +9,104 @@
 </head>
 <body>
 
-<header class="navbar">
-    <span class="logo"> EVAL - Escritura</span>
-    <div class="user-rank">
-        🏅 <?php echo $_SESSION['rango_actual'] ?? 'Principiante'; ?>
+    <header class="navbar">
+
+        <span class="logo">
+            EVAL
+        </span>
+
+        <div
+            class="user-rank"
+            id="userRankBtn"
+        >
+
+            🏅
+
+            <span id="rangoUsuario">
+                Cargando...
+            </span>
+
+            <span class="dropdown-arrow">
+                ▼
+            </span>
+
+        </div>
+        <a href="../views/pantalla_principal_Usuario.php" class="btn-volver">Volver</a>
+
+    </header>
+
+    <h1 hidden id="tituloBienvenida"></h1>
+    <strong hidden id="rachaBadge">0</strong>
+    <div
+        class="user-info-panel"
+        id="userInfoPanel"
+    >
+
+        <div class="info-header">
+
+            <span class="info-emoji">
+                👤
+            </span>
+
+            <span
+                class="info-name"
+                id="nombreUsuario"
+            >
+                Cargando...
+            </span>
+
+        </div>
+
+        <div class="info-row">
+
+            <span>
+                🏅 Rango:
+            </span>
+
+            <strong id="rangoPanel">
+                -
+            </strong>
+
+        </div>
+
+        <div class="info-row">
+
+            <span>
+                🔥 Racha:
+            </span>
+
+            <strong id="rachaUsuario">
+                -
+            </strong>
+
+        </div>
+
+        <div class="info-row">
+
+            <span>
+                ⭐ XP total:
+            </span>
+
+            <strong id="xpUsuario">
+                -
+            </strong>
+
+        </div>
+
+        <div class="info-row">
+
+            <span>
+                🏆 Logros:
+            </span>
+
+            <strong id="logrosUsuario">
+                -
+            </strong>
+
+        </div>
+
     </div>
-    <a href="../views/pantalla_principal_Usuario.php" class="btn-volver">Volver</a>
-</header>
+
 
 <nav class="breadcrumb">
    < 📍 Inicio / Panel Usuario / Ejercicio de Escritura
@@ -77,7 +168,9 @@
 </div>
 
 </body>
-
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="../public/JS/usuario/cargarPerfilUsuario.js"></script>
+    <script src="../public/JS/dropdown_usuario.js"></script>
     <script src="../public/JS/escritura/cargarArchivosUsuario.js"></script>
     <script src="../public/JS/escritura/cargarDificultades.js"></script>
     <script src="../public/JS/escritura/cargarTipoTexto.js"></script>

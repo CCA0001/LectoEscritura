@@ -1,7 +1,7 @@
 <?php
 
 define(
-    "GEMINI_API_KEY","AIzaSyCVN-hH8jr5TOlfxxEcILLrMPz4BmQ2VSk"
+    "GEMINI_API_KEY","AIzaSyBiLfUzZVX9w66iRCZ0NUpqGN3AXDte45s"
 );
 
 define(

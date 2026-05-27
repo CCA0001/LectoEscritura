@@ -38,11 +38,6 @@ async function cargarPerfilUsuario()
             usuario.nombre;
 
         document.getElementById(
-            "tituloBienvenida"
-        ).textContent =
-            `Bienvenido, ${usuario.nombre}`;
-
-        document.getElementById(
             "rachaUsuario"
         ).textContent =
             `${usuario.racha} días`;
@@ -61,6 +56,12 @@ async function cargarPerfilUsuario()
             "logrosUsuario"
         ).textContent =
             `${usuario.logros.length} desbloqueados`;
+
+        document.getElementById(
+            "tituloBienvenida"
+        ).textContent =
+            `Bienvenido, ${usuario.nombre}`;
+
 
     } catch(error){
 

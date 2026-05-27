@@ -125,9 +125,8 @@ fetch(
                         `
                         <button
                             class="retro-tooltip"
-                            onclick="mostrarRetro(
-                                \`${archivo.retroalimentacion}\`
-                            )"
+                            data-retro="${encodeURIComponent(archivo.retroalimentacion)}"
+                            onclick="mostrarRetro(this)"
                         >
                             Ver feedback
                         </button>
@@ -166,3 +165,31 @@ fetch(
 
     contenedor.innerHTML = html;
 });
+
+function mostrarRetro(boton){
+
+    const retro =
+        decodeURIComponent(
+            boton.dataset.retro
+        );
+
+    Swal.fire({
+
+        title: "Retroalimentación IA",
+
+        html: `
+            <div style="
+                text-align:left;
+                line-height:1.6;
+                font-size:15px;
+            ">
+                ${retro}
+            </div>
+        `,
+
+        icon: "info",
+
+        confirmButtonText: "Entendido"
+
+    });
+}
