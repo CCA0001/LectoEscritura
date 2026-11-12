@@ -311,17 +311,6 @@ class ModuloLecturaController {
     
 }
 
-$accion = Router::resolver(
-    "mostrarModuloLectura",
-    [
-        "mostrarModuloLectura",
-        "obtenerTextoFacilAleatorio",
-        "obtenerTextosDificilesAleatorios",
-        "guardarIntentoLectura"
-    ],
-    "usuario"
-);
-
 $controller = new ModuloLecturaController($conexion);
 
 $controller->$accion();

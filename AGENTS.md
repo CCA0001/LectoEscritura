@@ -39,8 +39,9 @@ C:\xampp\php\php.exe -l controllers\AuthController.php
 # sintaxis de todos los JS
 node --check public\JS\escapar.js
 
-# base de datos (cliente MariaDB de XAMPP; requiere --ssl)
-C:\xampp\mysql\bin\mysql.exe --ssl -h <host> -u <user> -p <db> -e "SELECT 1;"
+# MySQL local de XAMPP (arrancarlo primero; el my.ini válido es el de mysql\bin\)
+C:\xampp\mysql\bin\mysqld.exe --defaults-file=C:\xampp\mysql\bin\my.ini
+C:\xampp\mysql\bin\mysql.exe -u lectoescritura -p --skip-ssl -D lectoescritura_test -e "SELECT 1;"
 
 # servidor embebido (opcional; el webroot debe ser la raíz del repo)
 C:\xampp\php\php.exe -S localhost:8000 -t .
@@ -50,16 +51,19 @@ No hay lint, ni typecheck, ni tests. **La verificación es manual**: abrir la p�
 
 ## Entorno local
 
-- XAMPP en `C:\xampp` (PHP 8.5.12). VirtualHost ya configurado en `C:\xampp\apache\conf\extra\lectoescritura.conf` → `http://127.0.0.1/`.
+- XAMPP en `C:\xampp` (PHP 8.5.12, MariaDB 10.11). VirtualHost ya configurado en `C:\xampp\apache\conf\extra\lectoescritura.conf` → `http://127.0.0.1/`.
 - Para `lectoescritura.local` hay que agregar `127.0.0.1 lectoescritura.local` al archivo `hosts` (**requiere permisos de administrador**).
 - **El DocumentRoot debe ser la raíz del repo** (todo el direccionamiento es `../public/...`).
-- MySQL de Azure exige **SSL** y **allowlist de IP**: la IP pública de la máquina debe estar habilitada en el firewall del servidor. Si no, la app responde `503 "No hay conexión con la base de datos..."` a los ~5 s.
+- **Base de datos**: MySQL local de XAMPP. Arrancarlo con `mysqld.exe --defaults-file=C:\xampp\mysql\bin\my.ini` (el `my.ini` válido es el de `mysql\bin\`, **no** el de `mysql\`). La BD `lectoescritura_test` ya está importada y el usuario de app `lectoescritura` ya existe.
+- **SSL**: el MySQL local tiene `have_ssl = DISABLED` → el `.env` lleva `DB_SSL=0`. Con `DB_SSL=1` falla con *"MySQL server has gone away"*. En Azure va `DB_SSL=1`.
+- **`ext-curl` no carga en Apache** (conflicto de DLLs con OpenSSL entre `php\` y `apache\bin\`). No es bloqueante: `IAEscrituraService` usa curl si está disponible y cae a streams HTTP (solo `ext-openssl`). No reintroducir una llamada directa a `curl_init()` sin fallback.
 - Túnel para la demo: `cloudflared tunnel --url http://localhost:80` (o `ngrok http 80`).
 
 ## Base de datos
 
-- Sin migraciones ni dump en el repo: el esquema es implícito en los modelos. Tablas en minúsculas pegadas: `usuario`, `admin`, `textolectura`, `preguntalectura`, `opcionpregunta`, `intentolectura`, `respuestalectura`, `logro`, `usuariologro`, `nivelprogreso`, `niveldificultad`, `tipotexto`, `archivoescritura`, `detallesejercicioescritura`.
+- Sin migraciones ni dump versionado en el repo: el esquema es implícito en los modelos. Tablas en minúsculas pegadas: `usuario`, `admin`, `textolectura`, `preguntalectura`, `opcionpregunta`, `intentolectura`, `respuestalectura`, `logro`, `usuariologro`, `nivelprogreso`, `niveldificultad`, `tipotexto`, `archivoescritura`, `detallesejercicioescritura`.
 - `TextoModel::obtenerTextoFacil` = 1 texto aleatorio con `ID_dificultad = 1`; `obtenerTextoAvanzado` = 4 con dificultad 2 o 3. Ambos exigen `estado = 'Activo'`.
+- La columna `opcionpregunta.es_correcta` **nunca** debe salir del servidor: se elimina con `unset()` en `OpcionPreguntaModel::obtenerOpcionesPorPregunta`. Si vuelve a `SELECT *` sin el `unset`, se filtra la clave de respuestas.
 
 ## Módulo de escritura (IA)
 

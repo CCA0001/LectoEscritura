@@ -18,15 +18,46 @@
 
    `.env` **no** se versiona. Ya existe un `.env` funcional en este equipo.
 
-2. El servidor MySQL de Azure exige dos cosas:
-   - **SSL** (ya está forzado en `config/conexion.php`).
-   - **Allowlist de IP**: hay que agregar la IP pública de quien se conecta
-     en *Azure → MySQL flexible server → Networking → Firewall rules*.
-     La IP pública actual de esta máquina es `190.67.226.48` (cambia con
-     la red WiFi; se consulta en https://api.ipify.org).
+2. Base de datos. Hay dos escenarios:
 
-   Si la IP no está en el allowlist, la app responde:
-   `"No hay conexión con la base de datos..."` tras ~5 segundos.
+   **A) MySQL local de XAMPP (modo actual)**
+
+   - Arrancar MySQL desde el panel de XAMPP, o:
+
+     ```
+     C:\xampp\mysql\bin\mysqld.exe --defaults-file=C:\xampp\mysql\bin\my.ini
+     ```
+
+   - El `my.ini` correcto es el de `mysql\bin\`, **no** el de `mysql\`.
+   - El servidor local tiene SSL deshabilitado (`have_ssl = DISABLED`),
+     por eso el `.env` debe llevar `DB_SSL=0`. Con `DB_SSL=1` la
+     conexión falla con *"MySQL server has gone away"*.
+   - Usuario de la app (ya creado, con permisos solo sobre la BD):
+
+     ```
+     C:\xampp\mysql\bin\mysql.exe -u root --skip-ssl
+     ```
+
+     ```sql
+     CREATE USER IF NOT EXISTS 'lectoescritura'@'localhost' IDENTIFIED BY '...';
+     GRANT ALL PRIVILEGES ON lectoescritura_test.* TO 'lectoescritura'@'localhost';
+     FLUSH PRIVILEGES;
+     ```
+
+   - Importar el dump en Workbench: abrir el `.sql` y ejecutar. El dump
+     usa `CREATE DATABASE IF NOT EXISTS`, no borra nada.
+
+   **B) MySQL de Azure** (si se vuelve a usar)
+
+   - `DB_SSL=1` en el `.env` (Azure exige conexión cifrada).
+   - Hay que agregar la IP pública de quien se conecta en
+     *Azure → MySQL flexible server → Networking → Firewall rules*.
+     La IP se consulta en https://api.ipify.org (en esta máquina es
+     `190.67.226.48`, pero cambia con la red WiFi).
+
+   Si la configuración falla, la app responde:
+   `"No hay conexión con la base de datos. Verificá el host, el puerto y
+   las credenciales del .env."` tras ~5 segundos.
 
 ## 3. Levantar la app
 
@@ -108,8 +139,10 @@ curl -i "http://localhost/controllers/AdminController.php?accion=agregarAdminist
 
 | Síntoma | Causa probable |
 |---|---|
-| "No hay conexión con la base de datos" | IP fuera del allowlist de Azure |
-| La app carga pero los datos no | Revisar `.env` (DB_NAME, DB_PASSWORD) |
+| "No hay conexión con la base de datos" | MySQL local apagado · `DB_SSL=1` con MySQL local · IP fuera del allowlist de Azure |
+| "MySQL server has gone away" al conectar | `DB_SSL=1` pero el servidor no tiene SSL (caso local) |
+| `Undefined function curl_init()` | La extensión `php_curl.dll` no carga en Apache. **No es bloqueante**: el servicio de IA cae automáticamente a streams HTTP (solo necesita `ext-openssl`). |
 | El PDF no se sube | Carpeta `storage/escrituras` sin permisos de escritura |
 | Los estilos no cargan | El DocumentRoot no es la raíz del repo |
 | 404 en `public/JS/...` | Rutas relativas rotas: revisar el VirtualHost |
+| "Your API key was reported as leaked" | La key de Gemini estaba versionada en Git: hay que **rotarla** en https://aistudio.google.com/apikey |

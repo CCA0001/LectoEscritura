@@ -4,6 +4,12 @@ require_once(__DIR__ . "/../config/ia.php");
 
 class IAEscrituraService {
 
+    /**
+     * Evalúa un archivo con Gemini.
+     *
+     * @param string $rutaArchivo Ruta absoluta al PDF
+     * @return array Evaluación con las notas, o ["error" => "..."] si falla
+     */
     public function evaluarArchivo($rutaArchivo){
 
         if(!file_exists($rutaArchivo)){
@@ -68,51 +74,33 @@ class IAEscrituraService {
         ];
 
         $url =
-            "https://generativelanguage.googleapis.com/v1beta/models/"
-            . GEMINI_MODEL .
-            ":generateContent?key="
-            . GEMINI_API_KEY;
+            "https://generativelanguage.googleapis.com/v1beta/models/" .
+            GEMINI_MODEL .
+            ":generateContent?key=" .
+            GEMINI_API_KEY;
 
-        $curl = curl_init();
+        $respuesta =
+            $this->enviarPeticion(
+                $url,
+                $body
+            );
 
-        curl_setopt_array($curl, [
-
-            CURLOPT_URL => $url,
-
-            CURLOPT_RETURNTRANSFER => true,
-
-            CURLOPT_POST => true,
-
-            CURLOPT_HTTPHEADER => [
-
-                "Content-Type: application/json"
-            ],
-
-            CURLOPT_POSTFIELDS =>
-                json_encode($body)
-        ]);
-
-        $response =
-            curl_exec($curl);
-
-        if(curl_errno($curl)){
+        if($respuesta === false){
 
             return [
                 "error" =>
-                    curl_error($curl)
+                    "No se pudo conectar con el servicio de IA"
             ];
         }
 
-        curl_close($curl);
-
         file_put_contents(
             __DIR__ . "/debug_gemini.txt",
-            $response
+            $respuesta
         );
 
         $resultado =
             json_decode(
-                $response,
+                $respuesta,
                 true
             );
 
@@ -122,9 +110,15 @@ class IAEscrituraService {
             )
         ){
 
+            // La API suele explicar el motivo (key inválida, cuota,
+            // contenido bloqueado). Se devuelve tal cual para poder
+            // diagnosticar sin adivinar.
+            $mensajeApi =
+                $resultado['error']['message'] ??
+                "Respuesta inválida de Gemini";
+
             return [
-                "error" =>
-                    "Respuesta inválida de Gemini"
+                "error" => $mensajeApi
             ];
         }
 
@@ -150,11 +144,124 @@ class IAEscrituraService {
         if(!$evaluacion){
 
             return [
-                "error" =>
-                    "No se pudo interpretar JSON IA"
+                "error" => "No se pudo interpretar JSON IA"
             ];
         }
 
         return $evaluacion;
+    }
+
+    /**
+     * Envía el POST a la API.
+     *
+     * Usa ext-curl cuando está disponible y, si no, cae a streams de
+     * PHP. Esto último es importante: en algunos servidores (por
+     * ejemplo el Apache de XAMPP) la extensión php_curl.dll no carga
+     * por conflicto de DLLs con OpenSSL, y la app se caía entera.
+     * Con streams solo hace falta ext-openssl.
+     *
+     * @return string|false Cuerpo de la respuesta, o false si falló
+     */
+    private function enviarPeticion($url, $body){
+
+        $json =
+            json_encode($body);
+
+        if(function_exists('curl_init')){
+
+            $respuesta =
+                $this->enviarConCurl(
+                    $url,
+                    $json
+                );
+
+            if($respuesta !== false){
+                return $respuesta;
+            }
+        }
+
+        return $this->enviarConStreams(
+            $url,
+            $json
+        );
+    }
+
+    private function enviarConCurl($url, $json){
+
+        $curl = curl_init();
+
+        curl_setopt_array($curl, [
+
+            CURLOPT_URL => $url,
+
+            CURLOPT_RETURNTRANSFER => true,
+
+            CURLOPT_POST => true,
+
+            CURLOPT_TIMEOUT => 60,
+
+            CURLOPT_HTTPHEADER => [
+
+                "Content-Type: application/json"
+            ],
+
+            CURLOPT_POSTFIELDS =>
+                $json
+        ]);
+
+        $respuesta =
+            curl_exec($curl);
+
+        if(curl_errno($curl)){
+
+            curl_close($curl);
+
+            return false;
+        }
+
+        curl_close($curl);
+
+        return $respuesta;
+    }
+
+    private function enviarConStreams($url, $json){
+
+        $contexto =
+            stream_context_create([
+
+                "http" => [
+
+                    "method" => "POST",
+
+                    "header" => "Content-Type: application/json\r\n",
+
+                    "content" => $json,
+
+                    "timeout" => 60,
+
+                    "ignore_errors" => true
+                ],
+
+                "ssl" => [
+
+                    "verify_peer" => true,
+
+                    "verify_peer_name" => true
+                ]
+            ]);
+
+        $respuesta =
+            @file_get_contents(
+                $url,
+                false,
+                $contexto
+            );
+
+        if($respuesta === false){
+
+            return false;
+        }
+
+        return $respuesta;
     }
 }
