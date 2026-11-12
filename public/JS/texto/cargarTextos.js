@@ -139,6 +139,16 @@ function renderizarTabla(textos){
                                     Cambiar estado
                                 </button>
 
+                                <button
+                                    onclick="
+                                        actualizarTexto(
+                                            ${texto.ID}
+                                        )
+                                    "
+                                >
+                                    Actualizar
+                                </button>
+
                             </td>
 
                         </tr>
@@ -150,6 +160,13 @@ function renderizarTabla(textos){
         </table>
     `;
 }
+function actualizarTexto(id){
+
+    window.location.href =
+
+        `../views/actualizarTexto.php?id=${id}`;
+}
+
 async function invertirEstado(
     id,
     estado

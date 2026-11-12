@@ -16,6 +16,7 @@ $accion = Router::resolver(
     [
         "mostrarVistaGestionarTextos" => "adminPagina",
         "mostrarVistaActualizar" => "adminPagina",
+        "obtenerTextoPorId" => "admin",
         "listarTextos" => "admin",
         "obtenerCombos" => "admin",
         "agregarTextoManualmente" => "admin",
@@ -240,6 +241,48 @@ class TextoController {
     }
 
 
+    /**
+     * Devuelve un texto en JSON. Lo usa el formulario de edición para
+     * llenarse solo, igual que el de logros y el de niveles.
+     */
+    public function obtenerTextoPorId(){
+
+        Guardias::exigirAdmin();
+
+        if(!isset($_GET['id'])){
+
+            echo json_encode([
+                "success" => false,
+                "mensaje" => "ID no recibido"
+            ]);
+
+            return;
+        }
+
+        $texto =
+            $this->TextoModel
+                ->obtenerTextoPorId(
+                    intval($_GET['id'])
+                );
+
+        if(!$texto){
+
+            echo json_encode([
+                "success" => false,
+                "mensaje" => "Texto no encontrado"
+            ]);
+
+            return;
+        }
+
+        header('Content-Type: application/json');
+
+        echo json_encode([
+            "success" => true,
+            "texto" => $texto
+        ]);
+    }
+
     public function mostrarVistaActualizar(){
 
         Guardias::exigirAdmin(false);
@@ -263,46 +306,77 @@ class TextoController {
 
         Guardias::exigirAdmin();
 
-        $dificultad = isset($_POST['dificultad'])
-            ? trim($_POST['dificultad'])
+        header('Content-Type: application/json');
+
+        $datos =
+            json_decode(
+                file_get_contents(
+                    "php://input"
+                ),
+                true
+            );
+
+        if(!$datos){
+
+            echo json_encode([
+                "success" => false,
+                "mensaje" => "No se recibieron datos"
+            ]);
+
+            return;
+        }
+
+        $dificultad = isset($datos['dificultad'])
+            ? intval($datos['dificultad'])
             : null;
 
-        $tipo_texto = isset($_POST['tipo_texto'])
-            ? trim($_POST['tipo_texto'])
-            : null;
-    
-        $titulo = isset($_POST['titulo'])
-            ? trim($_POST['titulo'])
+        $tipo_texto = isset($datos['tipo_texto'])
+            ? intval($datos['tipo_texto'])
             : null;
 
-        $contenido = isset($_POST['contenido'])
-            ? trim($_POST['contenido'])
+        $titulo = isset($datos['titulo'])
+            ? trim($datos['titulo'])
             : null;
 
-            
-        $fuente = isset($_POST['fuente'])
-            ? trim($_POST['fuente'])
-            : 'null';
-
-        $estado = isset($_POST['estado'])
-            ? trim($_POST['estado'])
+        $contenido = isset($datos['contenido'])
+            ? trim($datos['contenido'])
             : null;
 
-        
-        $id_admin = $_SESSION['id_admin'];
-        $id = isset($_POST['ID']) ? trim($_POST['ID']) : null;
+        // La fuente es opcional: si viene vacía se guarda como NULL y
+        // no como la cadena "null".
+        $fuente = isset($datos['fuente'])
+            ? trim($datos['fuente'])
+            : "";
+
+        if($fuente === "") {
+            $fuente = null;
+        }
+
+        $estado = isset($datos['estado'])
+            ? trim($datos['estado'])
+            : null;
+
+        $id = isset($datos['ID'])
+            ? intval($datos['ID'])
+            : null;
+
         if(
             !$dificultad ||
             !$tipo_texto ||
             !$titulo ||
             !$contenido ||
-            !$fuente ||
-            !$estado
+            !$estado ||
+            !$id
         ){
-            echo "Todos los campos son obligatorios";
+            echo json_encode([
+                "success" => false,
+                "mensaje" => "Todos los campos son obligatorios"
+            ]);
+
             return;
         }
 
+        $id_admin = $_SESSION['id_admin'];
 
         $resultado = $this->TextoModel
             ->actualizarTexto(
@@ -315,17 +389,20 @@ class TextoController {
                 $estado,
                 $id
             );
+
         if($resultado){
 
-            header(
-                "Location: TextoController.php?accion=listarTextos"
-            );
-
-            exit();
+            echo json_encode([
+                "success" => true,
+                "mensaje" => "Texto actualizado correctamente"
+            ]);
 
         } else {
 
-            echo "Error al actualizar";
+            echo json_encode([
+                "success" => false,
+                "mensaje" => "Error al actualizar"
+            ]);
         }
     }
 
