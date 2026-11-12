@@ -1,53 +1,84 @@
 # AGENTS.md — LectoEscritura (EVAL)
 
-Plain PHP 8 + MySQL web app for reading/writing evaluation with gamification (XP, streaks, badges) and Gemini-based PDF grading. **No framework, no Composer, no npm, no build step, no tests, no CI, no `.htaccess`, no router.**
+PHP 8 + MySQL (Azure) para evaluar Lectura Crítica y Comunicación Escrita, con gamificación (XP, racha, logros) y calificación de PDFs con Gemini. **Sin framework, sin Composer, sin npm, sin build, sin tests, sin CI, sin router propio.**
 
-## Run it
+## Arquitectura (verificada)
 
-- Serve the **repository root as the document root** (Apache/XAMPP). Everything depends on this: pages live one level deep (`views/`, `controllers/`) and reference assets as `../public/...`.
-  - `php -S localhost:8000` from the root mostly works, but PHP's built-in server sets CWD to the docroot, so **PDF uploads land in the wrong place** (`ModuloEscrituraController::subirArchivo` uses a CWD-relative `../public/ejercicios/...`). Prefer Apache/XAMPP.
-- Entry points (no index): `views/login.html` (user), `views/login_admin.php` (admin), `views/pantalla_principal_Usuario.php`, `views/pantalla_principal_Admin.php`.
-- Verification is manual: open the page, or `curl` a controller endpoint. There is no lint/typecheck/test command to run.
+```
+config/          config.php (cargador .env) · router.php · guardias.php
+                 conexion.php · ia.php · vista_admin.php · vista_usuario.php
+                 INSTALACION.md · httpd-lectoescritura.conf (VirtualHost)
+controllers/     8 controladores: dispatcher con lista blanca de acciones
+models/          14 modelos: mysqli_prepare + bind_param
+services/        IAEscrituraService.php (Gemini) · debug_gemini.txt (log, ignorado)
+views/           16 vistas PHP/HTML
+public/          css/ · JS/ · ejercicios/ (obsoleto) → los PDFs nuevos van a storage/
+storage/escrituras/  PDFs subidos, FUERA del webroot
+```
 
-## Request flow
+**Flujo:** `views/*.php` → `fetch("../controllers/XController.php?accion=metodo")` → `Router::resolver()` valida acción+rol → controlador → `echo json_encode([...])` → JS pinta el DOM.
 
-- Pages: `views/*.php` (mostly HTML with a `<script>` block per page).
-- API: `controllers/<Name>Controller.php?accion=<method>` — each controller dispatches with `method_exists($controller, $accion)` and a default action (`$_GET['accion'] ?? '<default>'`). Any public method of the controller is reachable via `accion`, so add a guard for new sensitive methods.
-- Responses are raw `echo json_encode([...])` with `success` / `mensaje` keys; the client is vanilla `fetch()` in `public/JS/**` (no bundler, no modules).
-- Auth is PHP session based. Session keys differ by role: users use `$_SESSION['id_usuario']`, admins use `$_SESSION['id']`. `views/pantalla_principal_Admin.php` reads `$_SESSION['nombre']` (never set) and its auth check is commented out.
+## Reglas de oro del código
 
-## Configuration (hardcoded, committed)
+- **Dispatcher**: todo controlador usa `Router::resolver($defecto, [accion => rol])`. **Nunca** reintroducir `method_exists` (dejó abiertos todos los métodos públicos). Roles: `publico`, `admin`, `adminPagina`, `usuario`, `usuarioPagina`.
+- **Orden de arranque**: `session_start()` → `router.php` → modelos → `Router::resolver()` → **después** `conexion.php`. La conexión va al final a propósito: si la BD está caída, una petición no autorizada debe seguir devolviendo 401 y no 503.
+- **Los `require` usan `__DIR__`**, no rutas relativas al CWD: el repo funciona igual en Apache, en el servidor embebido de PHP y en la CLI.
+- **Claves de sesión**: usuario → `id_usuario`; administrador → `id_admin` (también `id` y `nombre` por compatibilidad); `rol` = `usuario`|`admin`. No inventar otras.
+- **Vistas**: toda vista que exija sesión incluye `config/vista_admin.php` o `config/vista_usuario.php` en la primera línea (se abren directo por URL).
+- **Consultas**: solo `mysqli_prepare` + `bind_param`. No hay SQL dinámico en los modelos.
+- **XSS**: todo dato de la BD que se pinte con `innerHTML` debe pasar por `escaparHTML()` / `escaparAtributo()` (`public/JS/escapar.js`). El script debe estar incluido en la vista.
+- **Secretos**: solo en `.env` (ignorado por Git). `config/config.php` los lee; `Config::obtener()` falla con mensaje claro si falta.
+- **Idioma**: identificadores, UI y comentarios en español.
 
-- `config/conexion.php` — Azure MySQL host, user, password, DB `lectoescritura_test`; SSL is mandatory (`mysqli_ssl_set` + `MYSQLI_CLIENT_SSL`). Edit here to point at another DB; there is no `.env`.
-- `config/ia.php` — Gemini API key + `GEMINI_MODEL` (`gemini-2.5-flash`).
-- Both secrets are in git history; don't introduce new ones — reuse these two files.
+## Comandos
 
-## Database
+```powershell
+# sintaxis de todos los PHP
+C:\xampp\php\php.exe -l controllers\AuthController.php
 
-- No migrations, no SQL dump, no schema files in the repo. Schema is implicit in the models.
-- Table names are lowercase-concatenated, e.g. `usuario`, `admin`, `textolectura`, `preguntalectura`, `opcionpregunta`, `intentolectura`, `respuestalectura`, `logro`, `usuariologro`, `nivelprogreso`, `niveldificultad`, `tipotexto`, `archivoescritura`, `detallesejercicioescritura`.
-- Models use `mysqli_prepare` + `bind_param`. Keep that pattern; raw string interpolation into SQL exists only in legacy code (see below).
-- `TextoModel::obtenerTextoFacil` = 1 random text with `ID_dificultad = 1`; `obtenerTextoAvanzado` = 4 random texts with difficulty 2 or 3. Both require `estado = 'Activo'`.
+# sintaxis de todos los JS
+node --check public\JS\escapar.js
 
-## Writing module (AI grading)
+# base de datos (cliente MariaDB de XAMPP; requiere --ssl)
+C:\xampp\mysql\bin\mysql.exe --ssl -h <host> -u <user> -p <db> -e "SELECT 1;"
 
-- Upload: PDF only (`$_FILES['archivo_pdf']`), stored in `public/ejercicios/pdf_escritura/` as `escritura_<uniqid>.pdf`; the DB stores the repo-relative path (`public/ejercicios/...`).
-- Grading: `services/IAEscrituraService.php` sends the PDF (base64 inline) to Gemini and expects **strict JSON** with `coherencia, cohesion, gramatica, argumentacion, estructura, puntaje_promedio, retroalimentacion`. Markdown fences are stripped before `json_decode`; a parse failure returns `{"error": ...}`.
-- Every Gemini response is dumped to `services/debug_gemini.txt` — check it when grading misbehaves.
-- XP for writing comes from `puntaje_promedio`; reading XP comes from the reading score (`UsuarioModel::sumarXp`).
+# servidor embebido (opcional; el webroot debe ser la raíz del repo)
+C:\xampp\php\php.exe -S localhost:8000 -t .
+```
 
-## Known traps (verified)
+No hay lint, ni typecheck, ni tests. **La verificación es manual**: abrir la página o hacer `curl` al endpoint.
 
-- `controllers/ModuloEscrituraController::evaluarArchivo` calls `$this->UsuarioModel->sumarXp(...)` but `UsuarioModel` is never instantiated on that controller → fatal error at the end of a grading request.
-- `public/ia/evaluar_escritura.php` is **dead legacy code**: it includes a non-existent `config.php` and redirects to a non-existent `controllers/controlador_escritura.php`. Don't wire anything to it.
-- Case mismatches that only work on Windows: `controllers/LogroController.php` requires `../models/logroModel.php` (file is `LogroModel.php`), and views reference `../public/JS/auth/logout.js` (directory is `Auth/`). They will 404 on a case-sensitive (Linux) deploy.
-- `views/pantalla_principal_Admin.php` links `../css/dropdown_usuario.css`, which does not exist.
-- `AuthController::verificarLogrosRacha($idUsuario, $racha)` is called with 3 args but declared with 2 — the `$xp` argument is dropped.
-- `registerUsuario` password check uses `if(!$contrasenia == $confirmar_contrasenia)` (truthiness, not strict compare).
+## Entorno local
 
-## Conventions
+- XAMPP en `C:\xampp` (PHP 8.5.12). VirtualHost ya configurado en `C:\xampp\apache\conf\extra\lectoescritura.conf` → `http://127.0.0.1/`.
+- Para `lectoescritura.local` hay que agregar `127.0.0.1 lectoescritura.local` al archivo `hosts` (**requiere permisos de administrador**).
+- **El DocumentRoot debe ser la raíz del repo** (todo el direccionamiento es `../public/...`).
+- MySQL de Azure exige **SSL** y **allowlist de IP**: la IP pública de la máquina debe estar habilitada en el firewall del servidor. Si no, la app responde `503 "No hay conexión con la base de datos..."` a los ~5 s.
+- Túnel para la demo: `cloudflared tunnel --url http://localhost:80` (o `ngrok http 80`).
 
-- One controller per feature area (`controllers/`), one model per table (`models/`), views in `views/`, JS in `public/JS/<area>/`, CSS in `public/css/`. JS file names mirror the endpoint they call (e.g. `public/JS/logro/agregarLogro.js` → `LogroController.php?accion=agregarLogro`).
-- Includes are relative (`require_once("../models/XModel.php")`); do not switch to absolute/namespace-based paths — the relative scheme is what makes the "docroot = repo root" layout work.
-- The codebase is written in Spanish (identifiers, UI strings, comments). Match that when adding code.
-- Git: `master` is the default branch; work branches seen in history: `develop`, `main`, `nhara`; changes land via PRs merged from `develop`.
+## Base de datos
+
+- Sin migraciones ni dump en el repo: el esquema es implícito en los modelos. Tablas en minúsculas pegadas: `usuario`, `admin`, `textolectura`, `preguntalectura`, `opcionpregunta`, `intentolectura`, `respuestalectura`, `logro`, `usuariologro`, `nivelprogreso`, `niveldificultad`, `tipotexto`, `archivoescritura`, `detallesejercicioescritura`.
+- `TextoModel::obtenerTextoFacil` = 1 texto aleatorio con `ID_dificultad = 1`; `obtenerTextoAvanzado` = 4 con dificultad 2 o 3. Ambos exigen `estado = 'Activo'`.
+
+## Módulo de escritura (IA)
+
+- Subida: PDF-only, MIME real validado con `finfo`, máx. 10 MB, nombre `escritura_<random_bytes>.pdf`, guardado en `storage/escrituras/` (**fuera del webroot**). La BD guarda la ruta relativa `storage/escrituras/...`.
+- `verArchivo` sirve el PDF validando que pertenezca al usuario; nunca se enlaza la ruta directa.
+- `services/IAEscrituraService.php` espera JSON estricto de Gemini con `coherencia, cohesion, gramatica, argumentacion, estructura, puntaje_promedio, retroalimentacion`; quita cercas markdown antes de decodificar.
+- Cada respuesta de Gemini se vuelca en `services/debug_gemini.txt` (ignorado por Git) — revisarlo cuando la calificación falle.
+- XP de escritura = `puntaje_promedio`; XP de lectura = puntaje del intento.
+
+## Trampas conocidas
+
+- `public/ia/evaluar_escritura.php` es **código muerto**: incluye un `config.php` inexistente y redirige a `controllers/controlador_escritura.php` inexistente. No cablear nada ahí.
+- `public/JS/escritura/mostrarRetroalimentacion.js` está vacío (0 bytes) y `public/JS/racha_alerta.js` no está incluido en ninguna vista.
+- `AuthController::verificarLogrosRacha` usa IDs de logro fijos (2 y 8): dependen de la data sembrada.
+- `views/pantalla_principal_Admin.php` enlaza `../css/dropdown_usuario.css`, que no existe.
+- `views/actualizarTexto.php` está vacío: la edición de textos no tiene UI (el endpoint `actualizarTexto` sí existe).
+- `TextoController::actualizarTexto` redirige a `TextoController.php?accion=listarTextos`, que devuelve JSON, no una vista.
+
+## Git
+
+- Rama de trabajo del MVP: `feature/mvp-noviembre`. `master` es la rama por defecto; el equipo suele integrar desde `develop`.
+- Los PDFs de trabajos de estudiantes y `services/debug_gemini.txt` están fuera del índice de Git (`.gitignore`), pero los archivos legacy siguen en disco.
