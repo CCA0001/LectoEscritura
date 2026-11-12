@@ -78,9 +78,9 @@ No hay lint, ni typecheck, ni tests. **La verificación es manual**: abrir la p�
 - `public/ia/evaluar_escritura.php` es **código muerto**: incluye un `config.php` inexistente y redirige a `controllers/controlador_escritura.php` inexistente. No cablear nada ahí.
 - `public/JS/escritura/mostrarRetroalimentacion.js` está vacío (0 bytes) y `public/JS/racha_alerta.js` no está incluido en ninguna vista.
 - `AuthController::verificarLogrosRacha` usa IDs de logro fijos (2 y 8): dependen de la data sembrada.
-- `views/pantalla_principal_Admin.php` enlaza `../css/dropdown_usuario.css`, que no existe.
-- `views/actualizarTexto.php` está vacío: la edición de textos no tiene UI (el endpoint `actualizarTexto` sí existe).
-- `TextoController::actualizarTexto` redirige a `TextoController.php?accion=listarTextos`, que devuelve JSON, no una vista.
+- `views/pantalla_principal_Admin.php` enlaza `../css/dropdown_usuario.css`, que no existe (404 en consola).
+- El **navbar es `position: fixed`**: en pruebas automatizadas con Puppeteer, un `page.click()` por coordenadas puede caer bajo el navbar y no disparar el botón. Usar `elemento.click()` sintético.
+- `views/actualizarTexto.php` se sirve desde `/views/` (no desde el controlador): sus enlaces internos usan `../views/...` para funcionar desde cualquier origen.
 
 ## Git
 
