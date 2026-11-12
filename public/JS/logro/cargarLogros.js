@@ -84,11 +84,11 @@ function renderizarTabla(logros){
                 </td>
 
                 <td class="td-nombre">
-                    ${logro.nombre}
+                    ${escaparHTML(logro.nombre)}
                 </td>
 
                 <td class="td-desc">
-                    ${logro.descripcion}
+                    ${escaparHTML(logro.descripcion)}
                 </td>
 
                 <td class="td-xp">
@@ -96,14 +96,14 @@ function renderizarTabla(logros){
                 </td>
 
                 <td class="td-estado">
-                    ${logro.estado}
+                    ${escaparHTML(logro.estado)}
                 </td>
 
                 <td>
 
                     <button
                         class="btn-estado"
-                        onclick="invertirEstado(${logro.ID},'${logro.estado}')"
+                        onclick="invertirEstado(${logro.ID},'${escaparAtributo(logro.estado)}')"
                     >
                         Cambiar estado
                     </button>

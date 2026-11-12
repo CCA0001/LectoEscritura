@@ -1,3 +1,8 @@
+<?php
+
+require_once(__DIR__ . "/../config/vista_usuario.php");
+
+?>
 <!DOCTYPE html>
 <html lang="es">
 
@@ -109,6 +114,7 @@
 
 </main>
 
+<script src="../public/JS/escapar.js"></script>
 <script src="../public/JS/logro/cargarLogrosUsuario.js"></script>
 
 </body>

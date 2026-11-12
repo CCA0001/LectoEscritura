@@ -1,7 +1,19 @@
 <?php
-require_once("../config/conexion.php");
-require_once("../models/UsuarioModel.php");
-require_once("../models/LogroModel.php");
+require_once(__DIR__ . "/../config/router.php");
+require_once(__DIR__ . "/../config/guardias.php");
+require_once(__DIR__ . "/../models/UsuarioModel.php");
+require_once(__DIR__ . "/../models/LogroModel.php");
+
+$accion = Router::resolver(
+    "obtenerPerfil",
+    [
+        "obtenerPerfil" => "usuario",
+        "obtenerLogrosUsuario" => "usuario"
+    ]
+);
+
+// La conexión se abre DESPUÉS de autorizar.
+require_once(__DIR__ . "/../config/conexion.php");
 
 class UsuarioController {
 
@@ -16,7 +28,7 @@ class UsuarioController {
 
 public function obtenerPerfil()
 {
-    session_start();
+    Guardias::exigirUsuario();
 
     $idUsuario =
         $_SESSION['id_usuario'];
@@ -59,7 +71,7 @@ public function obtenerPerfil()
 
 public function obtenerLogrosUsuario(){
 
-    session_start();
+    Guardias::exigirUsuario();
 
     header('Content-Type: application/json');
 
@@ -91,15 +103,6 @@ public function obtenerLogrosUsuario(){
 
 $controller = new UsuarioController($conexion);
 
-$accion = $_GET['accion'] ?? 'obtenerPerfil';
-
-if(method_exists($controller, $accion)){
-
-    $controller->$accion();
-
-}else{
-
-    echo "Acción no válida";
-}
+$controller->$accion();
 
 ?>

@@ -9,6 +9,9 @@ class LogroController{
     }
 
     public function listarLogros(){
+
+        Guardias::exigirAdmin();
+
         $logros = $this->LogroModel->obtenerTodosLosLogros();
 
         echo json_encode([
@@ -20,6 +23,8 @@ class LogroController{
     }
 
 public function obtenerLogro(){
+
+    Guardias::exigirAdmin();
 
     header(
         'Content-Type: application/json'
@@ -54,6 +59,8 @@ public function obtenerLogro(){
 }
 
 public function agregarLogros(){
+
+    Guardias::exigirAdmin();
 
     header(
         'Content-Type: application/json'
@@ -125,6 +132,8 @@ public function agregarLogros(){
 
     public function actualizarLogros(){
 
+    Guardias::exigirAdmin();
+
     header(
         'Content-Type: application/json'
     );
@@ -174,6 +183,8 @@ public function agregarLogros(){
 
     public function invertirEstado(){
 
+
+    Guardias::exigirAdmin();
 
     header(
         'Content-Type: application/json'
@@ -230,31 +241,50 @@ public function agregarLogros(){
     }
     
     public function mostrarVistaActualizar(){
+
+        Guardias::exigirAdmin(false);
+
         $id = $_GET['id'];
 
         $logro = $this->LogroModel->obtenerLogroPorId($id);
 
-        include("../views/actualizarLogro.php");
+        include(__DIR__ . "/../views/actualizarLogro.php");
     }
 
     public function mostrarVistaGestionarLogros(){
 
-        include("../views/gestionarLogros.php");     
+        Guardias::exigirAdmin(false);
+
+        include(__DIR__ . "/../views/gestionarLogros.php");     
     }
 }
 
 session_start();
 
-require_once("../config/conexion.php");
-require_once("../models/logroModel.php");
+require_once(__DIR__ . "/../config/router.php");
+require_once(__DIR__ . "/../config/guardias.php");
+// Ojo: el archivo real se llama LogroModel.php. En Windows la diferencia
+// de mayúsculas pasa desapercibida, pero en Linux el require falla.
+require_once(__DIR__ . "/../models/LogroModel.php");
+
+$accion = Router::resolver(
+    "mostrarVistaGestionarLogros",
+    [
+        "mostrarVistaGestionarLogros" => "adminPagina",
+        "mostrarVistaActualizar" => "adminPagina",
+        "listarLogros" => "admin",
+        "obtenerLogro" => "admin",
+        "agregarLogros" => "admin",
+        "actualizarLogros" => "admin",
+        "invertirEstado" => "admin"
+    ]
+);
+
+// La conexión se abre DESPUÉS de autorizar.
+require_once(__DIR__ . "/../config/conexion.php");
 
 $controller = new LogroController($conexion);
 
-$accion = $_GET['accion'] ?? 'mostrarVistaGestionarLogros';
-if(method_exists($controller, $accion)){
-    $controller->$accion();
-} else {
-    echo "Accion no valida";
-}
+$controller->$accion();
 
 ?>

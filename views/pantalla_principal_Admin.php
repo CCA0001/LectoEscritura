@@ -1,12 +1,9 @@
 <?php
-session_start(); 
-/*
-if (!isset($_SESSION['id_admin'])) {
-    header("Location: login.html");
-    exit();
-}
 
-*/
+// La vista se puede abrir directamente por URL, así que la guarda
+// va acá (antes estaba comentada y el panel quedaba abierto).
+require_once(__DIR__ . "/../config/vista_admin.php");
+
 $nombre_real = $_SESSION['nombre'] ?? 'Administrador';
 
 ?>

@@ -51,15 +51,15 @@ fetch(
             <tr>
 
                 <td>
-                    ${archivo.nombre_archivo}
+                    ${escaparHTML(archivo.nombre_archivo)}
                 </td>
 
                 <td>
-                    ${archivo.tipo_nombre ?? '—'}
+                    ${escaparHTML(archivo.tipo_nombre ?? '—')}
                 </td>
 
                 <td>
-                    ${archivo.dificultad_nombre ?? '—'}
+                    ${escaparHTML(archivo.dificultad_nombre ?? '—')}
                 </td>
 
                 <td>
@@ -69,7 +69,7 @@ fetch(
                 <td>
 
                     <a
-                        href="${archivo.url_archivo}"
+                        href="../controllers/ModuloEscrituraController.php?accion=verArchivo&id=${archivo.ID}"
                         target="_blank"
                         class="btn-ver"
                     >

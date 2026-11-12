@@ -2,8 +2,25 @@
 
 session_start();
 
-require_once("../config/conexion.php");
-require_once("../models/AdminModel.php");
+require_once(__DIR__ . "/../config/router.php");
+require_once(__DIR__ . "/../models/AdminModel.php");
+
+$accion = Router::resolver(
+    "mostrarVistaGestionarAministradores",
+    [
+        "mostrarVistaGestionarAministradores" => "adminPagina",
+        "mostrarVistaActualizar" => "adminPagina",
+        "obtenerAdmin" => "admin",
+        "listarAdministradores" => "admin",
+        "agregarAdministrador" => "admin",
+        "invertirEstadoAdmin" => "admin",
+        "actualizarAdmin" => "admin"
+    ]
+);
+
+// La conexión con la base de datos se abre DESPUÉS de autorizar: así
+// una petición no autorizada se rechaza sin tocar la BD.
+require_once(__DIR__ . "/../config/conexion.php");
 
 class AdminController {
 
@@ -15,6 +32,9 @@ class AdminController {
     }
 
     public function obtenerAdmin(){
+
+        Guardias::exigirAdmin();
+
         $id = $_GET['id'];
 
         $adminActual = $this->AdminModel->obtenerAdminPorId($id);
@@ -35,6 +55,8 @@ class AdminController {
 
     public function listarAdministradores(){
 
+        Guardias::exigirAdmin();
+
         $admins = $this->AdminModel
             ->obtenerTodosLosAdministradores();
 
@@ -47,6 +69,8 @@ class AdminController {
     }
 
     public function agregarAdministrador(){
+
+    Guardias::exigirAdmin();
 
     header(
         'Content-Type: application/json'
@@ -158,6 +182,7 @@ class AdminController {
 
     public function invertirEstadoAdmin(){
 
+        Guardias::exigirAdmin();
 
         header(
         'Content-Type: application/json'
@@ -206,7 +231,9 @@ class AdminController {
     }
 
     public function actualizarAdmin(){
-            
+
+        Guardias::exigirAdmin();
+
         header(
             'Content-Type: application/json'
         );
@@ -279,27 +306,22 @@ class AdminController {
 
     public function mostrarVistaActualizar(){
 
-        include("../views/actualizarAdmin.php");
+        Guardias::exigirAdmin(false);
+
+        include(__DIR__ . "/../views/actualizarAdmin.php");
     }
 
     public function mostrarVistaGestionarAministradores(){
 
-        include("../views/gestionarAdministradores.php");
+        Guardias::exigirAdmin(false);
+
+        include(__DIR__ . "/../views/gestionarAdministradores.php");
     }
 }
 
 
 $controller = new AdminController($conexion);
 
-$accion = $_GET['accion'] ?? 'mostrarVistaGestionarAministradores';
-
-if(method_exists($controller, $accion)){
-
-    $controller->$accion();
-
-}else{
-
-    echo "Acción no válida";
-}
+$controller->$accion();
 
 ?>

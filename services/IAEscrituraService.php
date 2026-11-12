@@ -1,6 +1,6 @@
 <?php
 
-require_once("../config/ia.php");
+require_once(__DIR__ . "/../config/ia.php");
 
 class IAEscrituraService {
 

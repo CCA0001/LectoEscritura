@@ -1,5 +1,10 @@
 <?php
 ?>
+<?php
+
+require_once(__DIR__ . "/../config/vista_admin.php");
+
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -240,6 +245,7 @@
 
 </div>
 
+<script src="../public/JS/escapar.js"></script>
 <script src="../public/JS/administradores/cargarAdmins.js"></script>
 
 <script src="../public/JS/administradores/agregarAdmin.js"></script>

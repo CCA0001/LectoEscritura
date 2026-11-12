@@ -40,7 +40,7 @@ fetch(
                 <div class="ejercicio-pregunta">
 
                     <h4>
-                        ${pi + 1}. ${pregunta.texto_pregunta}
+                        ${pi + 1}. ${escaparHTML(pregunta.texto_pregunta)}
                     </h4>
 
             `;
@@ -58,7 +58,7 @@ fetch(
                         >
 
                         <span>
-                            ${opcion.texto_opcion}
+                            ${escaparHTML(opcion.texto_opcion)}
                         </span>
 
                     </label>
@@ -84,7 +84,7 @@ fetch(
                     </span>
 
                     <h3>
-                        ${texto.titulo}
+                        ${escaparHTML(texto.titulo)}
                     </h3>
 
                 </div>
@@ -92,7 +92,7 @@ fetch(
                 <div class="ejercicio-avanzado-body">
 
                     <p class="ejercicio-texto">
-                        ${texto.contenido}
+                        ${escaparHTML(texto.contenido)}
                     </p>
 
                     <p class="ejercicio-preguntas-label">

@@ -1,4 +1,7 @@
 <?php
+
+require_once(__DIR__ . "/../config/vista_admin.php");
+
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -242,6 +245,7 @@
 
 </div>
 <script src="../public/JS/texto/cargarDificultadYTipoTexto.js"></script>
+<script src="../public/JS/escapar.js"></script>
 <script src="../public/JS/texto/cargarTextos.js"></script>
 <script src="../public/JS/texto/agregarTexto.js"></script>
 

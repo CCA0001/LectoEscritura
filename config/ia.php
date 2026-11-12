@@ -1,11 +1,20 @@
 <?php
 
+require_once(__DIR__ . "/config.php");
+
+Config::cargar();
+
 define(
-    "GEMINI_API_KEY","AIzaSyBiLfUzZVX9w66iRCZ0NUpqGN3AXDte45s"
+    "GEMINI_API_KEY",
+    Config::obtener(
+        "GEMINI_API_KEY"
+    )
 );
 
 define(
     "GEMINI_MODEL",
-    "gemini-2.5-flash"
+    Config::get(
+        "GEMINI_MODEL",
+        "gemini-2.5-flash"
+    )
 );
-?>

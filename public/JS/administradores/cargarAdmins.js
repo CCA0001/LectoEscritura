@@ -85,28 +85,28 @@ function renderizarTabla(admins){
                 </td>
 
                 <td class="td-nombres">
-                    ${admin.nombres}
+                    ${escaparHTML(admin.nombres)}
                 </td>
 
                 <td class="td-apellidos">
-                    ${admin.apellidos}
+                    ${escaparHTML(admin.apellidos)}
                 </td>
 
                 <td class="td-nombreU">
-                    ${admin.nombre_usuario} 
+                    ${escaparHTML(admin.nombre_usuario)} 
                 </td>
 
                 <td class="td-correo">
-                    ${admin.correo_electronico}
+                    ${escaparHTML(admin.correo_electronico)}
                 </td>
 
                 <td class="td-estado">
-                    ${admin.estado}
+                    ${escaparHTML(admin.estado)}
                 <td>
 
                     <button
                         class="btn-estado"
-                        onclick="invertirEstado(${admin.ID},'${admin.estado}')"
+                        onclick="invertirEstado(${admin.ID},'${escaparAtributo(admin.estado)}')"
                     >
                         Cambiar estado
                     </button>

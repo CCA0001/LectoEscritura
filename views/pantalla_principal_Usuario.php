@@ -1,3 +1,8 @@
+<?php
+
+require_once(__DIR__ . "/../config/vista_usuario.php");
+
+?>
 <!DOCTYPE html>
 <html lang="es">
 

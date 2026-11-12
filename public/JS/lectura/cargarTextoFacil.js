@@ -22,7 +22,7 @@ fetch("../controllers/ModuloLecturaController.php?accion=obtenerTextoFacilAleato
 
         htmlPreguntas += `
             <div class="pregunta">
-                <h3>${index + 1}. ${pregunta.texto_pregunta}</h3>
+                <h3>${index + 1}. ${escaparHTML(pregunta.texto_pregunta)}</h3>
         `;
 
         pregunta.opciones.forEach(opcion => {
@@ -34,7 +34,7 @@ fetch("../controllers/ModuloLecturaController.php?accion=obtenerTextoFacilAleato
                         name="pregunta${pregunta.ID}"
                         value="${opcion.ID}"
                     >
-                    ${opcion.texto_opcion}
+                    ${escaparHTML(opcion.texto_opcion)}
                 </label><br>
             `;
         });

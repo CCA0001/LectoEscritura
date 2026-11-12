@@ -2,14 +2,28 @@
 
 session_start();
 
-require_once("../config/conexion.php");
+require_once(__DIR__ . "/../config/router.php");
+require_once(__DIR__ . "/../config/guardias.php");
 
-require_once("../models/TextoModel.php");
-require_once("../models/PreguntaModel.php");
-require_once("../models/OpcionPreguntaModel.php");
-require_once("../models/IntentoLecturaModel.php");
-require_once("../models/RespuestaLecturaModel.php");
-require_once("../models/UsuarioModel.php");
+require_once(__DIR__ . "/../models/TextoModel.php");
+require_once(__DIR__ . "/../models/PreguntaModel.php");
+require_once(__DIR__ . "/../models/OpcionPreguntaModel.php");
+require_once(__DIR__ . "/../models/IntentoLecturaModel.php");
+require_once(__DIR__ . "/../models/RespuestaLecturaModel.php");
+require_once(__DIR__ . "/../models/UsuarioModel.php");
+
+$accion = Router::resolver(
+    "mostrarModuloLectura",
+    [
+        "mostrarModuloLectura" => "usuarioPagina",
+        "obtenerTextoFacilAleatorio" => "usuario",
+        "obtenerTextosDificilesAleatorios" => "usuario",
+        "guardarIntentoLectura" => "usuario"
+    ]
+);
+
+// La conexión se abre DESPUÉS de autorizar.
+require_once(__DIR__ . "/../config/conexion.php");
 
 class ModuloLecturaController {
 
@@ -42,6 +56,9 @@ class ModuloLecturaController {
     }    
     
     public function obtenerTextoFacilAleatorio(){
+
+        Guardias::exigirUsuario();
+
         $texto = $this->TextoModel->obtenerTextoFacil();
 
         $preguntas = $this->PreguntaModel->obtenerPreguntasPorTexto(
@@ -66,6 +83,9 @@ class ModuloLecturaController {
     }
 
     public function obtenerTextosDificilesAleatorios(){
+
+        Guardias::exigirUsuario();
+
         $textos = $this->TextoModel->obtenerTextoAvanzado();
 
         foreach($textos as &$texto){
@@ -92,16 +112,9 @@ class ModuloLecturaController {
     }
 
     public function guardarIntentoLectura(){
-        
-        if(!isset($_SESSION['id_usuario'])){
 
-            echo json_encode([
-                "success" => false,
-                "mensaje" => "Usuario no autenticado"
-            ]);
+        Guardias::exigirUsuario();
 
-            return;
-        }    
         $datos =
             json_decode(
                 file_get_contents("php://input"),
@@ -291,22 +304,26 @@ class ModuloLecturaController {
 
     public function mostrarModuloLectura(){
 
-        include("../views/moduloLectura.php");
+        Guardias::exigirUsuario(false);
+
+        include(__DIR__ . "/../views/moduloLectura.php");
     }        
     
 }
 
+$accion = Router::resolver(
+    "mostrarModuloLectura",
+    [
+        "mostrarModuloLectura",
+        "obtenerTextoFacilAleatorio",
+        "obtenerTextosDificilesAleatorios",
+        "guardarIntentoLectura"
+    ],
+    "usuario"
+);
+
 $controller = new ModuloLecturaController($conexion);
 
-$accion = $_GET['accion'] ?? 'mostrarModuloLectura';
-
-if(method_exists($controller, $accion)){
-
-    $controller->$accion();
-
-}else{
-
-    echo "Acción no válida";
-}
+$controller->$accion();
 
 ?>

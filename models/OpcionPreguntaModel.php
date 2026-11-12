@@ -34,6 +34,14 @@ class OpcionPreguntaModel {
             $opciones = [];
 
             while($fila = mysqli_fetch_assoc($resultado)){
+
+                // IMPORTANTE: la columna 'es_correcta' nunca debe salir del
+                // servidor. Si viaja en el JSON, cualquier estudiante puede
+                // leer la clave de respuestas en las DevTools y responder
+                // todo correctamente. La corrección se evalúa acá atrás,
+                // en esOpcionCorrecta(), cuando el usuario envía el intento.
+                unset($fila['es_correcta']);
+
                 $opciones[] = $fila;
             }
 

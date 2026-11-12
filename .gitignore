@@ -1,0 +1,22 @@
+# ---- Secretos y entorno local ----
+.env
+.env.local
+
+# ---- Logs de la IA (contienen textos de estudiantes) ----
+services/debug_gemini.txt
+
+# ---- Archivos subidos por los usuarios (trabajos de estudiantes) ----
+public/ejercicios/
+storage/
+
+# ---- Dependencias ----
+/vendor/
+/node_modules/
+.next/
+
+# ---- Sistema operativo / editores ----
+Thumbs.db
+.DS_Store
+.idea/
+.vscode/
+*.log

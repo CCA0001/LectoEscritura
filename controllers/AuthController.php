@@ -2,11 +2,25 @@
 
 session_start();
 
-require_once("../config/conexion.php");
-require_once("../models/UsuarioModel.php");
-require_once("../models/AdminModel.php");
-require_once("../models/NivelProgresoModel.php");
-require_once("../models/UsuarioLogroModel.php");
+require_once(__DIR__ . "/../config/router.php");
+require_once(__DIR__ . "/../config/guardias.php");
+require_once(__DIR__ . "/../models/UsuarioModel.php");
+require_once(__DIR__ . "/../models/AdminModel.php");
+require_once(__DIR__ . "/../models/NivelProgresoModel.php");
+require_once(__DIR__ . "/../models/UsuarioLogroModel.php");
+
+$accion = Router::resolver(
+    "loginUsuario",
+    [
+        "loginUsuario" => "publico",
+        "registerUsuario" => "publico",
+        "loginAdmin" => "publico",
+        "logout" => "publico"
+    ]
+);
+
+// La conexión se abre DESPUÉS de resolver la acción.
+require_once(__DIR__ . "/../config/conexion.php");
 
 class AuthController
 {
@@ -70,7 +84,7 @@ class AuthController
             return;            
         }
 
-        if(!$contrasenia == $confirmar_contrasenia){
+        if($contrasenia !== $confirmar_contrasenia){
             echo json_encode([
                 "success" => false,
                 "mensaje" =>
@@ -172,11 +186,19 @@ class AuthController
             return;
         }
 
+        // Se regenera el identificador de sesión para evitar el secuestro
+        // de sesión (session fixation) al cambiar de usuario anónimo a
+        // usuario autenticado.
+        session_regenerate_id(true);
+
         $_SESSION['id_usuario'] =
             $usuario['ID'];
 
         $_SESSION['nombre_usuario'] =
             $usuario['nombre_usuario'];
+
+        $_SESSION['rol'] =
+            "usuario";
 
         $datosRacha = $this->procesarRacha($usuario);
 
@@ -217,8 +239,7 @@ class AuthController
 
             $this->verificarLogrosRacha(
                 $usuario['ID'],
-                $racha,
-                $xp
+                $racha
             );
         }
         $this->actualizarNivel(
@@ -283,7 +304,18 @@ class AuthController
             return null;
         }
 
-        $this->UsuarioLogroModel->desbloquearLogro( $idUsuario, $meta['xp']);
+        // Ojo: el segundo parámetro de desbloquearLogro es el ID del logro,
+        // no el XP. Antes se enviaba el XP y se creaban registros inválidos.
+        $this->UsuarioLogroModel->desbloquearLogro(
+            $idUsuario,
+            $meta['id']
+        );
+
+        // La recompensa del logro se suma como XP extra.
+        $this->UsuarioModel->sumarXp(
+            $idUsuario,
+            $meta['xp']
+        );
 
         return [
             "logro_id" => $meta['id'],
@@ -343,11 +375,24 @@ class AuthController
             return;
         }
 
+        session_regenerate_id(true);
+
+        // Clave de sesión unificada: el resto de la aplicación
+        // (controladores admin y vistas) lee 'id_admin' y 'nombre'.
+        $_SESSION['id_admin'] =
+            $usuario['ID'];
+
         $_SESSION['id'] =
             $usuario['ID'];
 
+        $_SESSION['nombre'] =
+            $usuario['nombre_usuario'];
+
         $_SESSION['nombre_usuario'] =
             $usuario['nombre_usuario'];
+
+        $_SESSION['rol'] =
+            "admin";
 
         echo json_encode([
             "success" => true,
@@ -359,16 +404,7 @@ class AuthController
 
 $controller = new AuthController($conexion);
 
-$accion = $_GET['accion'] ?? 'loginUsuario';
-
-if(method_exists($controller, $accion)){
-
-    $controller->$accion();
-
-}else{
-
-    echo "Acción no válida";
-}
+$controller->$accion();
 
 
 ?>

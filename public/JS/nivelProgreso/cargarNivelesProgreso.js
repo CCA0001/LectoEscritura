@@ -96,7 +96,7 @@ function renderizarTabla(niveles){
                             </td>
 
                             <td>
-                                ${nivel.nombre}
+                                ${escaparHTML(nivel.nombre)}
                             </td>
 
                             <td>
@@ -104,14 +104,14 @@ function renderizarTabla(niveles){
                             </td>
 
                             <td>
-                                ${nivel.descripcion}
+                                ${escaparHTML(nivel.descripcion)}
                             </td>
 
                             <td>
                                 ${nivel.ID_adminResponsable}
                             </td>                            
                             <td>
-                                ${nivel.estado}
+                                ${escaparHTML(nivel.estado)}
                             </td>
 
 
@@ -122,7 +122,7 @@ function renderizarTabla(niveles){
                                     onclick="
                                         invertirEstado(
                                             ${nivel.ID},
-                                            '${nivel.estado}'
+                                            '${escaparAtributo(nivel.estado)}'
                                         )
                                     "
                                 >

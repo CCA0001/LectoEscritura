@@ -123,11 +123,11 @@ function renderizarDesbloqueados(logros){
                 </div>
 
                 <h3>
-                    ${logro.nombre}
+                    ${escaparHTML(logro.nombre)}
                 </h3>
 
                 <p>
-                    ${logro.descripcion}
+                    ${escaparHTML(logro.descripcion)}
                 </p>
 
                 <div class="xp-badge">
@@ -180,11 +180,11 @@ function renderizarTodos(
                     </div>
 
                     <h3>
-                        ${logro.nombre}
+                        ${escaparHTML(logro.nombre)}
                     </h3>
 
                     <p>
-                        ${logro.descripcion}
+                        ${escaparHTML(logro.descripcion)}
                     </p>
 
                     <div class="xp-badge">

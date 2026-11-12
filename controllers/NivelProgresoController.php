@@ -2,8 +2,25 @@
 
 session_start();
 
-require_once("../config/conexion.php");
-require_once("../models/NivelProgresoModel.php");
+require_once(__DIR__ . "/../config/router.php");
+require_once(__DIR__ . "/../config/guardias.php");
+require_once(__DIR__ . "/../models/NivelProgresoModel.php");
+
+$accion = Router::resolver(
+    "mostrarVistaGestionarNivelesProgreso",
+    [
+        "mostrarVistaGestionarNivelesProgreso" => "adminPagina",
+        "mostrarVistaActualizar" => "adminPagina",
+        "listarNiveles" => "admin",
+        "obtenerNivelPorID" => "admin",
+        "agregarNivel" => "admin",
+        "invertirEstadoNivel" => "admin",
+        "actualizarNivel" => "admin"
+    ]
+);
+
+// La conexión se abre DESPUÉS de autorizar.
+require_once(__DIR__ . "/../config/conexion.php");
 
 class NivelProgresoController {
 
@@ -15,6 +32,8 @@ class NivelProgresoController {
     }
 
     public function listarNiveles(){
+
+            Guardias::exigirAdmin();
 
             header(
                 'Content-Type: application/json'
@@ -33,6 +52,9 @@ class NivelProgresoController {
         }
 
     public function obtenerNivelPorID(){
+
+    Guardias::exigirAdmin();
+
     header(
         'Content-Type: application/json'
     );
@@ -66,6 +88,8 @@ class NivelProgresoController {
     }
 
     public function agregarNivel(){
+
+        Guardias::exigirAdmin();
 
         header(
             'Content-Type: application/json'
@@ -113,7 +137,9 @@ class NivelProgresoController {
     }
 
     public function invertirEstadoNivel(){
-    
+
+        Guardias::exigirAdmin();
+
         header(
             'Content-Type: application/json'
         );
@@ -165,16 +191,20 @@ class NivelProgresoController {
 
     public function mostrarVistaActualizar(){
 
+        Guardias::exigirAdmin(false);
+
         $id = $_GET['id'];
 
         $nivel = $this->NivelProgresoModel
             ->obtenerNivelPorId($id);
 
-        include("../views/actualizarNivel.php");
+        include(__DIR__ . "/../views/actualizarNivel.php");
     }
 
     public function actualizarNivel(){
-    
+
+        Guardias::exigirAdmin();
+
         header(
             'Content-Type: application/json'
         );
@@ -244,7 +274,10 @@ class NivelProgresoController {
         }
 
         public function mostrarVistaGestionarNivelesProgreso(){
-            include("../views/gestionarNivelesProgreso.php");
+
+            Guardias::exigirAdmin(false);
+
+            include(__DIR__ . "/../views/gestionarNivelesProgreso.php");
         }
 
 }
@@ -252,15 +285,6 @@ class NivelProgresoController {
 
 $controller = new NivelProgresoController($conexion);
 
-$accion = $_GET['accion'] ?? 'mostrarVistaGestionarNivelesProgreso';
-
-if(method_exists($controller, $accion)){
-
-    $controller->$accion();
-
-}else{
-
-    echo "Acción no válida";
-}
+$controller->$accion();
 
 ?>

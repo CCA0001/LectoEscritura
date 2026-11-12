@@ -2,13 +2,30 @@
 
 session_start();
 
-require_once("../config/conexion.php");
+require_once(__DIR__ . "/../config/router.php");
+require_once(__DIR__ . "/../config/guardias.php");
 
-require_once("../models/TextoModel.php");
-require_once("../models/PreguntaModel.php");
-require_once("../models/OpcionPreguntaModel.php");
-require_once("../models/NivelDificultadModel.php");
-require_once("../models/TipoTextoModel.php");
+require_once(__DIR__ . "/../models/TextoModel.php");
+require_once(__DIR__ . "/../models/PreguntaModel.php");
+require_once(__DIR__ . "/../models/OpcionPreguntaModel.php");
+require_once(__DIR__ . "/../models/NivelDificultadModel.php");
+require_once(__DIR__ . "/../models/TipoTextoModel.php");
+
+$accion = Router::resolver(
+    "mostrarVistaGestionarTextos",
+    [
+        "mostrarVistaGestionarTextos" => "adminPagina",
+        "mostrarVistaActualizar" => "adminPagina",
+        "listarTextos" => "admin",
+        "obtenerCombos" => "admin",
+        "agregarTextoManualmente" => "admin",
+        "invertirEstadoTexto" => "admin",
+        "actualizarTexto" => "admin"
+    ]
+);
+
+// La conexión se abre DESPUÉS de autorizar.
+require_once(__DIR__ . "/../config/conexion.php");
 
 
 class TextoController {
@@ -40,6 +57,8 @@ class TextoController {
 
     public function listarTextos(){
 
+        Guardias::exigirAdmin();
+
         header(
             'Content-Type: application/json'
         );
@@ -58,6 +77,8 @@ class TextoController {
 
     public function obtenerCombos()
     {
+
+        Guardias::exigirAdmin();
 
         $dificultades =
             $this->dificultad
@@ -79,6 +100,8 @@ class TextoController {
     }
 
     public function agregarTextoManualmente(){
+
+        Guardias::exigirAdmin();
 
         header(
             'Content-Type: application/json'
@@ -160,6 +183,8 @@ class TextoController {
 
     public function invertirEstadoTexto(){
 
+    Guardias::exigirAdmin();
+
     header(
         'Content-Type: application/json'
     );
@@ -217,19 +242,26 @@ class TextoController {
 
     public function mostrarVistaActualizar(){
 
+        Guardias::exigirAdmin(false);
+
         $id = $_GET['id'];
 
         $texto = $this->TextoModel
             ->obtenerTextoPorId($id);
 
-        include("../views/actualizarTexto.php");
+        include(__DIR__ . "/../views/actualizarTexto.php");
     }
 
     public function mostrarVistaGestionarTextos(){
-        include("../views/gestionarTextos.php");
+
+        Guardias::exigirAdmin(false);
+
+        include(__DIR__ . "/../views/gestionarTextos.php");
     }
 
     public function actualizarTexto(){
+
+        Guardias::exigirAdmin();
 
         $dificultad = isset($_POST['dificultad'])
             ? trim($_POST['dificultad'])
@@ -302,15 +334,6 @@ class TextoController {
 
 $controller = new TextoController($conexion);
 
-$accion = $_GET['accion'] ?? 'mostrarVistaGestionarTextos';
-
-if(method_exists($controller, $accion)){
-
-    $controller->$accion();
-
-}else{
-
-    echo "Acción no válida";
-}
+$controller->$accion();
 
 ?>

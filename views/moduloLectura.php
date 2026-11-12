@@ -1,3 +1,8 @@
+<?php
+
+require_once(__DIR__ . "/../config/vista_usuario.php");
+
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -157,7 +162,8 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="../public/JS/usuario/cargarPerfilUsuario.js"></script>
     <script src="../public/JS/dropdown_usuario.js"></script>
-    <script src="../public/JS/lectura/cargarTextoFacil.js"></script>
+    <script src="../public/JS/escapar.js"></script>
+<script src="../public/JS/lectura/cargarTextoFacil.js"></script>
     <script src="../public/JS/lectura/cargarTextosDificiles.js"></script>
     <script src="../public/JS/lectura/guardarLecturaFacil.js"></script>
     <script src="../public/JS/lectura/guardarLecturaAvanzada.js"></script>

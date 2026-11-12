@@ -1,16 +1,35 @@
 <?php
 session_start();
-include("../config/conexion.php");
-require_once("../models/ArchivoEscrituraModel.php");
-require_once("../models/NivelDificultadModel.php");
-require_once("../models/TipoTextoModel.php");
-require_once("../services/IAEscrituraService.php");
-require_once("../models/DetalleEjercicioEscrituraModel.php");
+require_once(__DIR__ . "/../config/router.php");
+require_once(__DIR__ . "/../config/guardias.php");
+require_once(__DIR__ . "/../models/ArchivoEscrituraModel.php");
+require_once(__DIR__ . "/../models/NivelDificultadModel.php");
+require_once(__DIR__ . "/../models/TipoTextoModel.php");
+require_once(__DIR__ . "/../models/UsuarioModel.php");
+require_once(__DIR__ . "/../services/IAEscrituraService.php");
+require_once(__DIR__ . "/../models/DetalleEjercicioEscrituraModel.php");
+
+$accion = Router::resolver(
+    "mostrarModuloEscritura",
+    [
+        "mostrarModuloEscritura" => "usuarioPagina",
+        "subirArchivo" => "usuario",
+        "verArchivo" => "usuario",
+        "evaluarArchivo" => "usuario",
+        "obtenerDificultades" => "usuario",
+        "obtenerTiposTexto" => "usuario",
+        "obtenerArchivosUsuario" => "usuario"
+    ]
+);
+
+// La conexión se abre DESPUÉS de autorizar.
+include(__DIR__ . "/../config/conexion.php");
 
 class ModuloEscrituraController{
     private $ArchivoEscrituraModel;
     private $NivelDificultadModel;
     private $TipoTextoModel;
+    private $UsuarioModel;
     private $IAEscrituraService;
     private $DetalleEjercicioEscrituraModel;
 
@@ -25,19 +44,27 @@ class ModuloEscrituraController{
         $this->TipoTextoModel =
             new TipoTextoModel($conexion);
 
+        // Antes faltaba esta instancia y evaluarArchivo() moría con un
+        // error fatal al querer sumar el XP.
+        $this->UsuarioModel =
+            new UsuarioModel($conexion);
+
         $this->DetalleEjercicioEscrituraModel =
             new DetalleEjercicioEscrituraModel($conexion);  
             
         $this->IAEscrituraService =
-            new IAEscrituraService();    
+            new IAEscrituraService();     
     }
 
     public function mostrarModuloEscritura(){
+
+        Guardias::exigirUsuario(false);
+
         $archivos = $this->ArchivoEscrituraModel->obtenerArchivosPorUsuario($_SESSION['id_usuario']);
         $dificultades = $this->NivelDificultadModel->obtenerTodos();
         $tipos = $this->TipoTextoModel->obtenerTodos();
     
-        include("../views/ejercicio_escritura.php");
+        include(__DIR__ . "/../views/ejercicio_escritura.php");
         
     }
 
@@ -45,15 +72,7 @@ class ModuloEscrituraController{
 
         header('Content-Type: application/json');
 
-        if(!isset($_SESSION['id_usuario'])){
-
-            echo json_encode([
-                "success" => false,
-                "mensaje" => "Usuario no autenticado"
-            ]);
-
-            return;
-        }
+        Guardias::exigirUsuario();
 
         if(!isset($_FILES['archivo_pdf'])){
 
@@ -112,18 +131,59 @@ class ModuloEscrituraController{
             return;
         }
 
+        // Se valida el contenido real del archivo, no solo la extensión:
+        // un .php renombrado a .pdf debe ser un PDF de verdad.
+        $infoArchivo =
+            new finfo(FILEINFO_MIME_TYPE);
+
+        $mimeReal =
+            $infoArchivo->file($tmp);
+
+        if($mimeReal !== "application/pdf"){
+
+            echo json_encode([
+                "success" => false,
+                "mensaje" => "El archivo no es un PDF válido"
+            ]);
+
+            return;
+        }
+
+        $tamanoMaximo =
+            10 * 1024 * 1024;
+
+        if($archivo['size'] > $tamanoMaximo){
+
+            echo json_encode([
+                "success" => false,
+                "mensaje" => "El archivo supera el límite de 10 MB"
+            ]);
+
+            return;
+        }
+
+        // Nombre aleatorio con bytes aleatorios: uniqid() es predecible
+        // y permite adivinar la URL de los trabajos de otros estudiantes.
         $nombreFinal =
-            uniqid("escritura_") .
-            "." .
-            $extension;
+            "escritura_" .
+            bin2hex(random_bytes(16)) .
+            ".pdf";
+
+        // Los archivos se guardan FUERA del webroot: así no se pueden
+        // descargar con solo conocer la URL. Para verlos se usa la
+        // acción verArchivo, que valida que el archivo sea del usuario.
+        $carpetaDestino =
+            dirname(__DIR__) . "/storage/escrituras";
+
+        if(!is_dir($carpetaDestino)){
+            mkdir($carpetaDestino, 0775, true);
+        }
 
         $rutaRelativa =
-            "public/ejercicios/pdf_escritura" .
-            $nombreFinal;
+            "storage/escrituras/" . $nombreFinal;
 
         $rutaCompleta =
-            "../" .
-            $rutaRelativa;
+            dirname(__DIR__) . "/" . $rutaRelativa;
 
         if(
             !move_uploaded_file(
@@ -175,7 +235,69 @@ class ModuloEscrituraController{
         ]);
     }
 
+    /**
+     * Entrega el PDF al usuario, verificando que le pertenezca.
+     * Los archivos viven fuera del webroot, así que no se puede
+     * descargar con solo adivinar la URL.
+     */
+    public function verArchivo(){
+
+        Guardias::exigirUsuario();
+
+        if(!isset($_GET['id'])){
+
+            http_response_code(400);
+
+            echo "ID no recibido";
+
+            return;
+        }
+
+        $idArchivo = intval($_GET['id']);
+
+        $archivo =
+            $this->ArchivoEscrituraModel
+                ->obtenerPorIdYUsuario(
+                    $idArchivo,
+                    $_SESSION['id_usuario']
+                );
+
+        if(!$archivo){
+
+            http_response_code(404);
+
+            echo "Archivo no encontrado";
+
+            return;
+        }
+
+        $rutaCompleta =
+            dirname(__DIR__) . "/" . $archivo['url_archivo'];
+
+        if(!is_readable($rutaCompleta)){
+
+            http_response_code(404);
+
+            echo "Archivo no disponible";
+
+            return;
+        }
+
+        header("Content-Type: application/pdf");
+        header(
+            "Content-Disposition: inline; filename=\"" .
+            basename($archivo['nombre_archivo']) . "\""
+        );
+        header("Content-Length: " . filesize($rutaCompleta));
+        header("X-Content-Type-Options: nosniff");
+
+        readfile($rutaCompleta);
+    }
+
     public function obtenerDificultades(){
+
+        Guardias::exigirUsuario();
+
         $dificultades =
             $this->NivelDificultadModel
                 ->obtenerTodos();
@@ -189,6 +311,8 @@ class ModuloEscrituraController{
     }
 
     public function obtenerTiposTexto(){
+
+        Guardias::exigirUsuario();
 
         $tipos =
             $this->TipoTextoModel
@@ -204,16 +328,7 @@ class ModuloEscrituraController{
 
     public function obtenerArchivosUsuario(){
 
-        if(!isset($_SESSION['id_usuario'])){
-
-            echo json_encode([
-                "success" => false,
-                "mensaje" => "Usuario no autenticado"
-            ]);
-
-            header("Location: ../views/login.html");
-            exit();
-        }
+        Guardias::exigirUsuario();
 
         $archivos =
             $this->ArchivoEscrituraModel
@@ -233,19 +348,8 @@ class ModuloEscrituraController{
 
         header('Content-Type: application/json');
 
-        if(!isset($_SESSION['id_usuario'])){
+        Guardias::exigirUsuario();
 
-            echo json_encode([
-                "success" => false,
-                "mensaje" => "Usuario no autenticado"
-            ]);
-
-            header("Location: ../views/login.html");
-            exit();
-
-            return;
-        }
-    
         if(!isset($_GET['id'])){
 
             echo json_encode([
@@ -328,22 +432,8 @@ class ModuloEscrituraController{
 }
 
 
-    if (!isset($_SESSION['id_usuario'])) {
-            header("Location: ../views/login.html");
-            exit();
-    }
-
-
 $controller = new ModuloEscrituraController($conexion);
 
-$accion = $_GET['accion'] ?? 'mostrarModuloEscritura';
-if(method_exists($controller, $accion)){
-
-    $controller->$accion();
-
-}else{
-
-    echo "Acción no válida";
-}
+$controller->$accion();
 
 ?>

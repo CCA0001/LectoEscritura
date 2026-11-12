@@ -107,14 +107,14 @@ function renderizarTabla(textos){
                             </td>
 
                             <td>
-                                ${texto.titulo}
+                                ${escaparHTML(texto.titulo)}
                             </td>
 
                             <td>
-                                ${texto.contenido}
+                                ${escaparHTML(texto.contenido)}
                             </td>                            
                             <td>
-                                ${texto.fuente}
+                                ${escaparHTML(texto.fuente)}
                             </td>
                             <td>
                                 ${texto.ID_adminResponsable}
@@ -123,7 +123,7 @@ function renderizarTabla(textos){
                                 ${texto.fecha_registro}
                             </td>
                             <td>
-                                ${texto.estado}
+                                ${escaparHTML(texto.estado)}
                             </td>                            
 
                             <td>
@@ -132,7 +132,7 @@ function renderizarTabla(textos){
                                     onclick="
                                         invertirEstado(
                                             ${texto.ID},
-                                            '${texto.estado}'
+                                            '${escaparAtributo(texto.estado)}'
                                         )
                                     "
                                 >

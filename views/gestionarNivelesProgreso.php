@@ -1,3 +1,8 @@
+<?php
+
+require_once(__DIR__ . "/../config/vista_admin.php");
+
+?>
 <!DOCTYPE html>
 <html lang="es">
 
@@ -161,6 +166,7 @@
 
 </div>
 
+<script src="../public/JS/escapar.js"></script>
 <script src="../public/JS/nivelProgreso/cargarNivelesProgreso.js"></script>
 <script src="../public/JS/nivelProgreso/agregarNivel.js"></script>
 
