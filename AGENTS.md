@@ -6,7 +6,8 @@ PHP 8 + MySQL (Azure) para evaluar Lectura Crítica y Comunicación Escrita, con
 
 ```
 config/          config.php (cargador .env) · router.php · guardias.php
-                 conexion.php · ia.php · vista_admin.php · vista_usuario.php
+                 sesion.php (arranque único de sesión) · conexion.php · ia.php
+                 vista_admin.php · vista_usuario.php
                  INSTALACION.md · httpd-lectoescritura.conf (VirtualHost)
 controllers/     8 controladores: dispatcher con lista blanca de acciones
 models/          14 modelos: mysqli_prepare + bind_param
@@ -21,7 +22,8 @@ storage/escrituras/  PDFs subidos, FUERA del webroot
 ## Reglas de oro del código
 
 - **Dispatcher**: todo controlador usa `Router::resolver($defecto, [accion => rol])`. **Nunca** reintroducir `method_exists` (dejó abiertos todos los métodos públicos). Roles: `publico`, `admin`, `adminPagina`, `usuario`, `usuarioPagina`.
-- **Orden de arranque**: `session_start()` → `router.php` → modelos → `Router::resolver()` → **después** `conexion.php`. La conexión va al final a propósito: si la BD está caída, una petición no autorizada debe seguir devolviendo 401 y no 503.
+- **Orden de arranque**: `Sesion::iniciar()` (config/sesion.php) → `router.php` → modelos → `Router::resolver()` → **después** `conexion.php`. La conexión va al final a propósito: si la BD está caída, una petición no autorizada debe seguir devolviendo 401 y no 503.
+- **Sesión**: nunca llamar `session_start()` a mano; usar `Sesion::iniciar()` (deja HttpOnly + SameSite=Lax). Tras un `session_regenerate_id()` hay que llamar `Sesion::fijarCookieDeSesion()` para no mandar dos `PHPSESSID`; el logout usa `Sesion::cerrar()`.
 - **Los `require` usan `__DIR__`**, no rutas relativas al CWD: el repo funciona igual en Apache, en el servidor embebido de PHP y en la CLI.
 - **Claves de sesión**: usuario → `id_usuario`; administrador → `id_admin` (también `id` y `nombre` por compatibilidad); `rol` = `usuario`|`admin`. No inventar otras.
 - **Vistas**: toda vista que exija sesión incluye `config/vista_admin.php` o `config/vista_usuario.php` en la primera línea (se abren directo por URL).
@@ -78,7 +80,8 @@ No hay lint, ni typecheck, ni tests. **La verificación es manual**: abrir la p�
 - `public/ia/evaluar_escritura.php` es **código muerto**: incluye un `config.php` inexistente y redirige a `controllers/controlador_escritura.php` inexistente. No cablear nada ahí.
 - `public/JS/escritura/mostrarRetroalimentacion.js` está vacío (0 bytes) y `public/JS/racha_alerta.js` no está incluido en ninguna vista.
 - `AuthController::verificarLogrosRacha` usa IDs de logro fijos (2 y 8): dependen de la data sembrada.
-- `views/pantalla_principal_Admin.php` enlaza `../css/dropdown_usuario.css`, que no existe (404 en consola).
+- `views/pantalla_principal_Admin.php` tiene un `#userInfoPanel` heredado que nunca se abre (no hay `#userRankBtn` ni incluye `dropdown_usuario.js`): es un fragmento estático, no un bug de datos.
+- El CSS del dropdown (`.user-rank`, `.user-info-panel.show`, `.dropdown-arrow`) está **triplicado** en `pantalla_principal_Usuario.css`, `lectura.css` y `escritura.css`. Si se cambia el diseño, hay que tocar los tres.
 - El **navbar es `position: fixed`**: en pruebas automatizadas con Puppeteer, un `page.click()` por coordenadas puede caer bajo el navbar y no disparar el botón. Usar `elemento.click()` sintético.
 - `views/actualizarTexto.php` se sirve desde `/views/` (no desde el controlador): sus enlaces internos usan `../views/...` para funcionar desde cualquier origen.
 
