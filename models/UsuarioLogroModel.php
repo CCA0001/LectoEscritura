@@ -50,8 +50,10 @@ public function desbloquearLogro(
     $idLogro
 ){
 
+    // INSERT IGNORE + la clave única (ID_usuario, ID_logro) evitan filas
+    // duplicadas si dos peticiones desbloquean el mismo logro a la vez.
     $sql = "
-        INSERT INTO usuariologro
+        INSERT IGNORE INTO usuariologro
         (
             ID_usuario,
             ID_logro

@@ -311,6 +311,7 @@ CREATE TABLE `usuariologro` (
   `ID_logro` int(11) NOT NULL,
   `fecha_desbloqueo` timestamp NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`ID`),
+  UNIQUE KEY `uq_usuariologro_usuario_logro` (`ID_usuario`,`ID_logro`),
   KEY `FK_usuariologro_IDUsuario_idx` (`ID_usuario`),
   KEY `FK_usuariologro_IDLogro_idx` (`ID_logro`),
   CONSTRAINT `FK_usuariologro_IDLogro` FOREIGN KEY (`ID_logro`) REFERENCES `logro` (`ID`) ON UPDATE CASCADE,

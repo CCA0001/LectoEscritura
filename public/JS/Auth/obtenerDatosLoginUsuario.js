@@ -55,23 +55,37 @@ document.getElementById(
                 await response.json();
 
             if(data.success){
+                // La alerta de racha/logro se muestra ya en el panel: acá
+                // solo se guarda en sessionStorage para que racha_alerta.js
+                // la levante después del redirect.
+                const alerta = {};
+
                 if(data.xp_diario){
 
-                    await Swal.fire({
+                    alerta.mensajeRacha =
+                        `Llevas ${data.racha} día(s) seguidos. ` +
+                        `Ganaste +${data.xp_diario} XP por ingresar hoy.`;
+                }
 
-                        title: '¡Bienvenido!',
+                if(data.logro){
 
-                        html: `
-                            Ganaste
-                            <strong>
-                                +${data.xp_diario} XP
-                            </strong>
-                            por ingresar hoy.
-                        `,
+                    alerta.logroNombre = data.logro.nombre;
 
-                        icon: 'success'
-                    });
-                }                
+                    alerta.logroXp = data.logro.xp;
+                }
+
+                if(alerta.mensajeRacha || alerta.logroNombre){
+
+                    try {
+                        sessionStorage.setItem(
+                            "alertaRacha",
+                            JSON.stringify(alerta)
+                        );
+                    } catch(error) {
+                        console.error(error);
+                    }
+                }
+
                 window.location.href =
                     "../views/pantalla_principal_Usuario.php";
 

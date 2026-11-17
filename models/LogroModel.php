@@ -81,9 +81,46 @@
 
                 }
 
-        public function obtenerLogroPorId($id){
+        /**
+         * Busca un logro ACTIVO por su nombre.
+         *
+         * Se usa para las metas de racha: antes el código tenía los IDs
+         * (2 y 8) escritos a mano, así que renombrar o desactivar un logro
+         * desde el panel rompía el desbloqueo.
+         *
+         * Devuelve null si no existe o si está inactivo.
+         */
+        public function obtenerLogroActivoPorNombre($nombre){
 
             $sql = "
+                SELECT *
+                FROM logro
+                WHERE nombre = ?
+                AND estado = 'Activo'
+                LIMIT 1
+            ";
+
+            $stmt = mysqli_prepare(
+                $this->conexion,
+                $sql
+            );
+
+            mysqli_stmt_bind_param(
+                $stmt,
+                "s",
+                $nombre
+            );
+
+            mysqli_stmt_execute($stmt);
+
+            $resultado = mysqli_stmt_get_result($stmt);
+
+            $fila = mysqli_fetch_assoc($resultado);
+
+            return $fila ? $fila : null;
+        }
+
+        public function obtenerLogroPorId($id){            $sql = "
                 SELECT *
                 FROM logro
                 WHERE ID = ?

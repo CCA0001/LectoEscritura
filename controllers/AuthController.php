@@ -11,6 +11,7 @@ require_once(__DIR__ . "/../models/UsuarioModel.php");
 require_once(__DIR__ . "/../models/AdminModel.php");
 require_once(__DIR__ . "/../models/NivelProgresoModel.php");
 require_once(__DIR__ . "/../models/UsuarioLogroModel.php");
+require_once(__DIR__ . "/../models/LogroModel.php");
 
 $accion = Router::resolver(
     "loginUsuario",
@@ -32,6 +33,7 @@ class AuthController
     private $AdminModel;
     private $NivelProgresoModel;
     private $UsuarioLogroModel;
+    private $LogroModel;
 
     public function __construct($conexion)
     {
@@ -44,6 +46,8 @@ class AuthController
             new NivelProgresoModel($conexion);    
         $this->UsuarioLogroModel =
             new UsuarioLogroModel($conexion);    
+        $this->LogroModel =
+            new LogroModel($conexion);
     }
 
     public function logout(){
@@ -212,7 +216,9 @@ class AuthController
             "success" => true,
             "mensaje" =>
                 "Inicio de sesión exitoso",
-            "racha" => $datosRacha
+            "racha" => $datosRacha["racha"],
+            "xp_diario" => $datosRacha["xp_diario"],
+            "logro" => $datosRacha["logro"]
         ]);
 
 
@@ -232,6 +238,10 @@ class AuthController
         $racha = (int)$usuario['dias_racha'];
         $xp = (int)$usuario['puntos_xp'];
 
+        // Solo hay XP diario (y solo puede haber logro) la primera vez del día.
+        $xpDiario = null;
+        $logro = null;
+
         if($ultimaConexion !== $hoy){
             if($ultimaConexion === $ayer){
                 $racha++;
@@ -239,23 +249,34 @@ class AuthController
                 $racha = 1;
             }
 
-            $xp += 10;
+            $xpDiario = 10;
+
+            $xp += $xpDiario;
 
             $this->UsuarioModel->actualizarRachaYXP($usuario['ID'], $racha, $xp, $hoy);
 
-            $this->verificarLogrosRacha(
+            $logro = $this->verificarLogrosRacha(
                 $usuario['ID'],
                 $racha
             );
+
+            // El XP del logro también cuenta para el nivel.
+            if($logro){
+                $xp += (int)$logro["xp"];
+            }
         }
+
         $this->actualizarNivel(
             $usuario['ID'],
             $xp
         );
 
+        // xp_diario y logro van en null cuando ya se había registrado hoy:
+        // antes se devolvía 10 siempre y la alerta mentía con el XP ganado.
         return[
             "racha" => $racha,
-            "xp_diario" => 10,
+            "xp_diario" => $xpDiario,
+            "logro" => $logro
         ];
         
     }
@@ -284,26 +305,36 @@ class AuthController
     }
 
     public function verificarLogrosRacha($idUsuario, $racha){
-        $metas = [
-            7 => [
-                "id" => 2,
-                "xp" => 105
-            ],
 
-            30 => [
-                "id" => 8,
-                "xp" => 500
-            ]
+        // El logro NO se busca por ID fijo: el admin puede renombrarlo,
+        // desactivarlo o reordenar la tabla y los IDs cambian. Se busca por
+        // nombre entre los logros activos, y la recompensa se lee de la BD
+        // (recompensa_xp) en vez de quedar duplicada acá.
+        $metas = [
+            7 => "Racha de 7 días",
+            30 => "Racha de 30 días"
         ];
 
         if(!isset($metas[$racha])){
             return null;
         }
 
-        $meta = $metas[$racha];
+        $logro = $this->LogroModel
+            ->obtenerLogroActivoPorNombre(
+                $metas[$racha]
+            );
+
+        // Si el logro no existe o está inactivo, el login sigue normal:
+        // simplemente no se desbloquea nada.
+        if(!$logro){
+            return null;
+        }
+
+        $idLogro = (int)$logro['ID'];
+        $xpLogro = (int)$logro['recompensa_xp'];
 
         $yaTiene = $this->UsuarioLogroModel->usuarioTieneLogro(
-            $idUsuario, $meta['id']
+            $idUsuario, $idLogro
         );
 
         if($yaTiene){
@@ -314,18 +345,19 @@ class AuthController
         // no el XP. Antes se enviaba el XP y se creaban registros inválidos.
         $this->UsuarioLogroModel->desbloquearLogro(
             $idUsuario,
-            $meta['id']
+            $idLogro
         );
 
         // La recompensa del logro se suma como XP extra.
         $this->UsuarioModel->sumarXp(
             $idUsuario,
-            $meta['xp']
+            $xpLogro
         );
 
         return [
-            "logro_id" => $meta['id'],
-            "xp" => $meta['xp']
+            "logro_id" => $idLogro,
+            "nombre" => $logro['nombre'],
+            "xp" => $xpLogro
         ];
     }
 

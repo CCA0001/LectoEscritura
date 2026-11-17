@@ -78,8 +78,8 @@ No hay lint, ni typecheck, ni tests. **La verificación es manual**: abrir la p�
 ## Trampas conocidas
 
 - `public/ia/evaluar_escritura.php` es **código muerto**: incluye un `config.php` inexistente y redirige a `controllers/controlador_escritura.php` inexistente. No cablear nada ahí.
-- `public/JS/escritura/mostrarRetroalimentacion.js` está vacío (0 bytes) y `public/JS/racha_alerta.js` no está incluido en ninguna vista.
-- `AuthController::verificarLogrosRacha` usa IDs de logro fijos (2 y 8): dependen de la data sembrada.
+- `public/JS/escritura/mostrarRetroalimentacion.js` está vacío (0 bytes). `racha_alerta.js` sí está conectado: se incluye en `pantalla_principal_Usuario.php` y lee `sessionStorage["alertaRacha"]`, que deja el login.
+- `AuthController::verificarLogrosRacha` ya no usa IDs fijos: busca el logro activo por **nombre** (`LogroModel::obtenerLogroActivoPorNombre`) y toma la recompensa de `recompensa_xp`. Si se renombra "Racha de 7 días" / "Racha de 30 días" desde el panel, hay que actualizar esos nombres en el arreglo `$metas` del método: si no, el login sigue funcionando pero el logro no se desbloquea.
 - `views/pantalla_principal_Admin.php` tiene un `#userInfoPanel` heredado que nunca se abre (no hay `#userRankBtn` ni incluye `dropdown_usuario.js`): es un fragmento estático, no un bug de datos.
 - El CSS del dropdown (`.user-rank`, `.user-info-panel.show`, `.dropdown-arrow`) está **triplicado** en `pantalla_principal_Usuario.css`, `lectura.css` y `escritura.css`. Si se cambia el diseño, hay que tocar los tres.
 - El **navbar es `position: fixed`**: en pruebas automatizadas con Puppeteer, un `page.click()` por coordenadas puede caer bajo el navbar y no disparar el botón. Usar `elemento.click()` sintético.
