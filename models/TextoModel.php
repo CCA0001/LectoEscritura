@@ -67,7 +67,7 @@ class TextoModel {
 
         mysqli_stmt_bind_param(
             $stmt,
-            "iissssi",
+            "iisssis",
             $id_dificultad,
             $id_tipoTexto,
             $titulo,
