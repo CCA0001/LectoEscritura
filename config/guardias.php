@@ -16,14 +16,13 @@
  */
 
 require_once(__DIR__ . "/config.php");
+require_once(__DIR__ . "/sesion.php");
 
 class Guardias {
 
     public static function asegurarSesion() {
 
-        if(session_status() !== PHP_SESSION_ACTIVE) {
-            session_start();
-        }
+        Sesion::iniciar();
     }
 
     public static function esUsuario() {

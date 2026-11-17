@@ -1,6 +1,9 @@
 <?php
 
-session_start();
+// Sesión con HttpOnly + SameSite (ver config/sesion.php).
+require_once(__DIR__ . "/../config/sesion.php");
+
+Sesion::iniciar();
 
 require_once(__DIR__ . "/../config/router.php");
 require_once(__DIR__ . "/../config/guardias.php");
@@ -49,9 +52,9 @@ class AuthController
             'Content-Type: application/json'
         );
 
-        session_unset();
-
-        session_destroy();
+        // Destruye la sesión en el servidor y borra el PHPSESSID del
+        // navegador (antes quedaba apuntando a una sesión inexistente).
+        Sesion::cerrar();
 
         echo json_encode([
 
@@ -190,6 +193,9 @@ class AuthController
         // de sesión (session fixation) al cambiar de usuario anónimo a
         // usuario autenticado.
         session_regenerate_id(true);
+
+        // Deja un solo Set-Cookie: el de la sesión nueva y válida.
+        Sesion::fijarCookieDeSesion();
 
         $_SESSION['id_usuario'] =
             $usuario['ID'];
@@ -376,6 +382,9 @@ class AuthController
         }
 
         session_regenerate_id(true);
+
+        // Deja un solo Set-Cookie: el de la sesión nueva y válida.
+        Sesion::fijarCookieDeSesion();
 
         // Clave de sesión unificada: el resto de la aplicación
         // (controladores admin y vistas) lee 'id_admin' y 'nombre'.

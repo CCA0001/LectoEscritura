@@ -1,5 +1,8 @@
 <?php
-session_start();
+// Sesión con HttpOnly + SameSite (ver config/sesion.php).
+require_once(__DIR__ . "/../config/sesion.php");
+
+Sesion::iniciar();
 require_once(__DIR__ . "/../config/router.php");
 require_once(__DIR__ . "/../config/guardias.php");
 require_once(__DIR__ . "/../models/ArchivoEscrituraModel.php");
