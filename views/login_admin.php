@@ -26,7 +26,7 @@
         </form>
 
         <p class="footer-text">
-            ¿Eres usuario? <a href="login_admin.php">Acceso usuarios</a>
+            ¿Eres usuario? <a href="login.html">Acceso usuarios</a>
         </p>
     </div>
 

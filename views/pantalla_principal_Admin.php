@@ -18,7 +18,6 @@ $nombre_real = $_SESSION['nombre'] ?? 'Administrador';
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <link rel="stylesheet" href="../public/css/pantalla_principal_Usuario.css?v=<?php echo time(); ?>">
-    <link rel="stylesheet" href="../css/dropdown_usuario.css?v=<?php echo time(); ?>">
 </head>
 
 <body>
